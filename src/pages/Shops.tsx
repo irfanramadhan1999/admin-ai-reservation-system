@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -12,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { Eye, Edit, Trash2, CalendarDays, Plus } from 'lucide-react';
+import { Edit, Trash2, CalendarDays, Plus } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 // Sample data
@@ -74,18 +75,9 @@ const Shops = () => {
     shop.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  const handleViewShop = (id: string) => {
-    toast({
-      title: "View Shop",
-      description: `Viewing shop with ID: ${id}`
-    });
-  };
-  
   const handleEditShop = (id: string) => {
-    toast({
-      title: "Edit Shop",
-      description: `Editing shop with ID: ${id}`
-    });
+    // Navigate to edit shop page with the shop ID
+    navigate(`/shops/edit/${id}`);
   };
   
   const handleDeleteShop = (id: string) => {
@@ -160,14 +152,6 @@ const Shops = () => {
                   <TableCell>{shop.seatTypes} types / {shop.totalSeats} seats</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleViewShop(shop.id)}
-                        title="View"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
                       <Button
                         variant="outline"
                         size="sm"

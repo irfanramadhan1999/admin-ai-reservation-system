@@ -108,7 +108,7 @@ const Dashboard = () => {
     },
   ];
 
-  // Mock data for system alerts
+  // Mock data for system alerts - updated to always use "Excessive token usage"
   const systemAlerts = [
     {
       id: 1,
@@ -123,7 +123,7 @@ const Dashboard = () => {
       timestamp: '15 min ago',
       ipAddress: '192.168.3.78',
       shop: 'Milano Pasta House',
-      reason: 'Suspicious input pattern',
+      reason: 'Excessive token usage',
       status: 'New',
     },
     {
@@ -131,7 +131,7 @@ const Dashboard = () => {
       timestamp: '1 hour ago',
       ipAddress: '192.168.5.12',
       shop: 'Paris Bistro',
-      reason: 'Out-of-context AI conversation',
+      reason: 'Excessive token usage',
       status: 'Reviewed',
     },
     {
@@ -139,7 +139,7 @@ const Dashboard = () => {
       timestamp: '3 hours ago',
       ipAddress: '192.168.9.33',
       shop: 'New York Steakhouse',
-      reason: 'Multiple failed login attempts',
+      reason: 'Excessive token usage',
       status: 'Reviewed',
     },
   ];
