@@ -7,7 +7,9 @@ import {
   Users, 
   Settings,
   Phone,
+  Store
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface SidebarNavProps {
   className?: string;
@@ -18,7 +20,13 @@ const navItems = [
     title: "Dashboard",
     icon: LayoutDashboard,
     href: "/",
-    isActive: true
+    isActive: window.location.pathname === "/"
+  },
+  {
+    title: "Shops",
+    icon: Store,
+    href: "/shops",
+    isActive: window.location.pathname === "/shops"
   },
   {
     title: "Bookings",
@@ -50,9 +58,9 @@ export function SidebarNav({ className }: SidebarNavProps) {
   return (
     <nav className={cn("flex flex-col space-y-1", className)}>
       {navItems.map((item) => (
-        <a
+        <Link
           key={item.title}
-          href={item.href}
+          to={item.href}
           className={cn(
             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all",
             item.isActive
@@ -62,7 +70,7 @@ export function SidebarNav({ className }: SidebarNavProps) {
         >
           <item.icon className="h-4 w-4" />
           <span>{item.title}</span>
-        </a>
+        </Link>
       ))}
     </nav>
   );
