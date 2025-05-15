@@ -9,8 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Eye, EyeOff, File, Plus } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Eye, EyeOff, File, Plus, Trash2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { TableTypeCard, TableType } from '@/components/shops/table-type-card';
 import { TableTypeDialog } from '@/components/shops/table-type-dialog';
@@ -182,136 +182,147 @@ const CreateShop = () => {
           </div>
         </div>
         
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           {/* Basic Information */}
-          <section className="mb-10">
-            <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="name">Restaurant Name</Label>
-                <Input 
-                  id="name"
-                  placeholder="Enter restaurant name"
-                  {...form.register('name')}
-                  className="mt-1.5"
-                />
+          <Card className="rounded-xl shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-semibold">Basic Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="name">Restaurant Name</Label>
+                  <Input 
+                    id="name"
+                    placeholder="Enter restaurant name"
+                    {...form.register('name')}
+                    className="mt-1.5"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input 
+                    id="phone"
+                    placeholder="Enter phone number"
+                    {...form.register('phone')}
+                    className="mt-1.5"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input 
+                    id="email"
+                    placeholder="Enter email address"
+                    type="email"
+                    {...form.register('email')}
+                    className="mt-1.5"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="calendarEmail">Google Calendar Email</Label>
+                  <Input 
+                    id="calendarEmail"
+                    placeholder="Enter Google Calendar email"
+                    type="email"
+                    {...form.register('calendarEmail')}
+                    className="mt-1.5"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Label htmlFor="address">Address</Label>
+                  <Textarea 
+                    id="address"
+                    placeholder="Enter full address"
+                    {...form.register('address')}
+                    rows={3}
+                    className="mt-1.5"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input 
-                  id="phone"
-                  placeholder="Enter phone number"
-                  {...form.register('phone')}
-                  className="mt-1.5"
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email Address</Label>
-                <Input 
-                  id="email"
-                  placeholder="Enter email address"
-                  type="email"
-                  {...form.register('email')}
-                  className="mt-1.5"
-                />
-              </div>
-              <div>
-                <Label htmlFor="calendarEmail">Google Calendar Email</Label>
-                <Input 
-                  id="calendarEmail"
-                  placeholder="Enter Google Calendar email"
-                  type="email"
-                  {...form.register('calendarEmail')}
-                  className="mt-1.5"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label htmlFor="address">Address</Label>
-                <Textarea 
-                  id="address"
-                  placeholder="Enter full address"
-                  {...form.register('address')}
-                  rows={3}
-                  className="mt-1.5"
-                />
-              </div>
-            </div>
-          </section>
+            </CardContent>
+          </Card>
           
           {/* Login Credentials */}
-          <section className="mb-10">
-            <h2 className="text-xl font-semibold mb-4">Login Credentials for Shop Owner</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="username">Username</Label>
-                <Input 
-                  id="username"
-                  placeholder="Enter username"
-                  {...form.register('username')}
-                  className="mt-1.5"
-                />
-              </div>
-              <div> {/* Empty div for alignment */} </div>
-              <div className="relative">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative mt-1.5">
+          <Card className="rounded-xl shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-semibold">Login Credentials for Shop Owner</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="username">Username</Label>
                   <Input 
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter password"
-                    {...form.register('password')}
+                    id="username"
+                    placeholder="Enter username"
+                    {...form.register('username')}
+                    className="mt-1.5"
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
+                </div>
+                <div> {/* Empty div for alignment */} </div>
+                <div className="relative">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative mt-1.5">
+                    <Input 
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter password"
+                      {...form.register('password')}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+                <div className="relative">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className="relative mt-1.5">
+                    <Input 
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm password"
+                      {...form.register('confirmPassword')}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <div className="relative">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative mt-1.5">
-                  <Input 
-                    id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm password"
-                    {...form.register('confirmPassword')}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </section>
+            </CardContent>
+          </Card>
           
           {/* Operating Hours */}
-          <section className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Operating Hours</h2>
-              <div className="flex items-center gap-2">
-                <Label htmlFor="open24" className="cursor-pointer">Open 24/7</Label>
-                <Switch 
-                  id="open24" 
-                  checked={is24Hours} 
-                  onCheckedChange={setIs24Hours}
-                />
+          <Card className="rounded-xl shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-semibold">Operating Hours</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div></div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="open24" className="cursor-pointer">Open 24/7</Label>
+                  <Switch 
+                    id="open24" 
+                    checked={is24Hours} 
+                    onCheckedChange={setIs24Hours}
+                  />
+                </div>
               </div>
-            </div>
-            
-            {!is24Hours && (
-              <Card>
-                <CardContent className="p-4">
+              
+              {!is24Hours && (
+                <div>
                   <table className="w-full">
                     <tbody>
                       {openingHours.map((day, index) => (
@@ -349,90 +360,94 @@ const CreateShop = () => {
                       ))}
                     </tbody>
                   </table>
-                </CardContent>
-              </Card>
-            )}
-          </section>
+                </div>
+              )}
+            </CardContent>
+          </Card>
           
           {/* Seat Configuration */}
-          <section className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Seat Configuration</h2>
+          <Card className="rounded-xl shadow-sm">
+            <CardHeader className="pb-2 flex flex-row items-center justify-between">
+              <CardTitle className="text-lg font-semibold">Seat Configuration</CardTitle>
               <Button onClick={handleAddTableType} size="sm" variant="outline" className="gap-1">
                 <Plus className="h-4 w-4" /> Add Table Type
               </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {tableTypes.map((tableType) => (
-                <TableTypeCard 
-                  key={tableType.id}
-                  tableType={tableType}
-                  onEdit={handleEditTableType}
-                  onDelete={handleDeleteTableType}
-                />
-              ))}
-              {tableTypes.length === 0 && (
-                <p className="text-muted-foreground col-span-2 text-center py-10">
-                  No table types added yet. Click "Add Table Type" to create one.
-                </p>
-              )}
-            </div>
-            
-            <TableTypeDialog 
-              open={tableTypeModalOpen}
-              onOpenChange={setTableTypeModalOpen}
-              editingTableType={editingTableType}
-              onSubmit={handleTableTypeSubmit}
-            />
-          </section>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {tableTypes.map((tableType) => (
+                  <TableTypeCard 
+                    key={tableType.id}
+                    tableType={tableType}
+                    onEdit={handleEditTableType}
+                    onDelete={handleDeleteTableType}
+                  />
+                ))}
+                {tableTypes.length === 0 && (
+                  <p className="text-muted-foreground col-span-2 text-center py-10">
+                    No table types added yet. Click "Add Table Type" to create one.
+                  </p>
+                )}
+              </div>
+              
+              <TableTypeDialog 
+                open={tableTypeModalOpen}
+                onOpenChange={setTableTypeModalOpen}
+                editingTableType={editingTableType}
+                onSubmit={handleTableTypeSubmit}
+              />
+            </CardContent>
+          </Card>
           
           {/* Document Management */}
-          <section className="mb-10">
-            <h2 className="text-xl font-semibold mb-4">Document Management</h2>
-            
-            {!uploadedFile ? (
-              <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
-                <input 
-                  type="file"
-                  id="pdf-upload"
-                  accept="application/pdf"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-                <label 
-                  htmlFor="pdf-upload" 
-                  className="cursor-pointer flex flex-col items-center gap-2"
-                >
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                    <File className="h-6 w-6" />
-                  </div>
-                  <span className="font-medium">Upload PDF Document</span>
-                  <span className="text-sm text-muted-foreground">Click to browse or drop file here</span>
-                </label>
-              </div>
-            ) : (
-              <div className="border rounded-lg p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <File className="h-10 w-10 text-blue-500" />
-                  <div>
-                    <p className="font-medium">{uploadedFile.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {Math.round(uploadedFile.size / 1024)} KB
-                    </p>
-                  </div>
+          <Card className="rounded-xl shadow-sm">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-semibold">Document Management</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!uploadedFile ? (
+                <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
+                  <input 
+                    type="file"
+                    id="pdf-upload"
+                    accept="application/pdf"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <label 
+                    htmlFor="pdf-upload" 
+                    className="cursor-pointer flex flex-col items-center gap-2"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                      <File className="h-6 w-6" />
+                    </div>
+                    <span className="font-medium">Upload PDF Document</span>
+                    <span className="text-sm text-muted-foreground">Click to browse or drop file here</span>
+                  </label>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleRemoveFile}
-                  className="text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-          </section>
+              ) : (
+                <div className="border rounded-lg p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <File className="h-10 w-10 text-blue-500" />
+                    <div>
+                      <p className="font-medium">{uploadedFile.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {Math.round(uploadedFile.size / 1024)} KB
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleRemoveFile}
+                    className="text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
           
           {/* Action Buttons */}
           <div className="flex justify-end gap-4 mt-10 sticky bottom-0 bg-white p-4 border-t -mx-8 px-8">
