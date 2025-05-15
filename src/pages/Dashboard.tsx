@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
   Store, 
   CalendarDays, 
@@ -11,7 +11,9 @@ import {
   Activity,
   ArrowRight,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  ShieldAlert,
+  Bell
 } from 'lucide-react';
 import { 
   Table,
@@ -91,6 +93,42 @@ const Dashboard = () => {
     },
   ];
 
+  // Mock data for system alerts
+  const systemAlerts = [
+    {
+      id: 1,
+      timestamp: '2 min ago',
+      ipAddress: '192.168.1.45',
+      shop: 'Sakura Sushi Tokyo',
+      reason: 'Excessive token usage',
+      status: 'New',
+    },
+    {
+      id: 2,
+      timestamp: '15 min ago',
+      ipAddress: '192.168.3.78',
+      shop: 'Milano Pasta House',
+      reason: 'Suspicious input pattern',
+      status: 'New',
+    },
+    {
+      id: 3,
+      timestamp: '1 hour ago',
+      ipAddress: '192.168.5.12',
+      shop: 'Paris Bistro',
+      reason: 'Out-of-context AI conversation',
+      status: 'Reviewed',
+    },
+    {
+      id: 4,
+      timestamp: '3 hours ago',
+      ipAddress: '192.168.9.33',
+      shop: 'New York Steakhouse',
+      reason: 'Multiple failed login attempts',
+      status: 'Reviewed',
+    },
+  ];
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -166,6 +204,67 @@ const Dashboard = () => {
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm">
                       Bookings
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </Card>
+
+      {/* System Alerts Section */}
+      <Card className="p-6 bg-muted/10 mt-8">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-semibold flex items-center">
+              <Bell className="h-5 w-5 mr-2 text-red-500" />
+              System Alerts
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Monitor system notifications and warnings.
+            </p>
+          </div>
+        </div>
+        
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Timestamp</TableHead>
+                <TableHead>IP Address</TableHead>
+                <TableHead>Shop</TableHead>
+                <TableHead>Reason</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {systemAlerts.map((alert) => (
+                <TableRow key={alert.id}>
+                  <TableCell className="text-sm">{alert.timestamp}</TableCell>
+                  <TableCell className="font-mono text-sm">{alert.ipAddress}</TableCell>
+                  <TableCell>{alert.shop}</TableCell>
+                  <TableCell className="max-w-xs">{alert.reason}</TableCell>
+                  <TableCell>
+                    <Badge 
+                      variant={alert.status === 'New' ? 'default' : 'outline'} 
+                      className={alert.status === 'New' 
+                        ? 'bg-red-500 hover:bg-red-600' 
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }
+                    >
+                      {alert.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      className="w-full flex items-center justify-center"
+                    >
+                      <ShieldAlert className="h-4 w-4 mr-1" />
+                      Block
                     </Button>
                   </TableCell>
                 </TableRow>
