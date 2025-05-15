@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -119,8 +118,7 @@ const Bookings = () => {
   };
   
   const handleViewConversation = (id: string) => {
-    console.log("View conversation for booking ID:", id);
-    // Implementation for viewing conversation would go here
+    navigate(`/bookings/conversation/${id}`);
   };
   
   // Helper function for status badge styling
