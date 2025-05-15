@@ -73,7 +73,8 @@ const CreateShop = () => {
     );
   };
   
-  const handleAddTableType = () => {
+  const handleAddTableType = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setEditingTableType(null);
     setTableTypeModalOpen(true);
   };
@@ -368,7 +369,13 @@ const CreateShop = () => {
           <Card className="rounded-xl shadow-sm">
             <CardHeader className="pb-2 flex flex-row items-center justify-between">
               <CardTitle className="text-lg font-semibold">Seat Configuration</CardTitle>
-              <Button onClick={handleAddTableType} size="sm" variant="outline" className="gap-1">
+              <Button 
+                onClick={handleAddTableType} 
+                size="sm" 
+                variant="outline" 
+                className="gap-1"
+                type="button"
+              >
                 <Plus className="h-4 w-4" /> Add Table Type
               </Button>
             </CardHeader>
