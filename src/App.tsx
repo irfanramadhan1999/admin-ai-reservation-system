@@ -9,6 +9,7 @@ import Shops from "./pages/Shops";
 import CreateShop from "./pages/CreateShop";
 import Bookings from "./pages/Bookings";
 import ViewConversation from "./pages/ViewConversation";
+import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/shops/edit/:id" element={<CreateShop />} />
           <Route path="/bookings" element={<Bookings />} />
           <Route path="/bookings/conversation/:id" element={<ViewConversation />} />
+          <Route path="/account-settings" element={<AccountSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
