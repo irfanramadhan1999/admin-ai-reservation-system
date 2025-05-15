@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -66,6 +66,7 @@ const shopData = [
 
 const Shops = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
   
   // Filtered shops based on search term
   const filteredShops = shopData.filter(shop => 
@@ -102,10 +103,7 @@ const Shops = () => {
   };
   
   const handleCreateShop = () => {
-    toast({
-      title: "Create Shop",
-      description: "Creating a new shop"
-    });
+    navigate('/shops/create');
   };
   
   return (
