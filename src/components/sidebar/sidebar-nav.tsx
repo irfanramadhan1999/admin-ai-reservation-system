@@ -1,14 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { 
-  LayoutDashboard, 
-  CalendarDays, 
-  Users, 
-  Settings,
-  Phone,
-  Store
-} from 'lucide-react';
+import { Store } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
@@ -20,40 +13,10 @@ export function SidebarNav({ className }: SidebarNavProps) {
   
   const navItems = [
     {
-      title: "Dashboard",
-      icon: LayoutDashboard,
-      href: "/",
-      isActive: location.pathname === "/"
-    },
-    {
       title: "Shops",
       icon: Store,
       href: "/shops",
       isActive: location.pathname === "/shops" || location.pathname === "/shops/create"
-    },
-    {
-      title: "Bookings",
-      icon: CalendarDays,
-      href: "/bookings",
-      isActive: location.pathname === "/bookings"
-    },
-    {
-      title: "Customers",
-      icon: Users,
-      href: "/customers",
-      isActive: location.pathname === "/customers"
-    },
-    {
-      title: "Call History",
-      icon: Phone,
-      href: "/call-history",
-      isActive: location.pathname === "/call-history"
-    },
-    {
-      title: "Settings",
-      icon: Settings,
-      href: "/settings",
-      isActive: location.pathname === "/settings"
     }
   ];
 
