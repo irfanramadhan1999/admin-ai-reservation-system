@@ -9,52 +9,54 @@ import {
   Phone,
   Store
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
   className?: string;
 }
 
-const navItems = [
-  {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/",
-    isActive: window.location.pathname === "/"
-  },
-  {
-    title: "Shops",
-    icon: Store,
-    href: "/shops",
-    isActive: window.location.pathname === "/shops"
-  },
-  {
-    title: "Bookings",
-    icon: CalendarDays,
-    href: "/bookings",
-    isActive: false
-  },
-  {
-    title: "Customers",
-    icon: Users,
-    href: "/customers",
-    isActive: false
-  },
-  {
-    title: "Call History",
-    icon: Phone,
-    href: "/call-history",
-    isActive: false
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    href: "/settings",
-    isActive: false
-  }
-];
-
 export function SidebarNav({ className }: SidebarNavProps) {
+  const location = useLocation();
+  
+  const navItems = [
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/",
+      isActive: location.pathname === "/"
+    },
+    {
+      title: "Shops",
+      icon: Store,
+      href: "/shops",
+      isActive: location.pathname === "/shops" || location.pathname === "/shops/create"
+    },
+    {
+      title: "Bookings",
+      icon: CalendarDays,
+      href: "/bookings",
+      isActive: location.pathname === "/bookings"
+    },
+    {
+      title: "Customers",
+      icon: Users,
+      href: "/customers",
+      isActive: location.pathname === "/customers"
+    },
+    {
+      title: "Call History",
+      icon: Phone,
+      href: "/call-history",
+      isActive: location.pathname === "/call-history"
+    },
+    {
+      title: "Settings",
+      icon: Settings,
+      href: "/settings",
+      isActive: location.pathname === "/settings"
+    }
+  ];
+
   return (
     <nav className={cn("flex flex-col space-y-1", className)}>
       {navItems.map((item) => (

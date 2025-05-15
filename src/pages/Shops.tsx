@@ -96,10 +96,7 @@ const Shops = () => {
   };
   
   const handleViewBookings = (id: string) => {
-    toast({
-      title: "View Bookings",
-      description: `Viewing bookings for shop ID: ${id}`
-    });
+    navigate('/bookings');
   };
   
   const handleCreateShop = () => {
