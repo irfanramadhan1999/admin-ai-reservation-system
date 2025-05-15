@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store } from 'lucide-react';
+import { Store, LayoutDashboard } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
@@ -12,6 +12,12 @@ export function SidebarNav({ className }: SidebarNavProps) {
   const location = useLocation();
   
   const navItems = [
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/",
+      isActive: location.pathname === "/"
+    },
     {
       title: "Shops",
       icon: Store,
