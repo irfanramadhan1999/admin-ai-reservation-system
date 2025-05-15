@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -199,8 +198,8 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Recent Shops Section */}
-      <Card className="p-6 bg-muted/10">
+      {/* Recent Shops Section - Updated with white background */}
+      <Card className="p-6 bg-white mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Recent Shops</h2>
           <Link 
@@ -246,8 +245,8 @@ const Dashboard = () => {
         </div>
       </Card>
 
-      {/* System Alerts Section */}
-      <Card className="p-6 bg-muted/10 mt-8">
+      {/* System Alerts Section - Updated with white background */}
+      <Card className="p-6 bg-white">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-lg font-semibold">System Alerts</h2>
