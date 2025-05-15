@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,6 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   ShieldAlert,
-  Bell
 } from 'lucide-react';
 import { 
   Table,
@@ -23,8 +23,23 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/components/ui/use-toast";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedIP, setSelectedIP] = useState("");
+  
   // Mock data for KPI cards
   const kpiData = [
     {
@@ -129,6 +144,23 @@ const Dashboard = () => {
     },
   ];
 
+  const handleViewBookings = (shopId: number) => {
+    navigate('/bookings');
+  };
+
+  const handleOpenBlockDialog = (ipAddress: string) => {
+    setSelectedIP(ipAddress);
+    setOpenDialog(true);
+  };
+
+  const handleConfirmBlock = () => {
+    toast({
+      title: "IP Blocked",
+      description: `${selectedIP} has been blocked successfully.`,
+    });
+    setOpenDialog(false);
+  };
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -152,9 +184,6 @@ const Dashboard = () => {
               <div className={`p-2 rounded-full ${kpi.iconColor}`}>
                 <kpi.icon className="h-5 w-5 text-white" />
               </div>
-              <Button variant="ghost" size="sm" className="h-7 absolute top-2 right-2">
-                Review
-              </Button>
             </div>
             <div className="space-y-1">
               <h3 className="text-sm font-medium text-muted-foreground">{kpi.title}</h3>
@@ -202,8 +231,12 @@ const Dashboard = () => {
                   <TableCell className="text-center">{shop.tables}</TableCell>
                   <TableCell className="text-center">{shop.bookings}</TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm">
-                      Bookings
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleViewBookings(shop.id)}
+                    >
+                      View Booking
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -217,13 +250,7 @@ const Dashboard = () => {
       <Card className="p-6 bg-muted/10 mt-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-semibold flex items-center">
-              <Bell className="h-5 w-5 mr-2 text-red-500" />
-              System Alerts
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Monitor system notifications and warnings.
-            </p>
+            <h2 className="text-lg font-semibold">System Alerts</h2>
           </div>
         </div>
         
@@ -262,6 +289,7 @@ const Dashboard = () => {
                       variant="destructive" 
                       size="sm" 
                       className="w-full flex items-center justify-center"
+                      onClick={() => handleOpenBlockDialog(alert.ipAddress)}
                     >
                       <ShieldAlert className="h-4 w-4 mr-1" />
                       Block
@@ -273,6 +301,24 @@ const Dashboard = () => {
           </Table>
         </div>
       </Card>
+
+      {/* Block IP Confirmation Dialog */}
+      <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Block IP Address</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to block this IP address?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmBlock} className="bg-destructive text-destructive-foreground">
+              Confirm Block
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DashboardLayout>
   );
 };
