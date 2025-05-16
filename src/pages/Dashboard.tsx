@@ -1,9 +1,9 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
   Store, 
   CalendarDays, 
@@ -12,7 +12,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   ArrowDownRight,
-  ShieldAlert,
 } from 'lucide-react';
 import { 
   Table,
@@ -22,22 +21,9 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { toast } from "@/components/ui/use-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedIP, setSelectedIP] = useState("");
   
   // Mock data for KPI cards
   const kpiData = [
@@ -107,57 +93,8 @@ const Dashboard = () => {
     },
   ];
 
-  // Mock data for system alerts - updated to always use "Excessive token usage"
-  const systemAlerts = [
-    {
-      id: 1,
-      timestamp: '2 min ago',
-      ipAddress: '192.168.1.45',
-      shop: 'Sakura Sushi Tokyo',
-      reason: 'Excessive token usage',
-      status: 'New',
-    },
-    {
-      id: 2,
-      timestamp: '15 min ago',
-      ipAddress: '192.168.3.78',
-      shop: 'Milano Pasta House',
-      reason: 'Excessive token usage',
-      status: 'New',
-    },
-    {
-      id: 3,
-      timestamp: '1 hour ago',
-      ipAddress: '192.168.5.12',
-      shop: 'Paris Bistro',
-      reason: 'Excessive token usage',
-      status: 'Reviewed',
-    },
-    {
-      id: 4,
-      timestamp: '3 hours ago',
-      ipAddress: '192.168.9.33',
-      shop: 'New York Steakhouse',
-      reason: 'Excessive token usage',
-      status: 'Reviewed',
-    },
-  ];
-
   const handleViewBookings = (shopId: number) => {
     navigate('/bookings');
-  };
-
-  const handleOpenBlockDialog = (ipAddress: string) => {
-    setSelectedIP(ipAddress);
-    setOpenDialog(true);
-  };
-
-  const handleConfirmBlock = () => {
-    toast({
-      title: "IP Blocked",
-      description: `${selectedIP} has been blocked successfully.`,
-    });
-    setOpenDialog(false);
   };
 
   return (
@@ -199,7 +136,7 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Shops Section - Updated with white background */}
-      <Card className="p-6 bg-white mb-8">
+      <Card className="p-6 bg-white">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Recent Shops</h2>
           <Link 
@@ -244,80 +181,6 @@ const Dashboard = () => {
           </Table>
         </div>
       </Card>
-
-      {/* System Alerts Section - Updated with white background */}
-      <Card className="p-6 bg-white">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-semibold">System Alerts</h2>
-          </div>
-        </div>
-        
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Timestamp</TableHead>
-                <TableHead>IP Address</TableHead>
-                <TableHead>Shop</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {systemAlerts.map((alert) => (
-                <TableRow key={alert.id}>
-                  <TableCell className="text-sm">{alert.timestamp}</TableCell>
-                  <TableCell className="font-mono text-sm">{alert.ipAddress}</TableCell>
-                  <TableCell>{alert.shop}</TableCell>
-                  <TableCell className="max-w-xs">{alert.reason}</TableCell>
-                  <TableCell>
-                    <Badge 
-                      variant={alert.status === 'New' ? 'default' : 'outline'} 
-                      className={alert.status === 'New' 
-                        ? 'bg-red-500 hover:bg-red-600' 
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }
-                    >
-                      {alert.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      className="w-full flex items-center justify-center"
-                      onClick={() => handleOpenBlockDialog(alert.ipAddress)}
-                    >
-                      <ShieldAlert className="h-4 w-4 mr-1" />
-                      Block
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
-
-      {/* Block IP Confirmation Dialog */}
-      <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Block IP Address</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to block this IP address?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmBlock} className="bg-destructive text-destructive-foreground">
-              Confirm Block
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </DashboardLayout>
   );
 };

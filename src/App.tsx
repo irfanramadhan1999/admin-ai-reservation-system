@@ -11,6 +11,8 @@ import Bookings from "./pages/Bookings";
 import ViewConversation from "./pages/ViewConversation";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
+import SystemAlerts from "./pages/SystemAlerts";
+import Login from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="/shops" element={<Shops />} />
           <Route path="/shops/create" element={<CreateShop />} />
@@ -28,6 +31,7 @@ const App = () => (
           <Route path="/bookings" element={<Bookings />} />
           <Route path="/bookings/conversation/:id" element={<ViewConversation />} />
           <Route path="/account-settings" element={<AccountSettings />} />
+          <Route path="/system-alerts" element={<SystemAlerts />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

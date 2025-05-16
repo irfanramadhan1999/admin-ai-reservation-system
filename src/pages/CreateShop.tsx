@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -9,10 +10,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Eye, EyeOff, File, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, File, Plus, Trash2, User } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { TableTypeCard, TableType } from '@/components/shops/table-type-card';
 import { TableTypeDialog } from '@/components/shops/table-type-dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // Days of the week
 const daysOfWeek = [
@@ -34,7 +36,9 @@ const CreateShop = () => {
       day,
       isOpen: true,
       openTime: '09:00',
-      closeTime: '22:00'
+      closeTime: '22:00',
+      lastOrder: '21:30',
+      hasLastOrder: true
     }))
   );
   const [showPassword, setShowPassword] = useState(false);
@@ -42,7 +46,9 @@ const CreateShop = () => {
   const [tableTypes, setTableTypes] = useState<TableType[]>(initialTableTypes);
   const [tableTypeModalOpen, setTableTypeModalOpen] = useState(false);
   const [editingTableType, setEditingTableType] = useState<TableType | null>(null);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [knowledgeText, setKnowledgeText] = useState('');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   
   const form = useForm({
     defaultValues: {
@@ -50,8 +56,6 @@ const CreateShop = () => {
       phone: '',
       email: '',
       address: '',
-      calendarEmail: '',
-      username: '',
       password: '',
       confirmPassword: ''
     }
@@ -65,10 +69,18 @@ const CreateShop = () => {
     );
   };
   
-  const handleTimeChange = (index: number, field: 'openTime' | 'closeTime', value: string) => {
+  const handleTimeChange = (index: number, field: 'openTime' | 'closeTime' | 'lastOrder', value: string) => {
     setOpeningHours(prev => 
       prev.map((item, i) => 
         i === index ? { ...item, [field]: value } : item
+      )
+    );
+  };
+  
+  const handleLastOrderToggle = (index: number) => {
+    setOpeningHours(prev => 
+      prev.map((item, i) => 
+        i === index ? { ...item, hasLastOrder: !item.hasLastOrder } : item
       )
     );
   };
@@ -121,7 +133,7 @@ const CreateShop = () => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === 'application/pdf') {
-      setUploadedFile(file);
+      setUploadedFiles(prev => [...prev, file]);
       toast({
         title: "File Uploaded",
         description: `${file.name} has been uploaded`
@@ -135,12 +147,34 @@ const CreateShop = () => {
     }
   };
   
-  const handleRemoveFile = () => {
-    setUploadedFile(null);
+  const handleRemoveFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
     toast({
       title: "File Removed",
       description: "The document has been removed"
     });
+  };
+
+  const handleProfileImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      
+      toast({
+        title: "Profile Image Uploaded",
+        description: "Profile image has been updated"
+      });
+    } else {
+      toast({
+        title: "Upload Failed",
+        description: "Please select a valid image file",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleSubmit = (data: any) => {
@@ -150,7 +184,9 @@ const CreateShop = () => {
       is24Hours,
       openingHours: is24Hours ? [] : openingHours,
       tableTypes,
-      document: uploadedFile
+      documents: uploadedFiles,
+      knowledgeText,
+      profileImage
     });
     
     toast({
@@ -189,114 +225,110 @@ const CreateShop = () => {
               <CardTitle className="text-lg font-semibold">Basic Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="name">Restaurant Name</Label>
-                  <Input 
-                    id="name"
-                    placeholder="Enter restaurant name"
-                    {...form.register('name')}
-                    className="mt-1.5"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input 
-                    id="phone"
-                    placeholder="Enter phone number"
-                    {...form.register('phone')}
-                    className="mt-1.5"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input 
-                    id="email"
-                    placeholder="Enter email address"
-                    type="email"
-                    {...form.register('email')}
-                    className="mt-1.5"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="calendarEmail">Google Calendar Email</Label>
-                  <Input 
-                    id="calendarEmail"
-                    placeholder="Enter Google Calendar email"
-                    type="email"
-                    {...form.register('calendarEmail')}
-                    className="mt-1.5"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Textarea 
-                    id="address"
-                    placeholder="Enter full address"
-                    {...form.register('address')}
-                    rows={3}
-                    className="mt-1.5"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Login Credentials */}
-          <Card className="rounded-xl shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold">Login Credentials for Shop Owner</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="username">Username</Label>
-                  <Input 
-                    id="username"
-                    placeholder="Enter username"
-                    {...form.register('username')}
-                    className="mt-1.5"
-                  />
-                </div>
-                <div> {/* Empty div for alignment */} </div>
-                <div className="relative">
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative mt-1.5">
-                    <Input 
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter password"
-                      {...form.register('password')}
+              <div className="flex gap-6 mb-6">
+                <div className="flex flex-col items-center">
+                  <div className="mb-2">
+                    <Avatar className="w-24 h-24">
+                      <AvatarImage src={profileImage || ""} />
+                      <AvatarFallback className="bg-muted">
+                        <User className="h-12 w-12 text-muted-foreground" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div>
+                    <input
+                      type="file"
+                      id="profile-image"
+                      accept="image/*"
+                      onChange={handleProfileImageUpload}
+                      className="hidden"
                     />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
+                    <label htmlFor="profile-image">
+                      <Button type="button" variant="outline" size="sm" className="cursor-pointer">
+                        Upload Photo
+                      </Button>
+                    </label>
                   </div>
                 </div>
-                <div className="relative">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <div className="relative mt-1.5">
+
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="name">Restaurant Name</Label>
                     <Input 
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm password"
-                      {...form.register('confirmPassword')}
+                      id="name"
+                      placeholder="Enter restaurant name"
+                      {...form.register('name')}
+                      className="mt-1.5"
                     />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input 
+                      id="phone"
+                      placeholder="Enter phone number"
+                      {...form.register('phone')}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input 
+                      id="email"
+                      placeholder="Enter email address"
+                      type="email"
+                      {...form.register('email')}
+                      className="mt-1.5"
+                    />
+                  </div>
+                  <div className="relative">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative mt-1.5">
+                      <Input 
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter password"
+                        {...form.register('password')}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <div className="relative mt-1.5">
+                      <Input 
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Confirm password"
+                        {...form.register('confirmPassword')}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Textarea 
+                      id="address"
+                      placeholder="Enter full address"
+                      {...form.register('address')}
+                      rows={3}
+                      className="mt-1.5"
+                    />
                   </div>
                 </div>
               </div>
@@ -324,6 +356,14 @@ const CreateShop = () => {
               {!is24Hours && (
                 <div>
                   <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left py-2 font-medium">Day</th>
+                        <th className="text-left py-2 font-medium">Open</th>
+                        <th className="text-left py-2 font-medium">Hours</th>
+                        <th className="text-left py-2 font-medium">Last Order</th>
+                      </tr>
+                    </thead>
                     <tbody>
                       {openingHours.map((day, index) => (
                         <tr key={day.day} className="border-b last:border-b-0">
@@ -338,13 +378,16 @@ const CreateShop = () => {
                             </div>
                           </td>
                           <td className="py-3">
+                            {day.isOpen ? "Yes" : "Closed"}
+                          </td>
+                          <td className="py-3">
                             <div className="flex items-center gap-3">
                               <Input 
                                 type="time"
                                 value={day.openTime}
                                 onChange={(e) => handleTimeChange(index, 'openTime', e.target.value)}
                                 disabled={!day.isOpen}
-                                className="w-[150px]"
+                                className="w-[120px]"
                               />
                               <span>to</span>
                               <Input 
@@ -352,7 +395,24 @@ const CreateShop = () => {
                                 value={day.closeTime}
                                 onChange={(e) => handleTimeChange(index, 'closeTime', e.target.value)}
                                 disabled={!day.isOpen}
-                                className="w-[150px]"
+                                className="w-[120px]"
+                              />
+                            </div>
+                          </td>
+                          <td className="py-3">
+                            <div className="flex items-center gap-3">
+                              <Checkbox 
+                                id={`lastOrder-${index}`}
+                                checked={day.hasLastOrder}
+                                onCheckedChange={() => handleLastOrderToggle(index)}
+                                disabled={!day.isOpen}
+                              />
+                              <Input 
+                                type="time"
+                                value={day.lastOrder}
+                                onChange={(e) => handleTimeChange(index, 'lastOrder', e.target.value)}
+                                disabled={!day.isOpen || !day.hasLastOrder}
+                                className="w-[120px]"
                               />
                             </div>
                           </td>
@@ -405,53 +465,90 @@ const CreateShop = () => {
             </CardContent>
           </Card>
           
-          {/* Document Management */}
+          {/* Knowledge Management */}
           <Card className="rounded-xl shadow-sm">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold">Document Management</CardTitle>
+              <CardTitle className="text-lg font-semibold">Knowledge Management</CardTitle>
             </CardHeader>
             <CardContent>
-              {!uploadedFile ? (
-                <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
-                  <input 
-                    type="file"
-                    id="pdf-upload"
-                    accept="application/pdf"
-                    onChange={handleFileUpload}
-                    className="hidden"
+              <div className="space-y-6">
+                <div>
+                  <Label htmlFor="knowledge-text">Knowledge Base Text</Label>
+                  <Textarea
+                    id="knowledge-text"
+                    placeholder="Enter knowledge information about the restaurant that the AI can use..."
+                    value={knowledgeText}
+                    onChange={(e) => setKnowledgeText(e.target.value)}
+                    rows={5}
+                    className="mt-2"
                   />
-                  <label 
-                    htmlFor="pdf-upload" 
-                    className="cursor-pointer flex flex-col items-center gap-2"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                      <File className="h-6 w-6" />
-                    </div>
-                    <span className="font-medium">Upload PDF Document</span>
-                    <span className="text-sm text-muted-foreground">Click to browse or drop file here</span>
-                  </label>
                 </div>
-              ) : (
-                <div className="border rounded-lg p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <File className="h-10 w-10 text-blue-500" />
-                    <div>
-                      <p className="font-medium">{uploadedFile.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {Math.round(uploadedFile.size / 1024)} KB
-                      </p>
+
+                <div className="border-t pt-6">
+                  <Label className="mb-2 block">Document Upload</Label>
+                  {uploadedFiles.length === 0 ? (
+                    <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
+                      <input 
+                        type="file"
+                        id="pdf-upload"
+                        accept="application/pdf"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                      <label 
+                        htmlFor="pdf-upload" 
+                        className="cursor-pointer flex flex-col items-center gap-2"
+                      >
+                        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                          <File className="h-6 w-6" />
+                        </div>
+                        <span className="font-medium">Upload PDF Document</span>
+                        <span className="text-sm text-muted-foreground">Click to browse or drop file here</span>
+                      </label>
                     </div>
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={handleRemoveFile}
-                    className="text-destructive hover:bg-destructive/10"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  ) : (
+                    <div className="space-y-2">
+                      {uploadedFiles.map((file, index) => (
+                        <div key={index} className="border rounded-lg p-4 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <File className="h-10 w-10 text-blue-500" />
+                            <div>
+                              <p className="font-medium">{file.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {Math.round(file.size / 1024)} KB
+                              </p>
+                            </div>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleRemoveFile(index)}
+                            className="text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+
+                      <div className="pt-4">
+                        <input 
+                          type="file"
+                          id="pdf-upload"
+                          accept="application/pdf"
+                          onChange={handleFileUpload}
+                          className="hidden"
+                        />
+                        <label htmlFor="pdf-upload">
+                          <Button type="button" variant="outline" size="sm">
+                            <Plus className="h-4 w-4 mr-1" />
+                            Add More Documents
+                          </Button>
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
           

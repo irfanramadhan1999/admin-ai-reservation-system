@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User } from 'lucide-react';
+import { Store, LayoutDashboard, User, ShieldAlert } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
@@ -23,6 +23,12 @@ export function SidebarNav({ className }: SidebarNavProps) {
       icon: Store,
       href: "/shops",
       isActive: location.pathname === "/shops" || location.pathname === "/shops/create" || location.pathname.startsWith("/shops/edit/")
+    },
+    {
+      title: "System Alerts",
+      icon: ShieldAlert,
+      href: "/system-alerts",
+      isActive: location.pathname === "/system-alerts"
     },
     {
       title: "Account Settings",

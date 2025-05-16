@@ -22,46 +22,56 @@ const shopData = [
     id: "1",
     name: "The Olive Garden",
     contact: "+1 (555) 123-4567",
-    address: "1234 Main St, New York, NY 10001",
-    googleCalendar: true,
-    seatTypes: 3,
-    totalSeats: 42
+    tokenUsage: {
+      used: 1250,
+      limit: 5000
+    },
+    totalBookings: 42,
+    googleCalendar: true
   },
   {
     id: "2",
     name: "Sushi Heaven",
     contact: "+1 (555) 987-6543",
-    address: "789 Oak Ave, San Francisco, CA 94102",
-    googleCalendar: true,
-    seatTypes: 2,
-    totalSeats: 28
+    tokenUsage: {
+      used: 3100,
+      limit: 5000
+    },
+    totalBookings: 28,
+    googleCalendar: true
   },
   {
     id: "3",
     name: "Pasta Paradise",
     contact: "+1 (555) 456-7890",
-    address: "567 Pine St, Chicago, IL 60611",
-    googleCalendar: false,
-    seatTypes: 4,
-    totalSeats: 36
+    tokenUsage: {
+      used: 2400,
+      limit: 5000
+    },
+    totalBookings: 36,
+    googleCalendar: false
   },
   {
     id: "4",
     name: "Burger Bliss",
     contact: "+1 (555) 321-6547",
-    address: "890 Maple Rd, Miami, FL 33101",
-    googleCalendar: false,
-    seatTypes: 2,
-    totalSeats: 24
+    tokenUsage: {
+      used: 4200,
+      limit: 5000
+    },
+    totalBookings: 24,
+    googleCalendar: false
   },
   {
     id: "5",
     name: "Thai Delight",
     contact: "+1 (555) 789-0123",
-    address: "432 Cedar Ln, Seattle, WA 98101",
-    googleCalendar: true,
-    seatTypes: 3,
-    totalSeats: 32
+    tokenUsage: {
+      used: 1900,
+      limit: 5000
+    },
+    totalBookings: 32,
+    googleCalendar: true
   }
 ];
 
@@ -72,11 +82,10 @@ const Shops = () => {
   // Filtered shops based on search term
   const filteredShops = shopData.filter(shop => 
     shop.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    shop.address.toLowerCase().includes(searchTerm.toLowerCase())
+    shop.contact.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   const handleEditShop = (id: string) => {
-    // Navigate to edit shop page with the shop ID
     navigate(`/shops/edit/${id}`);
   };
   
@@ -114,7 +123,7 @@ const Shops = () => {
         {/* Search Section */}
         <div className="w-full">
           <Input
-            placeholder="Search by shop name or address"
+            placeholder="Search by shop name or contact"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="max-w-full"
@@ -126,22 +135,34 @@ const Shops = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Shop Name</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Address</TableHead>
+                <TableHead>Shop Information</TableHead>
+                <TableHead>Token Usage</TableHead>
+                <TableHead>Total Bookings</TableHead>
                 <TableHead>Google Calendar</TableHead>
-                <TableHead>Seat Summary</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredShops.map((shop) => (
                 <TableRow key={shop.id}>
-                  <TableCell className="font-medium">{shop.name}</TableCell>
-                  <TableCell>{shop.contact}</TableCell>
-                  <TableCell className="max-w-[250px] truncate" title={shop.address}>
-                    {shop.address}
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{shop.name}</span>
+                      <span className="text-sm text-muted-foreground">{shop.contact}</span>
+                    </div>
                   </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{shop.tokenUsage.used.toLocaleString()} / {shop.tokenUsage.limit.toLocaleString()}</span>
+                      <div className="w-full bg-gray-200 h-2 rounded-full mt-1">
+                        <div 
+                          className={`h-2 rounded-full ${shop.tokenUsage.used / shop.tokenUsage.limit > 0.8 ? 'bg-red-500' : 'bg-green-500'}`}
+                          style={{ width: `${(shop.tokenUsage.used / shop.tokenUsage.limit) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>{shop.totalBookings}</TableCell>
                   <TableCell>
                     {shop.googleCalendar ? (
                       <Badge variant="default" className="bg-emerald-400 hover:bg-emerald-500">Connected</Badge>
@@ -149,7 +170,6 @@ const Shops = () => {
                       <Badge variant="outline" className="text-muted-foreground">Not Connected</Badge>
                     )}
                   </TableCell>
-                  <TableCell>{shop.seatTypes} types / {shop.totalSeats} seats</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Button
