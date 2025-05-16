@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -118,7 +119,7 @@ const Login = () => {
           <p className="text-gray-500">Admin Dashboard Login</p>
         </div>
         
-        <Card>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Login</CardTitle>
             <CardDescription>
@@ -132,13 +133,74 @@ const Login = () => {
                 <TabsTrigger value="password">Login with Password</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="code">
-                {!codeSent ? (
-                  <form onSubmit={handleSendCode} className="space-y-4 mt-4">
+              <div className="mt-4 h-[230px]"> {/* Fixed height container */}
+                <TabsContent value="code" className="mt-0 h-full">
+                  {!codeSent ? (
+                    <form onSubmit={handleSendCode} className="space-y-4 h-full flex flex-col">
+                      <div className="space-y-2">
+                        <Label htmlFor="email-code">Email</Label>
+                        <Input 
+                          id="email-code" 
+                          type="email" 
+                          placeholder="your@email.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <Button 
+                        type="submit" 
+                        className="w-full bg-blue-500 hover:bg-blue-600 mt-auto"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Sending Code..." : "Send Code"}
+                      </Button>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleCodeLogin} className="space-y-4 h-full flex flex-col">
+                      <div className="space-y-2">
+                        <Label htmlFor="verification-code">Verification Code</Label>
+                        <InputOTP maxLength={6} value={code} onChange={setCode}>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Code sent to {email}
+                        </p>
+                      </div>
+                      <div className="flex flex-col space-y-2 mt-auto">
+                        <Button 
+                          type="submit" 
+                          className="w-full bg-blue-500 hover:bg-blue-600"
+                          disabled={isLoading}
+                        >
+                          {isLoading ? "Verifying..." : "Sign In"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="link"
+                          className="w-full"
+                          onClick={() => setCodeSent(false)}
+                        >
+                          Use a different email
+                        </Button>
+                      </div>
+                    </form>
+                  )}
+                </TabsContent>
+                
+                <TabsContent value="password" className="mt-0 h-full">
+                  <form onSubmit={handlePasswordLogin} className="space-y-4 h-full flex flex-col">
                     <div className="space-y-2">
-                      <Label htmlFor="email-code">Email</Label>
+                      <Label htmlFor="email-password">Email</Label>
                       <Input 
-                        id="email-code" 
+                        id="email-password" 
                         type="email" 
                         placeholder="your@email.com"
                         value={email}
@@ -146,91 +208,37 @@ const Login = () => {
                         required
                       />
                     </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-blue-500 hover:bg-blue-600"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? "Sending Code..." : "Send Code"}
-                    </Button>
-                  </form>
-                ) : (
-                  <form onSubmit={handleCodeLogin} className="space-y-4 mt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="verification-code">Verification Code</Label>
+                      <div className="flex justify-between">
+                        <Label htmlFor="password">Password</Label>
+                        <Button
+                          type="button"
+                          variant="link"
+                          className="px-0 text-sm text-blue-500"
+                          onClick={handleForgotPassword}
+                        >
+                          Forgot password?
+                        </Button>
+                      </div>
                       <Input 
-                        id="verification-code" 
-                        placeholder="Enter 6-digit code"
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
+                        id="password" 
+                        type="password" 
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                       />
-                      <p className="text-sm text-muted-foreground">
-                        Code sent to {email}
-                      </p>
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full bg-blue-500 hover:bg-blue-600"
+                      className="w-full bg-blue-500 hover:bg-blue-600 mt-auto"
                       disabled={isLoading}
                     >
-                      {isLoading ? "Verifying..." : "Sign In"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="link"
-                      className="w-full"
-                      onClick={() => setCodeSent(false)}
-                    >
-                      Use a different email
+                      {isLoading ? "Signing In..." : "Sign In"}
                     </Button>
                   </form>
-                )}
-              </TabsContent>
-              
-              <TabsContent value="password">
-                <form onSubmit={handlePasswordLogin} className="space-y-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email-password">Email</Label>
-                    <Input 
-                      id="email-password" 
-                      type="email" 
-                      placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <Label htmlFor="password">Password</Label>
-                      <Button
-                        type="button"
-                        variant="link"
-                        className="px-0 text-sm text-blue-500"
-                        onClick={handleForgotPassword}
-                      >
-                        Forgot password?
-                      </Button>
-                    </div>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-blue-500 hover:bg-blue-600"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Signing In..." : "Sign In"}
-                  </Button>
-                </form>
-              </TabsContent>
+                </TabsContent>
+              </div>
             </Tabs>
           </CardContent>
           <CardFooter className="justify-center border-t p-4">

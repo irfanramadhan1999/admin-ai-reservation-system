@@ -9,13 +9,25 @@ import { ShieldAlert } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "@/components/ui/use-toast";
 
+type AlertStatus = 'New' | 'Blocked';
+
+interface SystemAlert {
+  id: number;
+  timestamp: string;
+  ipAddress: string;
+  shop: string;
+  reason: string;
+  status: AlertStatus;
+}
+
 const SystemAlerts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedIP, setSelectedIP] = useState("");
+  const [selectedAlertId, setSelectedAlertId] = useState<number | null>(null);
 
   // Mock data for system alerts
-  const systemAlerts = [
+  const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([
     {
       id: 1,
       timestamp: '2 min ago',
@@ -38,7 +50,7 @@ const SystemAlerts = () => {
       ipAddress: '192.168.5.12',
       shop: 'Paris Bistro',
       reason: 'Excessive token usage',
-      status: 'Reviewed',
+      status: 'Blocked',
     },
     {
       id: 4,
@@ -46,7 +58,7 @@ const SystemAlerts = () => {
       ipAddress: '192.168.9.33',
       shop: 'New York Steakhouse',
       reason: 'Excessive token usage',
-      status: 'Reviewed',
+      status: 'Blocked',
     },
     {
       id: 5,
@@ -62,21 +74,31 @@ const SystemAlerts = () => {
       ipAddress: '192.168.7.21',
       shop: 'Barcelona Tapas',
       reason: 'Excessive token usage',
-      status: 'Reviewed',
+      status: 'Blocked',
     },
-  ];
+  ]);
 
   const filteredAlerts = systemAlerts.filter(alert => 
     alert.shop.toLowerCase().includes(searchTerm.toLowerCase()) ||
     alert.ipAddress.includes(searchTerm)
   );
 
-  const handleOpenBlockDialog = (ipAddress: string) => {
+  const handleOpenBlockDialog = (ipAddress: string, alertId: number) => {
     setSelectedIP(ipAddress);
+    setSelectedAlertId(alertId);
     setOpenDialog(true);
   };
 
   const handleConfirmBlock = () => {
+    // Update the alert status
+    if (selectedAlertId !== null) {
+      setSystemAlerts(prevAlerts => 
+        prevAlerts.map(alert => 
+          alert.id === selectedAlertId ? { ...alert, status: 'Blocked' } : alert
+        )
+      );
+    }
+    
     toast({
       title: "IP Blocked",
       description: `${selectedIP} has been blocked successfully.`,
@@ -141,7 +163,8 @@ const SystemAlerts = () => {
                       variant="destructive" 
                       size="sm" 
                       className="flex items-center justify-center"
-                      onClick={() => handleOpenBlockDialog(alert.ipAddress)}
+                      onClick={() => handleOpenBlockDialog(alert.ipAddress, alert.id)}
+                      disabled={alert.status === 'Blocked'}
                     >
                       <ShieldAlert className="h-4 w-4 mr-1" />
                       Block

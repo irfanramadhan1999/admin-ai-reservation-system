@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { 
   Table, 
   TableBody, 
@@ -13,7 +12,7 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
-import { Edit, Trash2, CalendarDays, Plus } from 'lucide-react';
+import { Edit, Trash2, CalendarDays, Plus, Calendar } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 
 // Sample data
@@ -27,7 +26,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 42,
-    googleCalendar: true
+    createdAt: "2025-01-15"
   },
   {
     id: "2",
@@ -38,7 +37,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 28,
-    googleCalendar: true
+    createdAt: "2025-02-03"
   },
   {
     id: "3",
@@ -49,7 +48,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 36,
-    googleCalendar: false
+    createdAt: "2025-02-20"
   },
   {
     id: "4",
@@ -60,7 +59,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 24,
-    googleCalendar: false
+    createdAt: "2025-03-05"
   },
   {
     id: "5",
@@ -71,7 +70,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 32,
-    googleCalendar: true
+    createdAt: "2025-03-18"
   }
 ];
 
@@ -138,7 +137,7 @@ const Shops = () => {
                 <TableHead>Shop Information</TableHead>
                 <TableHead>Token Usage</TableHead>
                 <TableHead>Total Bookings</TableHead>
-                <TableHead>Google Calendar</TableHead>
+                <TableHead>Created At</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -164,11 +163,10 @@ const Shops = () => {
                   </TableCell>
                   <TableCell>{shop.totalBookings}</TableCell>
                   <TableCell>
-                    {shop.googleCalendar ? (
-                      <Badge variant="default" className="bg-emerald-400 hover:bg-emerald-500">Connected</Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-muted-foreground">Not Connected</Badge>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span>{new Date(shop.createdAt).toLocaleDateString()}</span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">

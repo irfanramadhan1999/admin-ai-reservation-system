@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { 
@@ -11,9 +11,6 @@ import {
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { KpiCards } from '@/components/dashboard/kpi-cards';
 import { RecentShopsTable } from '@/components/dashboard/recent-shops-table';
-import { ReservationTrend } from '@/components/dashboard/reservation-trend';
-import { SeatAvailability } from '@/components/dashboard/seat-availability';
-import { LatestReservations } from '@/components/dashboard/latest-reservations';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,7 +21,7 @@ const Dashboard = () => {
       title: 'Total Shops',
       value: '24',
       change: '+12%',
-      trend: 'up',
+      trend: 'up' as const,
       icon: Store,
       iconColor: 'bg-blue-500',
     },
@@ -32,7 +29,7 @@ const Dashboard = () => {
       title: 'Total Bookings',
       value: '321',
       change: '+8%',
-      trend: 'up',
+      trend: 'up' as const,
       icon: CalendarDays,
       iconColor: 'bg-purple-400',
     },
@@ -40,7 +37,7 @@ const Dashboard = () => {
       title: 'Token Usage',
       value: '15.2K',
       change: '-3%',
-      trend: 'down',
+      trend: 'down' as const,
       icon: Zap,
       iconColor: 'bg-emerald-400',
     },
@@ -48,7 +45,7 @@ const Dashboard = () => {
       title: 'Suspicious Activities',
       value: '7',
       change: '+40%',
-      trend: 'up',
+      trend: 'up' as const,
       icon: Activity,
       iconColor: 'bg-red-400',
     },
@@ -112,17 +109,6 @@ const Dashboard = () => {
 
       {/* Recent Shops Section */}
       <RecentShopsTable shops={recentShops} onViewBookings={handleViewBookings} />
-      
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <ReservationTrend />
-        </div>
-        <div className="space-y-6">
-          <SeatAvailability />
-          <LatestReservations />
-        </div>
-      </div>
     </DashboardLayout>
   );
 };

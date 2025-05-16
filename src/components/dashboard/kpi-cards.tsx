@@ -2,10 +2,6 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { 
-  Store, 
-  CalendarDays, 
-  Zap, 
-  Activity,
   ArrowUpRight,
   ArrowDownRight,
 } from 'lucide-react';
