@@ -1,21 +1,31 @@
 
 import React from 'react';
 import { SidebarNav } from '../sidebar/sidebar-nav';
+import { useLocation } from 'react-router-dom';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const location = useLocation();
+  
+  // Determine user role based on URL path
+  const isShopAdmin = location.pathname.startsWith('/shop-admin');
+  const userRole = isShopAdmin ? 'shop-admin' : 'admin';
+  
+  // Set appropriate logo text based on user role
+  const logoText = isShopAdmin ? 'Owner Shop' : 'Admin';
+
   return (
     <div className="min-h-screen flex bg-gray-50">
       {/* Sidebar */}
       <div className="hidden md:flex flex-col w-64 bg-white border-r">
         <div className="p-6">
-          <h1 className="text-xl font-semibold">Reserve<span className="text-blue-500">AI</span></h1>
+          <h1 className="text-xl font-semibold">{logoText}<span className="text-blue-500">AI</span></h1>
         </div>
         <div className="px-3 py-2 flex-1">
-          <SidebarNav />
+          <SidebarNav userRole={userRole} />
         </div>
         <div className="p-4 border-t">
           <div className="flex items-center gap-3">
