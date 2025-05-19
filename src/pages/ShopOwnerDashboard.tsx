@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { Button } from '@/components/ui/button';
-import { Calendar, UserGroup, Bot, Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar, Users, Bot, Calendar as CalendarIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -125,7 +124,7 @@ const ShopOwnerDashboard = () => {
               <p className="text-xs text-muted-foreground">{kpiData.todaysCustomers.description}</p>
             </div>
             <div className="p-2 rounded-full bg-purple-50">
-              <UserGroup className="h-5 w-5 text-purple-500" />
+              <Users className="h-5 w-5 text-purple-500" />
             </div>
           </div>
         </Card>
