@@ -10,20 +10,22 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Asterisk } from 'lucide-react';
+import { Asterisk, Trash2, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const ShopInformation = () => {
   const { toast } = useToast();
   
   // Basic information state
-  const [restaurantName, setRestaurantName] = useState('Sakura Japanese Restaurant');
+  const [shopName, setShopName] = useState('Sakura Japanese Restaurant');
   const [phoneNumber, setPhoneNumber] = useState('+81 3-1234-5678');
   const [address, setAddress] = useState('1-2-3 Shibuya, Shibuya-ku, Tokyo, Japan 150-0002');
-  const [isGoogleCalendarEnabled, setIsGoogleCalendarEnabled] = useState(false);
+  const [subdomain, setSubdomain] = useState('sakura');
+  const [shopImage, setShopImage] = useState<string | null>(null);
   
   // Knowledge management state
-  const [restaurantKnowledge, setRestaurantKnowledge] = useState('');
+  const [shopKnowledge, setShopKnowledge] = useState('');
   
   // Operating hours state
   const [is24Hours, setIs24Hours] = useState(false);
@@ -47,7 +49,7 @@ const ShopInformation = () => {
   ];
   
   // Document state
-  const [documentName, setDocumentName] = useState('business-license.pdf');
+  const [documentName, setDocumentName] = useState<string | null>('business-license.pdf');
   
   // Handle operating hours toggle
   const handleToggleDay = (index: number) => {
@@ -69,16 +71,66 @@ const ShopInformation = () => {
     updatedHours[index][field] = value;
     setOperatingHours(updatedHours);
   };
+
+  // Handle shop image upload
+  const handleShopImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setShopImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      
+      toast({
+        title: "Shop Image Updated",
+        description: "Your shop image has been successfully uploaded."
+      });
+    } else if (file) {
+      toast({
+        title: "Invalid File",
+        description: "Please upload a valid image file.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle document upload
+  const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.name.endsWith('.pdf')) {
+      setDocumentName(file.name);
+      toast({
+        title: "Document Uploaded",
+        description: "Your document has been successfully uploaded."
+      });
+    } else if (file) {
+      toast({
+        title: "Invalid File",
+        description: "Please upload a PDF document.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle document delete
+  const handleDocumentDelete = () => {
+    setDocumentName(null);
+    toast({
+      title: "Document Deleted",
+      description: "Your document has been successfully deleted."
+    });
+  };
   
   // Handle save changes
   const handleSaveChanges = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate required fields
-    if (!restaurantName.trim()) {
+    if (!shopName.trim()) {
       toast({
         title: "Missing Information",
-        description: "Restaurant name is required.",
+        description: "Shop name is required.",
         variant: "destructive"
       });
       return;
@@ -101,10 +153,19 @@ const ShopInformation = () => {
       });
       return;
     }
+
+    if (!subdomain.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Subdomain is required.",
+        variant: "destructive"
+      });
+      return;
+    }
     
     toast({
       title: "Changes Saved",
-      description: "Your restaurant information has been updated successfully."
+      description: "Your shop information has been updated successfully."
     });
   };
 
@@ -118,7 +179,7 @@ const ShopInformation = () => {
       {/* Page Header */}
       <DashboardHeader 
         title="Shop Information" 
-        subtitle="Update your restaurant details"
+        subtitle="Update your shop details"
         date={format(new Date(), 'PPPP')} 
       />
       
@@ -127,30 +188,60 @@ const ShopInformation = () => {
         <Card className="mb-8 rounded-2xl shadow-sm">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="restaurantName">
-                  Restaurant Name <RequiredIndicator />
-                </Label>
-                <Input
-                  id="restaurantName"
-                  value={restaurantName}
-                  onChange={(e) => setRestaurantName(e.target.value)}
-                  className="mt-1"
-                  required
-                />
+            <div className="flex flex-col md:flex-row gap-6 mb-6">
+              <div className="flex flex-col items-center space-y-3">
+                <Avatar className="w-32 h-32">
+                  {shopImage ? (
+                    <AvatarImage src={shopImage} alt="Shop" />
+                  ) : (
+                    <AvatarFallback className="bg-muted text-muted-foreground text-xl">
+                      Shop
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                <div>
+                  <input
+                    type="file"
+                    id="shop-image"
+                    accept="image/*"
+                    onChange={handleShopImageUpload}
+                    className="hidden"
+                  />
+                  <label htmlFor="shop-image">
+                    <Button type="button" variant="outline" size="sm" className="cursor-pointer">
+                      Upload Shop Picture
+                    </Button>
+                  </label>
+                </div>
               </div>
-              <div>
-                <Label htmlFor="phoneNumber">
-                  Phone Number <RequiredIndicator />
-                </Label>
-                <Input
-                  id="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="mt-1"
-                  required
-                />
+              
+              <div className="flex-1 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="shopName">
+                      Shop Name <RequiredIndicator />
+                    </Label>
+                    <Input
+                      id="shopName"
+                      value={shopName}
+                      onChange={(e) => setShopName(e.target.value)}
+                      className="mt-1"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phoneNumber">
+                      Phone Number <RequiredIndicator />
+                    </Label>
+                    <Input
+                      id="phoneNumber"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="mt-1"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -166,18 +257,27 @@ const ShopInformation = () => {
                 required
               />
             </div>
-            
-            <div className="mt-6 flex items-center gap-3">
-              <Label htmlFor="googleCalendarToggle">Google Calendar Notice</Label>
-              <Switch
-                id="googleCalendarToggle"
-                checked={isGoogleCalendarEnabled}
-                onCheckedChange={setIsGoogleCalendarEnabled}
-                className="data-[state=checked]:bg-blue-500"
-              />
-              <span className="text-sm text-muted-foreground">
-                {isGoogleCalendarEnabled ? 'Enabled' : 'Disabled'}
-              </span>
+
+            <div className="mt-6">
+              <Label htmlFor="subdomain">
+                Subdomain <RequiredIndicator />
+              </Label>
+              <div className="flex items-center mt-1">
+                <Input
+                  id="subdomain"
+                  value={subdomain}
+                  onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  className="rounded-r-none"
+                  placeholder="yourshop"
+                  required
+                />
+                <span className="bg-muted px-3 py-2 border border-l-0 rounded-r-md text-muted-foreground">
+                  .reserveai.jp
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Your shop will be accessible at this subdomain.
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -302,44 +402,50 @@ const ShopInformation = () => {
           </CardContent>
         </Card>
         
-        {/* Knowledge Management Section - New */}
+        {/* Knowledge Management Section - Merged */}
         <Card className="mb-8 rounded-2xl shadow-sm">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">Knowledge Management</h2>
-            <div>
-              <Label htmlFor="restaurantKnowledge">Restaurant Knowledge for AI</Label>
-              <Textarea
-                id="restaurantKnowledge"
-                value={restaurantKnowledge}
-                onChange={(e) => setRestaurantKnowledge(e.target.value)}
-                className="mt-1 min-h-[150px]"
-                placeholder="Enter knowledge information about the restaurant that the AI can use..."
-              />
-              <p className="text-xs text-muted-foreground mt-1">
-                This information will be used by the AI assistant when interacting with customers.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Document Management Section */}
-        <Card className="mb-8 rounded-2xl shadow-sm">
-          <CardContent className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Document Management</h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
+              <div>
+                <Label htmlFor="shopKnowledge">Knowledge for AI</Label>
+                <Textarea
+                  id="shopKnowledge"
+                  value={shopKnowledge}
+                  onChange={(e) => setShopKnowledge(e.target.value)}
+                  className="mt-1 min-h-[150px]"
+                  placeholder="Enter knowledge information about the shop that the AI can use..."
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  This information will be used by the AI assistant when interacting with customers.
+                </p>
+              </div>
+
               <div>
                 <Label htmlFor="documentUpload">Upload Document (PDF)</Label>
                 <Input
                   id="documentUpload"
                   type="file"
                   accept=".pdf"
+                  onChange={handleDocumentUpload}
                   className="mt-1"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Upload PDF documents containing additional information about your shop.
+                </p>
               </div>
+              
               {documentName && (
                 <div className="flex items-center justify-between p-3 border rounded-md">
                   <span>{documentName}</span>
-                  <Button variant="outline" size="sm">Preview</Button>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <Eye className="h-4 w-4 mr-1" /> Preview
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleDocumentDelete} className="text-destructive border-destructive hover:bg-destructive/10">
+                      <Trash2 className="h-4 w-4 mr-1" /> Delete
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
