@@ -1,9 +1,9 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
-import { Button } from '@/components/ui/button';
-import { Calendar, Users, Bot, Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar, Users, Bot } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -16,15 +16,9 @@ const ShopOwnerDashboard = () => {
   const kpiData = {
     todaysBookings: {
       value: '12',
-      change: '+2',
-      trend: 'up' as const,
-      description: 'from yesterday',
     },
     todaysCustomers: {
       value: '38',
-      change: '+8',
-      trend: 'up' as const,
-      description: 'from yesterday',
     }
   };
 
@@ -73,8 +67,6 @@ const ShopOwnerDashboard = () => {
     }
   };
 
-  const handleViewAllBookings = () => navigate('/shop-admin/bookings');
-
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -98,11 +90,7 @@ const ShopOwnerDashboard = () => {
               <h3 className="text-sm font-medium text-muted-foreground">Today's Bookings</h3>
               <div className="flex items-end gap-2">
                 <span className="text-2xl font-semibold">{kpiData.todaysBookings.value}</span>
-                <span className="text-xs text-green-500 flex items-center">
-                  {kpiData.todaysBookings.change}
-                </span>
               </div>
-              <p className="text-xs text-muted-foreground">{kpiData.todaysBookings.description}</p>
             </div>
             <div className="p-2 rounded-full bg-blue-50">
               <Calendar className="h-5 w-5 text-blue-500" />
@@ -117,11 +105,7 @@ const ShopOwnerDashboard = () => {
               <h3 className="text-sm font-medium text-muted-foreground">Today's Customers</h3>
               <div className="flex items-end gap-2">
                 <span className="text-2xl font-semibold">{kpiData.todaysCustomers.value}</span>
-                <span className="text-xs text-green-500 flex items-center">
-                  {kpiData.todaysCustomers.change}
-                </span>
               </div>
-              <p className="text-xs text-muted-foreground">{kpiData.todaysCustomers.description}</p>
             </div>
             <div className="p-2 rounded-full bg-purple-50">
               <Users className="h-5 w-5 text-purple-500" />
@@ -156,13 +140,6 @@ const ShopOwnerDashboard = () => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Recent Bookings</h2>
-          <Button 
-            onClick={handleViewAllBookings}
-            className="flex gap-2"
-          >
-            <CalendarIcon className="h-4 w-4" />
-            View All Bookings
-          </Button>
         </div>
         
         <div className="space-y-4">

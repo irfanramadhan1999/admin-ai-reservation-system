@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User, ShieldAlert, Calendar, Table, Edit } from 'lucide-react';
+import { Store, LayoutDashboard, User, ShieldAlert } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
@@ -42,31 +42,13 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
     }
   ];
   
-  // Shop owner navigation items - Updated URLs from /shop-owner to /shop-admin
+  // Shop owner navigation items - Updated to only include Dashboard
   const shopOwnerNavItems = [
     {
       title: "Dashboard",
       icon: LayoutDashboard,
       href: "/shop-admin",
       isActive: location.pathname === "/shop-admin"
-    },
-    {
-      title: "Bookings",
-      icon: Calendar,
-      href: "/shop-admin/bookings",
-      isActive: location.pathname === "/shop-admin/bookings"
-    },
-    {
-      title: "Tables",
-      icon: Table,
-      href: "/shop-admin/tables",
-      isActive: location.pathname === "/shop-admin/tables"
-    },
-    {
-      title: "Profile",
-      icon: Edit,
-      href: "/shop-admin/profile",
-      isActive: location.pathname === "/shop-admin/profile"
     }
   ];
   
