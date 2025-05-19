@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User, ShieldAlert, Info } from 'lucide-react';
+import { Store, LayoutDashboard, User, ShieldAlert, Info, Calendar } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
@@ -42,7 +42,7 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
     }
   ];
   
-  // Shop owner navigation items - Updated to include Shop Information
+  // Shop owner navigation items - Updated to include Bookings page
   const shopOwnerNavItems = [
     {
       title: "Dashboard",
@@ -55,6 +55,12 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
       icon: Info,
       href: "/shop-admin/information",
       isActive: location.pathname === "/shop-admin/information"
+    },
+    {
+      title: "Bookings",
+      icon: Calendar,
+      href: "/shop-admin/bookings",
+      isActive: location.pathname === "/shop-admin/bookings"
     }
   ];
   
