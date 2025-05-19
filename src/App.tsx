@@ -18,6 +18,7 @@ import ShopInformation from "./pages/ShopInformation";
 import ShopOwnerBookings from "./pages/ShopOwnerBookings";
 import ShopOwnerSeating from "./pages/ShopOwnerSeating";
 import ShopOwnerAccount from "./pages/ShopOwnerAccount";
+import CalendarSync from "./pages/CalendarSync";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/shop-admin/bookings" element={<ShopOwnerBookings />} />
           <Route path="/shop-admin/seating" element={<ShopOwnerSeating />} />
           <Route path="/shop-admin/profile" element={<ShopOwnerAccount />} />
+          <Route path="/shop-admin/calendar-sync" element={<CalendarSync />} />
           
           {/* Root redirects to admin dashboard */}
           <Route path="/" element={<Navigate to="/admin" replace />} />

@@ -7,6 +7,7 @@ import { Calendar, Users, Bot } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
+import { ShopOwnerKpiCards } from '@/components/shop-owner/shop-owner-kpi-cards';
 import {
   Pagination,
   PaginationContent,
@@ -19,18 +20,26 @@ import {
 const ShopOwnerDashboard = () => {
   const navigate = useNavigate();
   const [isAiActive, setIsAiActive] = useState(true);
-  const [isGoogleCalendarEnabled, setIsGoogleCalendarEnabled] = useState(false);
+  const [isCalendarSynced, setIsCalendarSynced] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   
   // Mock data for KPI cards
-  const kpiData = {
-    todaysBookings: {
+  const kpiData = [
+    {
+      title: "Today's Bookings",
       value: '12',
+      change: '+20%',
+      trend: 'up' as const,
+      description: 'Compared to last week',
     },
-    todaysCustomers: {
+    {
+      title: "Today's Customers",
       value: '38',
-    }
-  };
+      change: '+15%',
+      trend: 'up' as const,
+      description: 'Expected guests for today',
+    },
+  ];
 
   // Mock data for today's bookings with the new structure
   const allBookings = [
@@ -170,7 +179,7 @@ const ShopOwnerDashboard = () => {
             <div className="space-y-1">
               <h3 className="text-sm font-medium text-muted-foreground">Today's Bookings</h3>
               <div className="flex items-end gap-2">
-                <span className="text-2xl font-semibold">{kpiData.todaysBookings.value}</span>
+                <span className="text-2xl font-semibold">{kpiData[0].value}</span>
               </div>
             </div>
             <div className="p-2 rounded-full bg-blue-50">
@@ -185,7 +194,7 @@ const ShopOwnerDashboard = () => {
             <div className="space-y-1">
               <h3 className="text-sm font-medium text-muted-foreground">Today's Customers</h3>
               <div className="flex items-end gap-2">
-                <span className="text-2xl font-semibold">{kpiData.todaysCustomers.value}</span>
+                <span className="text-2xl font-semibold">{kpiData[1].value}</span>
               </div>
             </div>
             <div className="p-2 rounded-full bg-purple-50">
@@ -216,20 +225,22 @@ const ShopOwnerDashboard = () => {
           </div>
         </Card>
 
-        {/* Google Calendar Notice - New KPI */}
+        {/* Google Calendar Notice - Updated to use button instead of toggle */}
         <Card className="p-6 rounded-2xl shadow-sm relative">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <h3 className="text-sm font-medium text-muted-foreground">Google Calendar Notice</h3>
+              <h3 className="text-sm font-medium text-muted-foreground">Google Calendar</h3>
               <div className="flex items-center gap-3 mt-2">
-                <Switch 
-                  checked={isGoogleCalendarEnabled} 
-                  onCheckedChange={setIsGoogleCalendarEnabled} 
-                  className="data-[state=checked]:bg-blue-500"
-                />
-                <span className="text-sm">
-                  {isGoogleCalendarEnabled ? "Notices enabled" : "Notices disabled"}
-                </span>
+                <button
+                  onClick={() => navigate('/shop-admin/calendar-sync')}
+                  className={`px-3 py-1 rounded-md text-sm ${
+                    isCalendarSynced
+                      ? 'bg-green-50 text-green-600 border border-green-200'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                  }`}
+                >
+                  {isCalendarSynced ? 'Calendar Connected' : 'Sync with Google Calendar'}
+                </button>
               </div>
             </div>
             <div className="p-2 rounded-full bg-blue-50">
