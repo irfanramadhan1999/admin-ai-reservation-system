@@ -1,157 +1,187 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
-import { ShopOwnerKpiCards } from '@/components/shop-owner/shop-owner-kpi-cards';
-import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
 import { Button } from '@/components/ui/button';
-import { Calendar, Edit, Table } from 'lucide-react';
+import { Calendar, UserGroup, Bot, Calendar as CalendarIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
 
 const ShopOwnerDashboard = () => {
   const navigate = useNavigate();
+  const [isAiActive, setIsAiActive] = useState(true);
   
   // Mock data for KPI cards
-  const kpiData = [
-    {
-      title: "Today's Bookings",
-      value: '8',
+  const kpiData = {
+    todaysBookings: {
+      value: '12',
       change: '+2',
       trend: 'up' as const,
       description: 'from yesterday',
     },
-    {
-      title: 'Upcoming Reservations',
-      value: '24',
-      change: '+5',
+    todaysCustomers: {
+      value: '38',
+      change: '+8',
       trend: 'up' as const,
-      description: 'next 7 days',
-    },
-    {
-      title: 'Table Usage',
-      value: '12/20',
-      change: '60%',
-      trend: 'up' as const,
-      description: 'tables reserved today',
-    },
-    {
-      title: 'AI Usage',
-      value: '3.4K',
-      change: '45%',
-      trend: 'down' as const,
-      description: 'tokens remaining',
-    },
-  ];
+      description: 'from yesterday',
+    }
+  };
 
   // Mock data for recent bookings
   const recentBookings = [
     {
       id: 1,
-      customerName: 'John Doe',
-      customerPhone: '+81 90-1234-5678',
-      startTime: '2025-05-19T18:00:00',
-      endTime: '2025-05-19T20:00:00',
-      tables: ['Table 2', 'Table 3'],
-      guests: 6,
+      customerName: 'Tanaka Yuki',
+      timeSlot: 'Today at 18:30 - 19:30',
+      tableType: 'Window Seat',
       status: 'confirmed',
     },
     {
       id: 2,
-      customerName: 'Yuki Tanaka',
-      customerPhone: '+81 80-9876-5432',
-      startTime: '2025-05-19T19:30:00',
-      endTime: '2025-05-19T21:30:00',
-      tables: ['Table 8'],
-      guests: 4,
+      customerName: 'Sato Hiroshi',
+      timeSlot: 'Today at 19:00 - 20:00',
+      tableType: 'Counter',
       status: 'pending',
     },
     {
       id: 3,
-      customerName: 'Emily Wong',
-      customerPhone: '+81 70-5555-4444',
-      startTime: '2025-05-20T12:00:00',
-      endTime: '2025-05-20T13:30:00',
-      tables: ['Table 5'],
-      guests: 2,
+      customerName: 'Nakamura Akiko',
+      timeSlot: 'Today at 20:15 - 21:30',
+      tableType: 'Private Room',
       status: 'confirmed',
     },
     {
       id: 4,
-      customerName: 'Takashi Mori',
-      customerPhone: '+81 90-3333-2222',
-      startTime: '2025-05-20T18:30:00',
-      endTime: '2025-05-20T20:30:00',
-      tables: ['Table 1'],
-      guests: 3,
-      status: 'confirmed',
-    },
-    {
-      id: 5,
-      customerName: 'Lisa Chen',
-      customerPhone: '+81 80-7777-8888',
-      startTime: '2025-05-20T19:00:00',
-      endTime: '2025-05-20T21:00:00',
-      tables: ['Table 10', 'Table 11'],
-      guests: 8,
-      status: 'cancelled',
+      customerName: 'Yamamoto Ken',
+      timeSlot: 'Tomorrow at 12:30 - 13:30',
+      tableType: 'Garden View',
+      status: 'canceled',
     },
   ];
 
-  // Format current date for display
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const getStatusBadge = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
+        return <Badge className="bg-green-500 hover:bg-green-600">Confirmed</Badge>;
+      case 'pending':
+        return <Badge className="bg-yellow-500 hover:bg-yellow-600">Pending</Badge>;
+      case 'canceled':
+        return <Badge className="bg-red-500 hover:bg-red-600">Canceled</Badge>;
+      default:
+        return <Badge>{status}</Badge>;
+    }
+  };
 
-  const handleViewAllBookings = () => navigate('/shop-owner/bookings');
-  const handleManageTables = () => navigate('/shop-owner/tables');
-  const handleEditProfile = () => navigate('/shop-owner/profile');
+  const handleViewAllBookings = () => navigate('/shop-admin/bookings');
 
   return (
     <DashboardLayout>
       {/* Page Header */}
       <DashboardHeader 
         title="Dashboard" 
-        subtitle="Overview of your restaurant activity"
-        date={currentDate}
+        subtitle="Daily overview of bookings, customers, and AI assistant status."
+        date={new Date().toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
       />
 
       {/* KPI Cards Section */}
-      <ShopOwnerKpiCards kpiData={kpiData} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Today's Bookings */}
+        <Card className="p-6 rounded-2xl shadow-sm relative">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium text-muted-foreground">Today's Bookings</h3>
+              <div className="flex items-end gap-2">
+                <span className="text-2xl font-semibold">{kpiData.todaysBookings.value}</span>
+                <span className="text-xs text-green-500 flex items-center">
+                  {kpiData.todaysBookings.change}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">{kpiData.todaysBookings.description}</p>
+            </div>
+            <div className="p-2 rounded-full bg-blue-50">
+              <Calendar className="h-5 w-5 text-blue-500" />
+            </div>
+          </div>
+        </Card>
+
+        {/* Today's Customers */}
+        <Card className="p-6 rounded-2xl shadow-sm relative">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium text-muted-foreground">Today's Customers</h3>
+              <div className="flex items-end gap-2">
+                <span className="text-2xl font-semibold">{kpiData.todaysCustomers.value}</span>
+                <span className="text-xs text-green-500 flex items-center">
+                  {kpiData.todaysCustomers.change}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">{kpiData.todaysCustomers.description}</p>
+            </div>
+            <div className="p-2 rounded-full bg-purple-50">
+              <UserGroup className="h-5 w-5 text-purple-500" />
+            </div>
+          </div>
+        </Card>
+
+        {/* AI Activation */}
+        <Card className="p-6 rounded-2xl shadow-sm relative">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium text-muted-foreground">AI Activation</h3>
+              <div className="flex items-center gap-3 mt-2">
+                <Switch 
+                  checked={isAiActive} 
+                  onCheckedChange={setIsAiActive} 
+                  className="data-[state=checked]:bg-green-500"
+                />
+                <span className="text-sm">
+                  {isAiActive ? "AI Assistant is active" : "AI Assistant is off"}
+                </span>
+              </div>
+            </div>
+            <div className="p-2 rounded-full bg-emerald-50">
+              <Bot className="h-5 w-5 text-emerald-500" />
+            </div>
+          </div>
+        </Card>
+      </div>
 
       {/* Recent Bookings Section */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Recent Bookings</h2>
-          <div className="flex gap-3">
-            <Button 
-              variant="outline" 
-              onClick={handleManageTables}
-              className="flex gap-2"
-            >
-              <Table className="h-4 w-4" />
-              Manage Tables
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={handleEditProfile}
-              className="flex gap-2"
-            >
-              <Edit className="h-4 w-4" />
-              Edit Profile
-            </Button>
-            <Button 
-              onClick={handleViewAllBookings}
-              className="flex gap-2"
-            >
-              <Calendar className="h-4 w-4" />
-              View All Bookings
-            </Button>
-          </div>
+          <Button 
+            onClick={handleViewAllBookings}
+            className="flex gap-2"
+          >
+            <CalendarIcon className="h-4 w-4" />
+            View All Bookings
+          </Button>
         </div>
-        <RecentBookingsTable bookings={recentBookings} />
+        
+        <div className="space-y-4">
+          {recentBookings.slice(0, 5).map((booking) => (
+            <Card key={booking.id} className="p-4 rounded-xl hover:bg-gray-50 transition-colors">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-medium">{booking.customerName}</h3>
+                  <p className="text-sm text-muted-foreground">{booking.timeSlot}</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-muted-foreground">{booking.tableType}</span>
+                  {getStatusBadge(booking.status)}
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
     </DashboardLayout>
   );
