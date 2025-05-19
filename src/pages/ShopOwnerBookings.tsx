@@ -19,6 +19,15 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { EditBookingDialog } from '@/components/shop-owner/edit-booking-dialog';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 // Mock booking data
 const bookingData = [
@@ -31,6 +40,7 @@ const bookingData = [
     tables: ['Window Seat', 'Regular 1'],
     guests: 3,
     status: 'confirmed',
+    notes: 'Birthday celebration. Needs a cake.'
   },
   {
     id: 2,
@@ -41,6 +51,7 @@ const bookingData = [
     tables: ['Counter'],
     guests: 1,
     status: 'pending',
+    notes: ''
   },
   {
     id: 3,
@@ -51,6 +62,7 @@ const bookingData = [
     tables: ['Private Room'],
     guests: 4,
     status: 'confirmed',
+    notes: 'Prefers quiet corner'
   },
   {
     id: 4,
@@ -61,13 +73,118 @@ const bookingData = [
     tables: ['Garden View', 'Regular 3'],
     guests: 6,
     status: 'cancelled',
+    notes: 'Canceled due to emergency'
   },
+  {
+    id: 5,
+    customerName: 'Watanabe Mei',
+    customerPhone: '+81 70-9876-5432',
+    startTime: '2025-05-19T13:00:00',
+    endTime: '2025-05-19T14:30:00',
+    tables: ['Window Seat'],
+    guests: 2,
+    status: 'confirmed',
+    notes: 'Anniversary dinner'
+  },
+  {
+    id: 6,
+    customerName: 'Kato Takashi',
+    customerPhone: '+81 80-5555-7777',
+    startTime: '2025-05-19T18:00:00',
+    endTime: '2025-05-19T19:45:00',
+    tables: ['Regular 5', 'Regular 6'],
+    guests: 5,
+    status: 'confirmed',
+    notes: 'Business meeting'
+  },
+  {
+    id: 7,
+    customerName: 'Suzuki Hana',
+    customerPhone: '+81 90-2222-3333',
+    startTime: '2025-05-19T19:30:00',
+    endTime: '2025-05-19T21:00:00',
+    tables: ['Counter'],
+    guests: 1,
+    status: 'pending',
+    notes: ''
+  },
+  {
+    id: 8,
+    customerName: 'Tanaka Ryu',
+    customerPhone: '+81 70-4444-1111',
+    startTime: '2025-05-19T20:00:00',
+    endTime: '2025-05-19T22:00:00',
+    tables: ['Private Room'],
+    guests: 8,
+    status: 'confirmed',
+    notes: 'Birthday party for daughter'
+  },
+  {
+    id: 9,
+    customerName: 'Ito Yumi',
+    customerPhone: '+81 80-7878-9090',
+    startTime: '2025-05-19T17:00:00',
+    endTime: '2025-05-19T18:30:00',
+    tables: ['Garden View'],
+    guests: 3,
+    status: 'cancelled',
+    notes: 'Rescheduled for next week'
+  },
+  {
+    id: 10,
+    customerName: 'Nakamura Sota',
+    customerPhone: '+81 90-6060-7070',
+    startTime: '2025-05-19T12:00:00',
+    endTime: '2025-05-19T13:15:00',
+    tables: ['Regular 2'],
+    guests: 2,
+    status: 'confirmed',
+    notes: 'Vegetarian meals required'
+  },
+  {
+    id: 11,
+    customerName: 'Yamada Keiko',
+    customerPhone: '+81 70-1010-2020',
+    startTime: '2025-05-19T13:30:00',
+    endTime: '2025-05-19T15:00:00',
+    tables: ['Window Seat', 'Regular 4'],
+    guests: 5,
+    status: 'confirmed',
+    notes: 'Celebrating graduation'
+  },
+  {
+    id: 12,
+    customerName: 'Kimura Haruto',
+    customerPhone: '+81 80-3030-4040',
+    startTime: '2025-05-19T18:45:00',
+    endTime: '2025-05-19T20:15:00',
+    tables: ['Counter'],
+    guests: 1,
+    status: 'pending',
+    notes: 'First-time visitor'
+  },
+];
+
+// Mock table types from Seating menu
+const tableTypes = [
+  { id: "1", name: "Counter", capacity: 2, quantity: 8 },
+  { id: "2", name: "Regular", capacity: 4, quantity: 12 },
+  { id: "3", name: "Family", capacity: 6, quantity: 5 },
+  { id: "4", name: "Tatami", capacity: 8, quantity: 2 },
+  { id: "5", name: "Window Seat", capacity: 4, quantity: 6 },
+  { id: "6", name: "Garden View", capacity: 4, quantity: 4 },
+  { id: "7", name: "Private Room", capacity: 10, quantity: 1 },
 ];
 
 const ShopOwnerBookings = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [editBookingOpen, setEditBookingOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  
+  const itemsPerPage = 10;
   
   // Format time range for display
   const formatTimeRange = (start: string, end: string) => {
@@ -103,6 +220,24 @@ const ShopOwnerBookings = () => {
     
     return matchesSearch && matchesStatus;
   });
+  
+  // Pagination logic
+  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+  const paginatedBookings = filteredBookings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  
+  const handleEditBooking = (booking: any) => {
+    setSelectedBooking(booking);
+    setEditBookingOpen(true);
+  };
+  
+  const handleUpdateBooking = (updatedBooking: any) => {
+    // In a real app, this would update the data in the database
+    console.log("Updated booking:", updatedBooking);
+    setEditBookingOpen(false);
+  };
 
   return (
     <DashboardLayout>
@@ -173,7 +308,7 @@ const ShopOwnerBookings = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredBookings.map((booking) => (
+              {paginatedBookings.map((booking) => (
                 <TableRow key={booking.id}>
                   <TableCell>
                     <div className="font-medium">{booking.customerName}</div>
@@ -184,11 +319,17 @@ const ShopOwnerBookings = () => {
                   <TableCell>{booking.guests}</TableCell>
                   <TableCell>{getStatusBadge(booking.status)}</TableCell>
                   <TableCell>
-                    <Button variant="outline" size="sm">View</Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleEditBooking(booking)}
+                    >
+                      Edit
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
-              {filteredBookings.length === 0 && (
+              {paginatedBookings.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-6">
                     No bookings found that match your criteria
@@ -198,7 +339,64 @@ const ShopOwnerBookings = () => {
             </TableBody>
           </Table>
         </div>
+        
+        {/* Pagination Controls */}
+        {filteredBookings.length > 0 && (
+          <div className="mt-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  // Logic to show current page and surrounding pages
+                  let pageToShow;
+                  if (totalPages <= 5) {
+                    pageToShow = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageToShow = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageToShow = totalPages - 4 + i;
+                  } else {
+                    pageToShow = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        isActive={pageToShow === currentPage}
+                        onClick={() => setCurrentPage(pageToShow)}
+                      >
+                        {pageToShow}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </Card>
+      
+      {/* Edit Booking Modal */}
+      <EditBookingDialog
+        open={editBookingOpen}
+        onOpenChange={setEditBookingOpen}
+        booking={selectedBooking}
+        tableTypes={tableTypes}
+        onSubmit={handleUpdateBooking}
+      />
     </DashboardLayout>
   );
 };
