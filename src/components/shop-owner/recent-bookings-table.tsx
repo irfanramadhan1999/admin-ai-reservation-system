@@ -45,7 +45,7 @@ export function RecentBookingsTable({ bookings }: RecentBookingsTableProps) {
     const startTime = new Date(start);
     const endTime = new Date(end);
     
-    return `${formatDate(startTime, 'MMM d, h:mm a')} - ${formatDate(endTime, 'h:mm a')}`;
+    return `${formatDate(startTime, 'h:mm a')} - ${formatDate(endTime, 'h:mm a')}`;
   };
 
   return (
@@ -68,9 +68,7 @@ export function RecentBookingsTable({ bookings }: RecentBookingsTableProps) {
                   <div className="font-medium">{booking.customerName}</div>
                   <div className="text-xs text-muted-foreground">{booking.customerPhone}</div>
                 </TableCell>
-                <TableCell>
-                  {formatTimeRange(booking.startTime, booking.endTime)}
-                </TableCell>
+                <TableCell>{formatTimeRange(booking.startTime, booking.endTime)}</TableCell>
                 <TableCell>{booking.tables.join(', ')}</TableCell>
                 <TableCell>{booking.guests}</TableCell>
                 <TableCell>{getStatusBadge(booking.status)}</TableCell>

@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { Calendar, Users, Bot } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
+import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
 
 const ShopOwnerDashboard = () => {
   const navigate = useNavigate();
@@ -22,50 +22,49 @@ const ShopOwnerDashboard = () => {
     }
   };
 
-  // Mock data for recent bookings
-  const recentBookings = [
+  // Mock data for today's bookings with the new structure
+  const todaysBookings = [
     {
       id: 1,
       customerName: 'Tanaka Yuki',
-      timeSlot: 'Today at 18:30 - 19:30',
-      tableType: 'Window Seat',
+      customerPhone: '+81 90-1234-5678',
+      startTime: '2025-05-19T18:30:00',
+      endTime: '2025-05-19T19:30:00',
+      tables: ['Window Seat'],
+      guests: 2,
       status: 'confirmed',
     },
     {
       id: 2,
       customerName: 'Sato Hiroshi',
-      timeSlot: 'Today at 19:00 - 20:00',
-      tableType: 'Counter',
+      customerPhone: '+81 80-8765-4321',
+      startTime: '2025-05-19T19:00:00',
+      endTime: '2025-05-19T20:00:00',
+      tables: ['Counter'],
+      guests: 1,
       status: 'pending',
     },
     {
       id: 3,
       customerName: 'Nakamura Akiko',
-      timeSlot: 'Today at 20:15 - 21:30',
-      tableType: 'Private Room',
+      customerPhone: '+81 70-2468-1357',
+      startTime: '2025-05-19T20:15:00',
+      endTime: '2025-05-19T21:30:00',
+      tables: ['Private Room'],
+      guests: 4,
       status: 'confirmed',
     },
     {
       id: 4,
       customerName: 'Yamamoto Ken',
-      timeSlot: 'Tomorrow at 12:30 - 13:30',
-      tableType: 'Garden View',
-      status: 'canceled',
+      customerPhone: '+81 90-1357-2468',
+      startTime: '2025-05-20T12:30:00',
+      endTime: '2025-05-20T13:30:00',
+      tables: ['Garden View', 'Regular 3'],
+      guests: 6,
+      status: 'cancelled',
     },
   ];
-
-  const getStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'confirmed':
-        return <Badge className="bg-green-500 hover:bg-green-600">Confirmed</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-500 hover:bg-yellow-600">Pending</Badge>;
-      case 'canceled':
-        return <Badge className="bg-red-500 hover:bg-red-600">Canceled</Badge>;
-      default:
-        return <Badge>{status}</Badge>;
-    }
-  };
 
   return (
     <DashboardLayout>
@@ -136,28 +135,13 @@ const ShopOwnerDashboard = () => {
         </Card>
       </div>
 
-      {/* Recent Bookings Section */}
+      {/* Today's Bookings Section */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Recent Bookings</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">Today's Bookings</h2>
         </div>
         
-        <div className="space-y-4">
-          {recentBookings.slice(0, 5).map((booking) => (
-            <Card key={booking.id} className="p-4 rounded-xl hover:bg-gray-50 transition-colors">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="font-medium">{booking.customerName}</h3>
-                  <p className="text-sm text-muted-foreground">{booking.timeSlot}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground">{booking.tableType}</span>
-                  {getStatusBadge(booking.status)}
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <RecentBookingsTable bookings={todaysBookings} />
       </div>
     </DashboardLayout>
   );
