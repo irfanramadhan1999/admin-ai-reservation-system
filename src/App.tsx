@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import SystemAlerts from "./pages/SystemAlerts";
 import Login from "./pages/Login";
 import ShopOwnerDashboard from "./pages/ShopOwnerDashboard";
+import ShopInformation from "./pages/ShopInformation";
 
 const queryClient = new QueryClient();
 
@@ -36,8 +37,9 @@ const App = () => (
           <Route path="/admin/account-settings" element={<AccountSettings />} />
           <Route path="/admin/system-alerts" element={<SystemAlerts />} />
           
-          {/* Shop Owner Routes - Updated to use /shop-admin instead of /shop-owner */}
+          {/* Shop Owner Routes - Updated to include new ShopInformation page */}
           <Route path="/shop-admin" element={<ShopOwnerDashboard />} />
+          <Route path="/shop-admin/information" element={<ShopInformation />} />
           <Route path="/shop-admin/bookings" element={<Bookings />} />
           <Route path="/shop-admin/tables" element={<NotFound />} />
           <Route path="/shop-admin/profile" element={<AccountSettings />} />
