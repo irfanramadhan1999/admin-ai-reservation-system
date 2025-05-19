@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -85,7 +84,7 @@ const Shops = () => {
   );
   
   const handleEditShop = (id: string) => {
-    navigate(`/shops/edit/${id}`);
+    navigate(`/admin/shops/edit/${id}`);
   };
   
   const handleDeleteShop = (id: string) => {
@@ -96,11 +95,11 @@ const Shops = () => {
   };
   
   const handleViewBookings = (id: string) => {
-    navigate('/bookings');
+    navigate('/admin/bookings');
   };
   
   const handleCreateShop = () => {
-    navigate('/shops/create');
+    navigate('/admin/shops/create');
   };
   
   return (

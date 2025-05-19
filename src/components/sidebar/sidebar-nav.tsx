@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Store, LayoutDashboard, User, ShieldAlert, Calendar, Table, Edit } from 'lucide-react';
@@ -12,35 +11,37 @@ interface SidebarNavProps {
 export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
   const location = useLocation();
   
-  // Admin navigation items
+  // Admin navigation items with updated paths
   const adminNavItems = [
     {
       title: "Dashboard",
       icon: LayoutDashboard,
-      href: "/",
-      isActive: location.pathname === "/"
+      href: "/admin",
+      isActive: location.pathname === "/admin"
     },
     {
       title: "Shops",
       icon: Store,
-      href: "/shops",
-      isActive: location.pathname === "/shops" || location.pathname === "/shops/create" || location.pathname.startsWith("/shops/edit/")
+      href: "/admin/shops",
+      isActive: location.pathname === "/admin/shops" || 
+               location.pathname === "/admin/shops/create" || 
+               location.pathname.startsWith("/admin/shops/edit/")
     },
     {
       title: "System Alerts",
       icon: ShieldAlert,
-      href: "/system-alerts",
-      isActive: location.pathname === "/system-alerts"
+      href: "/admin/system-alerts",
+      isActive: location.pathname === "/admin/system-alerts"
     },
     {
       title: "Account Settings",
       icon: User,
-      href: "/account-settings",
-      isActive: location.pathname === "/account-settings"
+      href: "/admin/account-settings",
+      isActive: location.pathname === "/admin/account-settings"
     }
   ];
   
-  // Shop owner navigation items
+  // Shop owner navigation items (unchanged)
   const shopOwnerNavItems = [
     {
       title: "Dashboard",
