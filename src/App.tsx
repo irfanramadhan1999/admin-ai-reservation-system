@@ -17,6 +17,7 @@ import ShopOwnerDashboard from "./pages/ShopOwnerDashboard";
 import ShopInformation from "./pages/ShopInformation";
 import ShopOwnerBookings from "./pages/ShopOwnerBookings";
 import ShopOwnerSeating from "./pages/ShopOwnerSeating";
+import ShopOwnerAccount from "./pages/ShopOwnerAccount";
 
 const queryClient = new QueryClient();
 
@@ -39,12 +40,12 @@ const App = () => (
           <Route path="/admin/account-settings" element={<AccountSettings />} />
           <Route path="/admin/system-alerts" element={<SystemAlerts />} />
           
-          {/* Shop Owner Routes - Updated to include new ShopOwnerSeating page */}
+          {/* Shop Owner Routes */}
           <Route path="/shop-admin" element={<ShopOwnerDashboard />} />
           <Route path="/shop-admin/information" element={<ShopInformation />} />
           <Route path="/shop-admin/bookings" element={<ShopOwnerBookings />} />
           <Route path="/shop-admin/seating" element={<ShopOwnerSeating />} />
-          <Route path="/shop-admin/profile" element={<AccountSettings />} />
+          <Route path="/shop-admin/profile" element={<ShopOwnerAccount />} />
           
           {/* Root redirects to admin dashboard */}
           <Route path="/" element={<Navigate to="/admin" replace />} />

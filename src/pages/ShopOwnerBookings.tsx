@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { format } from 'date-fns';
@@ -20,6 +19,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { EditBookingDialog } from '@/components/shop-owner/edit-booking-dialog';
+import { BlockTimeSlotDialog } from '@/components/shop-owner/block-time-slot-dialog';
 import {
   Pagination,
   PaginationContent,
@@ -28,6 +28,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useToast } from '@/hooks/use-toast';
 
 // Mock booking data
 const bookingData = [
@@ -176,6 +177,37 @@ const tableTypes = [
   { id: "7", name: "Private Room", capacity: 10, quantity: 1 },
 ];
 
+// Mock blocked time slots data
+const blockedTimeSlotsData = [
+  {
+    id: '1',
+    eventName: 'Staff Meeting',
+    date: '2025-05-19T00:00:00',
+    blockEntireDay: false,
+    startTime: '14:00',
+    endTime: '16:00',
+    tables: ['Private Room']
+  },
+  {
+    id: '2',
+    eventName: 'Restaurant Closure',
+    date: '2025-05-20T00:00:00',
+    blockEntireDay: true,
+    startTime: '00:00',
+    endTime: '23:59',
+    tables: ['All Tables']
+  },
+  {
+    id: '3',
+    eventName: 'Special Event',
+    date: '2025-05-21T00:00:00',
+    blockEntireDay: false,
+    startTime: '18:00',
+    endTime: '22:00',
+    tables: ['Window Seat', 'Garden View']
+  }
+];
+
 const ShopOwnerBookings = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -183,7 +215,11 @@ const ShopOwnerBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [editBookingOpen, setEditBookingOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  const [blockTimeSlotOpen, setBlockTimeSlotOpen] = useState(false);
+  const [selectedBlockedSlot, setSelectedBlockedSlot] = useState<any>(null);
+  const [blockedTimeSlots, setBlockedTimeSlots] = useState(blockedTimeSlotsData);
   
+  const { toast } = useToast();
   const itemsPerPage = 10;
   
   // Format time range for display
@@ -237,6 +273,49 @@ const ShopOwnerBookings = () => {
     // In a real app, this would update the data in the database
     console.log("Updated booking:", updatedBooking);
     setEditBookingOpen(false);
+    toast({
+      title: "Booking Updated",
+      description: "The booking has been successfully updated."
+    });
+  };
+
+  const handleEditBlockedSlot = (slot: any) => {
+    setSelectedBlockedSlot(slot);
+    setBlockTimeSlotOpen(true);
+  };
+
+  const handleRemoveBlockedSlot = (id: string) => {
+    setBlockedTimeSlots(blockedTimeSlots.filter(slot => slot.id !== id));
+    toast({
+      title: "Time Slot Unblocked",
+      description: "The blocked time slot has been removed."
+    });
+  };
+
+  const handleAddBlockedSlot = () => {
+    setSelectedBlockedSlot(null);
+    setBlockTimeSlotOpen(true);
+  };
+
+  const handleBlockTimeSlotSubmit = (blockedSlot: any) => {
+    if (selectedBlockedSlot) {
+      // Update existing blocked slot
+      setBlockedTimeSlots(blockedTimeSlots.map(slot => 
+        slot.id === blockedSlot.id ? blockedSlot : slot
+      ));
+      toast({
+        title: "Time Slot Updated",
+        description: "The blocked time slot has been updated."
+      });
+    } else {
+      // Add new blocked slot
+      setBlockedTimeSlots([...blockedTimeSlots, blockedSlot]);
+      toast({
+        title: "Time Slot Blocked",
+        description: "The time slot has been successfully blocked."
+      });
+    }
+    setBlockTimeSlotOpen(false);
   };
 
   return (
@@ -294,7 +373,8 @@ const ShopOwnerBookings = () => {
       </div>
       
       {/* Bookings Table */}
-      <Card className="p-6">
+      <Card className="p-6 mb-8">
+        <h2 className="text-lg font-semibold mb-4">Customer Bookings</h2>
         <div className="rounded-md border">
           <Table>
             <TableHeader>
@@ -389,6 +469,74 @@ const ShopOwnerBookings = () => {
         )}
       </Card>
       
+      {/* Blocked Time Slots Section */}
+      <Card className="p-6">
+        <h2 className="text-lg font-semibold mb-2">Blocked Time Slots</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Reserve tables for special events or closures to prevent bookings on specific dates/times
+        </p>
+        
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Event Name</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Time Range</TableHead>
+                <TableHead>Tables</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {blockedTimeSlots.map((slot) => (
+                <TableRow key={slot.id}>
+                  <TableCell>{slot.eventName}</TableCell>
+                  <TableCell>{format(new Date(slot.date), 'PPP')}</TableCell>
+                  <TableCell>
+                    {slot.blockEntireDay 
+                      ? "All Day" 
+                      : `${slot.startTime} - ${slot.endTime}`}
+                  </TableCell>
+                  <TableCell>{slot.tables.join(', ')}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleEditBlockedSlot(slot)}
+                      >
+                        Edit
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => handleRemoveBlockedSlot(slot.id)}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {blockedTimeSlots.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-6">
+                    No blocked time slots found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        
+        <div className="mt-4">
+          <Button onClick={handleAddBlockedSlot} className="w-full sm:w-auto">
+            Block New Time Slot
+          </Button>
+        </div>
+      </Card>
+      
       {/* Edit Booking Modal */}
       <EditBookingDialog
         open={editBookingOpen}
@@ -396,6 +544,15 @@ const ShopOwnerBookings = () => {
         booking={selectedBooking}
         tableTypes={tableTypes}
         onSubmit={handleUpdateBooking}
+      />
+      
+      {/* Block Time Slot Modal */}
+      <BlockTimeSlotDialog
+        open={blockTimeSlotOpen}
+        onOpenChange={setBlockTimeSlotOpen}
+        tableTypes={tableTypes}
+        onSubmit={handleBlockTimeSlotSubmit}
+        editingSlot={selectedBlockedSlot}
       />
     </DashboardLayout>
   );
