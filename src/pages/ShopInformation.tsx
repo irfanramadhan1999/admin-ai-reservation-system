@@ -218,7 +218,6 @@ const ShopInformation = () => {
                             <Switch 
                               checked={hours.isOpen} 
                               onCheckedChange={() => handleToggleDay(index)}
-                              size="sm"
                             />
                           </div>
                         </td>
@@ -270,7 +269,6 @@ const ShopInformation = () => {
                                 checked={hours.lastOrder} 
                                 onCheckedChange={() => handleToggleLastOrder(index)}
                                 disabled={!hours.isOpen}
-                                size="sm"
                               />
                               {hours.lastOrder ? (
                                 <Select
