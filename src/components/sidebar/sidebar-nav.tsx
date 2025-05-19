@@ -42,7 +42,7 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
     }
   ];
   
-  // Shop owner navigation items - Updated to include Seating page
+  // Shop owner navigation items - Updated to include Account page
   const shopOwnerNavItems = [
     {
       title: "Dashboard",
@@ -67,6 +67,12 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
       icon: Layout,
       href: "/shop-admin/seating",
       isActive: location.pathname === "/shop-admin/seating"
+    },
+    {
+      title: "Account Settings",
+      icon: User,
+      href: "/shop-admin/profile",
+      isActive: location.pathname === "/shop-admin/profile"
     }
   ];
   

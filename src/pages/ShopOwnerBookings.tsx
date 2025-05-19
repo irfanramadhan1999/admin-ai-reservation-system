@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { format } from 'date-fns';
@@ -220,7 +221,7 @@ const ShopOwnerBookings = () => {
   const [blockedTimeSlots, setBlockedTimeSlots] = useState(blockedTimeSlotsData);
   
   const { toast } = useToast();
-  const itemsPerPage = 10;
+  const itemsPerPage = 8; // Updated to show 8 rows per page
   
   // Format time range for display
   const formatTimeRange = (start: string, end: string) => {
@@ -279,6 +280,11 @@ const ShopOwnerBookings = () => {
     });
   };
 
+  const handleAddBlockedSlot = () => {
+    setSelectedBlockedSlot(null);
+    setBlockTimeSlotOpen(true);
+  };
+
   const handleEditBlockedSlot = (slot: any) => {
     setSelectedBlockedSlot(slot);
     setBlockTimeSlotOpen(true);
@@ -290,11 +296,6 @@ const ShopOwnerBookings = () => {
       title: "Time Slot Unblocked",
       description: "The blocked time slot has been removed."
     });
-  };
-
-  const handleAddBlockedSlot = () => {
-    setSelectedBlockedSlot(null);
-    setBlockTimeSlotOpen(true);
   };
 
   const handleBlockTimeSlotSubmit = (blockedSlot: any) => {
@@ -469,12 +470,19 @@ const ShopOwnerBookings = () => {
         )}
       </Card>
       
-      {/* Blocked Time Slots Section */}
+      {/* Blocked Time Slots Section - Reorganized with button at top */}
       <Card className="p-6">
-        <h2 className="text-lg font-semibold mb-2">Blocked Time Slots</h2>
-        <p className="text-sm text-muted-foreground mb-4">
-          Reserve tables for special events or closures to prevent bookings on specific dates/times
-        </p>
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h2 className="text-lg font-semibold">Blocked Time Slots</h2>
+            <p className="text-sm text-muted-foreground">
+              Reserve tables for special events or closures to prevent bookings on specific dates/times
+            </p>
+          </div>
+          <Button onClick={handleAddBlockedSlot}>
+            Block New Time Slot
+          </Button>
+        </div>
         
         <div className="rounded-md border">
           <Table>
@@ -528,12 +536,6 @@ const ShopOwnerBookings = () => {
               )}
             </TableBody>
           </Table>
-        </div>
-        
-        <div className="mt-4">
-          <Button onClick={handleAddBlockedSlot} className="w-full sm:w-auto">
-            Block New Time Slot
-          </Button>
         </div>
       </Card>
       

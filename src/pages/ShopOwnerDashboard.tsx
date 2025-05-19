@@ -7,10 +7,20 @@ import { Calendar, Users, Bot } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const ShopOwnerDashboard = () => {
   const navigate = useNavigate();
   const [isAiActive, setIsAiActive] = useState(true);
+  const [isGoogleCalendarEnabled, setIsGoogleCalendarEnabled] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Mock data for KPI cards
   const kpiData = {
@@ -23,7 +33,7 @@ const ShopOwnerDashboard = () => {
   };
 
   // Mock data for today's bookings with the new structure
-  const todaysBookings = [
+  const allBookings = [
     {
       id: 1,
       customerName: 'Tanaka Yuki',
@@ -64,7 +74,79 @@ const ShopOwnerDashboard = () => {
       guests: 6,
       status: 'cancelled',
     },
+    {
+      id: 5,
+      customerName: 'Watanabe Mei',
+      customerPhone: '+81 70-9876-5432',
+      startTime: '2025-05-19T13:00:00',
+      endTime: '2025-05-19T14:30:00',
+      tables: ['Window Seat'],
+      guests: 2,
+      status: 'confirmed',
+    },
+    {
+      id: 6,
+      customerName: 'Kato Takashi',
+      customerPhone: '+81 80-5555-7777',
+      startTime: '2025-05-19T18:00:00',
+      endTime: '2025-05-19T19:45:00',
+      tables: ['Regular 5', 'Regular 6'],
+      guests: 5,
+      status: 'confirmed',
+    },
+    {
+      id: 7,
+      customerName: 'Suzuki Hana',
+      customerPhone: '+81 90-2222-3333',
+      startTime: '2025-05-19T19:30:00',
+      endTime: '2025-05-19T21:00:00',
+      tables: ['Counter'],
+      guests: 1,
+      status: 'pending',
+    },
+    {
+      id: 8,
+      customerName: 'Tanaka Ryu',
+      customerPhone: '+81 70-4444-1111',
+      startTime: '2025-05-19T20:00:00',
+      endTime: '2025-05-19T22:00:00',
+      tables: ['Private Room'],
+      guests: 8,
+      status: 'confirmed',
+    },
+    {
+      id: 9,
+      customerName: 'Ito Yumi',
+      customerPhone: '+81 80-7878-9090',
+      startTime: '2025-05-19T17:00:00',
+      endTime: '2025-05-19T18:30:00',
+      tables: ['Garden View'],
+      guests: 3,
+      status: 'cancelled',
+    },
+    {
+      id: 10,
+      customerName: 'Nakamura Sota',
+      customerPhone: '+81 90-6060-7070',
+      startTime: '2025-05-19T12:00:00',
+      endTime: '2025-05-19T13:15:00',
+      tables: ['Regular 2'],
+      guests: 2,
+      status: 'confirmed',
+    },
   ];
+  
+  // Items per page
+  const itemsPerPage = 8;
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(allBookings.length / itemsPerPage);
+  
+  // Get current page items
+  const currentBookings = allBookings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <DashboardLayout>
@@ -81,7 +163,7 @@ const ShopOwnerDashboard = () => {
       />
 
       {/* KPI Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {/* Today's Bookings */}
         <Card className="p-6 rounded-2xl shadow-sm relative">
           <div className="flex justify-between items-start">
@@ -133,6 +215,28 @@ const ShopOwnerDashboard = () => {
             </div>
           </div>
         </Card>
+
+        {/* Google Calendar Notice - New KPI */}
+        <Card className="p-6 rounded-2xl shadow-sm relative">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <h3 className="text-sm font-medium text-muted-foreground">Google Calendar Notice</h3>
+              <div className="flex items-center gap-3 mt-2">
+                <Switch 
+                  checked={isGoogleCalendarEnabled} 
+                  onCheckedChange={setIsGoogleCalendarEnabled} 
+                  className="data-[state=checked]:bg-blue-500"
+                />
+                <span className="text-sm">
+                  {isGoogleCalendarEnabled ? "Notices enabled" : "Notices disabled"}
+                </span>
+              </div>
+            </div>
+            <div className="p-2 rounded-full bg-blue-50">
+              <Calendar className="h-5 w-5 text-blue-500" />
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Today's Bookings Section */}
@@ -141,7 +245,54 @@ const ShopOwnerDashboard = () => {
           <h2 className="text-lg font-semibold">Today's Bookings</h2>
         </div>
         
-        <RecentBookingsTable bookings={todaysBookings} />
+        <RecentBookingsTable bookings={currentBookings} />
+        
+        {/* Pagination */}
+        {allBookings.length > itemsPerPage && (
+          <div className="mt-4 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNumber = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNumber = totalPages - 4 + i;
+                  } else {
+                    pageNumber = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        isActive={pageNumber === currentPage}
+                        onClick={() => setCurrentPage(pageNumber)}
+                      >
+                        {pageNumber}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
