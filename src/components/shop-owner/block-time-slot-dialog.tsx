@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -15,6 +14,7 @@ interface BlockTimeSlotDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tableTypes: TableType[];
+  tablesByType: Record<string, string[]>; // Added this prop
   onSubmit: (blockedSlot: any) => void;
   editingSlot?: any;
 }
@@ -23,6 +23,7 @@ export function BlockTimeSlotDialog({
   open,
   onOpenChange,
   tableTypes,
+  tablesByType, // Now this prop is properly typed
   onSubmit,
   editingSlot
 }: BlockTimeSlotDialogProps) {
