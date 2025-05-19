@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Store, LayoutDashboard, User, ShieldAlert, Calendar, Table, Edit } from 'lucide-react';
@@ -5,13 +6,13 @@ import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
   className?: string;
-  userRole?: 'admin' | 'shop-owner';
+  userRole?: 'admin' | 'shop-admin';
 }
 
 export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
   const location = useLocation();
   
-  // Admin navigation items with updated paths
+  // Admin navigation items
   const adminNavItems = [
     {
       title: "Dashboard",
@@ -41,31 +42,31 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
     }
   ];
   
-  // Shop owner navigation items (unchanged)
+  // Shop owner navigation items - Updated URLs from /shop-owner to /shop-admin
   const shopOwnerNavItems = [
     {
       title: "Dashboard",
       icon: LayoutDashboard,
-      href: "/shop-owner",
-      isActive: location.pathname === "/shop-owner"
+      href: "/shop-admin",
+      isActive: location.pathname === "/shop-admin"
     },
     {
       title: "Bookings",
       icon: Calendar,
-      href: "/shop-owner/bookings",
-      isActive: location.pathname === "/shop-owner/bookings"
+      href: "/shop-admin/bookings",
+      isActive: location.pathname === "/shop-admin/bookings"
     },
     {
       title: "Tables",
       icon: Table,
-      href: "/shop-owner/tables",
-      isActive: location.pathname === "/shop-owner/tables"
+      href: "/shop-admin/tables",
+      isActive: location.pathname === "/shop-admin/tables"
     },
     {
       title: "Profile",
       icon: Edit,
-      href: "/shop-owner/profile",
-      isActive: location.pathname === "/shop-owner/profile"
+      href: "/shop-admin/profile",
+      isActive: location.pathname === "/shop-admin/profile"
     }
   ];
   

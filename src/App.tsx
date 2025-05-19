@@ -26,7 +26,7 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           
-          {/* Admin Routes - New structure with /admin prefix */}
+          {/* Admin Routes */}
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/shops" element={<Shops />} />
           <Route path="/admin/shops/create" element={<CreateShop />} />
@@ -36,16 +36,16 @@ const App = () => (
           <Route path="/admin/account-settings" element={<AccountSettings />} />
           <Route path="/admin/system-alerts" element={<SystemAlerts />} />
           
-          {/* Shop Owner Routes */}
-          <Route path="/shop-owner" element={<ShopOwnerDashboard />} />
-          <Route path="/shop-owner/bookings" element={<Bookings />} />
-          <Route path="/shop-owner/tables" element={<NotFound />} /> {/* Placeholder for Tables management */}
-          <Route path="/shop-owner/profile" element={<AccountSettings />} /> {/* Reusing AccountSettings for now */}
+          {/* Shop Owner Routes - Updated to use /shop-admin instead of /shop-owner */}
+          <Route path="/shop-admin" element={<ShopOwnerDashboard />} />
+          <Route path="/shop-admin/bookings" element={<Bookings />} />
+          <Route path="/shop-admin/tables" element={<NotFound />} />
+          <Route path="/shop-admin/profile" element={<AccountSettings />} />
           
           {/* Root redirects to admin dashboard */}
           <Route path="/" element={<Navigate to="/admin" replace />} />
           
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
