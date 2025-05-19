@@ -1,17 +1,19 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User, ShieldAlert } from 'lucide-react';
+import { Store, LayoutDashboard, User, ShieldAlert, Calendar, Table, Edit } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
   className?: string;
+  userRole?: 'admin' | 'shop-owner';
 }
 
-export function SidebarNav({ className }: SidebarNavProps) {
+export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
   const location = useLocation();
   
-  const navItems = [
+  // Admin navigation items
+  const adminNavItems = [
     {
       title: "Dashboard",
       icon: LayoutDashboard,
@@ -37,6 +39,37 @@ export function SidebarNav({ className }: SidebarNavProps) {
       isActive: location.pathname === "/account-settings"
     }
   ];
+  
+  // Shop owner navigation items
+  const shopOwnerNavItems = [
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/shop-owner",
+      isActive: location.pathname === "/shop-owner"
+    },
+    {
+      title: "Bookings",
+      icon: Calendar,
+      href: "/shop-owner/bookings",
+      isActive: location.pathname === "/shop-owner/bookings"
+    },
+    {
+      title: "Tables",
+      icon: Table,
+      href: "/shop-owner/tables",
+      isActive: location.pathname === "/shop-owner/tables"
+    },
+    {
+      title: "Profile",
+      icon: Edit,
+      href: "/shop-owner/profile",
+      isActive: location.pathname === "/shop-owner/profile"
+    }
+  ];
+  
+  // Select nav items based on user role
+  const navItems = userRole === 'admin' ? adminNavItems : shopOwnerNavItems;
 
   return (
     <nav className={cn("flex flex-col space-y-1", className)}>
