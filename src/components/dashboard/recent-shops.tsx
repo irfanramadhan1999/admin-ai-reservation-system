@@ -38,6 +38,20 @@ export function RecentShops({ shops }: RecentShopsProps) {
     navigate('/admin/bookings');
   };
   
+  // Format date and time with JST timezone
+  const formatDateTimeJST = (dateString: string) => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    };
+    return `${date.toLocaleDateString('en-US', options)} JST`;
+  };
+  
   return (
     <Card className="p-6 bg-white mb-8">
       <div className="flex items-center justify-between mb-4">
@@ -83,7 +97,7 @@ export function RecentShops({ shops }: RecentShopsProps) {
                   </div>
                 </TableCell>
                 <TableCell>{shop.totalBookings}</TableCell>
-                <TableCell>{new Date(shop.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell>{formatDateTimeJST(shop.createdAt)}</TableCell>
                 <TableCell>
                   <Button
                     variant="ghost" 

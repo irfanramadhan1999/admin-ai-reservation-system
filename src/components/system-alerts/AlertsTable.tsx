@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,15 @@ export const AlertsTable = ({ alerts, onToggleBlock }: AlertsTableProps) => {
   const handleViewConversation = (conversationId: string) => {
     navigate(`/admin/bookings/conversation/${conversationId}`);
   };
+  
+  // Format the timestamp to include JST timezone
+  const formatTimestampWithJST = (timestamp: string) => {
+    // If timestamp already contains JST suffix, return as is
+    if (timestamp.includes('JST')) return timestamp;
+    
+    // Otherwise add JST suffix
+    return `${timestamp} JST`;
+  };
 
   return (
     <Table>
@@ -32,7 +40,7 @@ export const AlertsTable = ({ alerts, onToggleBlock }: AlertsTableProps) => {
       <TableBody>
         {alerts.map((alert) => (
           <TableRow key={alert.id}>
-            <TableCell className="text-sm">{alert.timestamp} (Japan)</TableCell>
+            <TableCell className="text-sm">{formatTimestampWithJST(alert.timestamp)}</TableCell>
             <TableCell className="font-mono text-sm">{alert.ipAddress}</TableCell>
             <TableCell>
               <div className="flex flex-col">
@@ -46,7 +54,7 @@ export const AlertsTable = ({ alerts, onToggleBlock }: AlertsTableProps) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center min-w-[80px]"
                   onClick={() => alert.conversationId && handleViewConversation(alert.conversationId)}
                 >
                   <MessageSquare className="h-4 w-4 mr-1" />
@@ -55,7 +63,7 @@ export const AlertsTable = ({ alerts, onToggleBlock }: AlertsTableProps) => {
                 <Button 
                   variant={alert.status === 'Blocked' ? 'outline' : 'destructive'} 
                   size="sm" 
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center min-w-[80px]"
                   onClick={() => onToggleBlock(alert.ipAddress, alert.id, alert.status)}
                 >
                   <ShieldAlert className="h-4 w-4 mr-1" />

@@ -95,7 +95,7 @@ export const BasicInfoForm = ({
           </Select>
         </div>
         
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between py-2">
           <div>
             <h3 className="font-medium">Shop Status</h3>
             <p className="text-sm text-muted-foreground">Enable or disable this shop</p>
@@ -106,7 +106,7 @@ export const BasicInfoForm = ({
           />
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between py-2">
           <div>
             <h3 className="font-medium">AI Assistant</h3>
             <p className="text-sm text-muted-foreground">Enable or disable AI booking assistant</p>

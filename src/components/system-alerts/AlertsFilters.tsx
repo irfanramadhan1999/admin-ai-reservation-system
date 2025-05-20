@@ -7,25 +7,30 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { CalendarIcon } from 'lucide-react';
 
 interface AlertsFiltersProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  date: Date | undefined;
-  onDateChange: (date: Date | undefined) => void;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  onStartDateChange: (date: Date | undefined) => void;
+  onEndDateChange: (date: Date | undefined) => void;
   statusFilter: string;
   onStatusFilterChange: (value: string) => void;
-  onClearDateFilter: () => void;
+  onClearDateFilters: () => void;
 }
 
 export const AlertsFilters = ({ 
   searchTerm, 
   onSearchChange, 
-  date, 
-  onDateChange,
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
   statusFilter, 
   onStatusFilterChange,
-  onClearDateFilter 
+  onClearDateFilters 
 }: AlertsFiltersProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -38,21 +43,22 @@ export const AlertsFilters = ({
         />
       </div>
       
-      <div className="md:col-span-3">
+      <div className="md:col-span-2">
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
               className="w-full justify-start text-left"
             >
-              {date ? format(date, "yyyy-MM-dd") : "Filter by Date"}
+              {startDate ? format(startDate, "yyyy-MM-dd") : "Start Date"}
+              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={date}
-              onSelect={onDateChange}
+              selected={startDate}
+              onSelect={onStartDateChange}
               initialFocus
               className={cn("p-3 pointer-events-auto")}
             />
@@ -60,7 +66,31 @@ export const AlertsFilters = ({
         </Popover>
       </div>
       
-      <div className="md:col-span-3">
+      <div className="md:col-span-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              className="w-full justify-start text-left"
+            >
+              {endDate ? format(endDate, "yyyy-MM-dd") : "End Date"}
+              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={endDate}
+              onSelect={onEndDateChange}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+              disabled={(date) => startDate ? date < startDate : false}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+      
+      <div className="md:col-span-2">
         <Select value={statusFilter} onValueChange={onStatusFilterChange}>
           <SelectTrigger>
             <SelectValue placeholder="All Status" />
@@ -76,7 +106,7 @@ export const AlertsFilters = ({
       </div>
       
       <div className="md:col-span-1">
-        <Button variant="ghost" onClick={onClearDateFilter} className="w-full">
+        <Button variant="ghost" onClick={onClearDateFilters} className="w-full">
           Clear
         </Button>
       </div>

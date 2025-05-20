@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { toast } from "@/components/ui/use-toast";
@@ -15,7 +14,8 @@ const SystemAlerts = () => {
   const [openUnblockDialog, setOpenUnblockDialog] = useState(false);
   const [selectedIP, setSelectedIP] = useState("");
   const [selectedAlertId, setSelectedAlertId] = useState<number | null>(null);
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,7 +104,7 @@ const SystemAlerts = () => {
     },
   ]);
 
-  // Filter alerts based on search term, date, and status
+  // Filter alerts based on search term, date range, and status
   const filteredAlerts = systemAlerts.filter(alert => {
     // Search filter
     const matchesSearch = 
@@ -112,16 +112,21 @@ const SystemAlerts = () => {
       alert.ipAddress.includes(searchTerm) ||
       alert.shopContact.includes(searchTerm);
     
-    // Date filter
-    let matchesDate = true;
-    if (date) {
+    // Date range filter
+    let matchesDateRange = true;
+    if (startDate || endDate) {
       const alertDate = new Date(alert.timestamp.split(' - ')[0]);
-      const filterDate = new Date(date);
       
-      matchesDate = 
-        alertDate.getFullYear() === filterDate.getFullYear() &&
-        alertDate.getMonth() === filterDate.getMonth() &&
-        alertDate.getDate() === filterDate.getDate();
+      if (startDate && endDate) {
+        // Both start and end dates are set
+        matchesDateRange = alertDate >= startDate && alertDate <= new Date(endDate.setHours(23, 59, 59, 999));
+      } else if (startDate) {
+        // Only start date is set
+        matchesDateRange = alertDate >= startDate;
+      } else if (endDate) {
+        // Only end date is set
+        matchesDateRange = alertDate <= new Date(endDate.setHours(23, 59, 59, 999));
+      }
     }
     
     // Status filter
@@ -130,7 +135,7 @@ const SystemAlerts = () => {
       (statusFilter === 'blocked' && alert.status === 'Blocked') ||
       (statusFilter === 'unblocked' && (alert.status === 'Pending Review' || alert.status === 'Reviewed'));
     
-    return matchesSearch && matchesDate && matchesStatus;
+    return matchesSearch && matchesDateRange && matchesStatus;
   });
 
   // Calculate total pages
@@ -200,8 +205,9 @@ const SystemAlerts = () => {
     setCurrentPage(1); // Reset to first page when changing items per page
   };
 
-  const clearDateFilter = () => {
-    setDate(undefined);
+  const clearDateFilters = () => {
+    setStartDate(undefined);
+    setEndDate(undefined);
   };
   
   return (
@@ -219,11 +225,13 @@ const SystemAlerts = () => {
         <AlertsFilters 
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
-          date={date}
-          onDateChange={setDate}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={setStartDate}
+          onEndDateChange={setEndDate}
           statusFilter={statusFilter}
           onStatusFilterChange={setStatusFilter}
-          onClearDateFilter={clearDateFilter}
+          onClearDateFilters={clearDateFilters}
         />
 
         {/* System Alerts Table */}
