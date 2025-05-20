@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Eye } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "@/components/ui/use-toast";
+import { useNavigate } from 'react-router-dom';
 
-type AlertStatus = 'New' | 'Blocked';
+type AlertStatus = 'Pending Review' | 'Reviewed' | 'Blocked';
 
 interface SystemAlert {
   id: number;
@@ -18,6 +19,7 @@ interface SystemAlert {
   shop: string;
   reason: string;
   status: AlertStatus;
+  conversationId?: string;
 }
 
 const SystemAlerts = () => {
@@ -25,56 +27,63 @@ const SystemAlerts = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedIP, setSelectedIP] = useState("");
   const [selectedAlertId, setSelectedAlertId] = useState<number | null>(null);
+  const navigate = useNavigate();
 
-  // Mock data for system alerts
+  // Mock data for system alerts with updated timestamps and reasons
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([
     {
       id: 1,
-      timestamp: '2 min ago',
+      timestamp: 'May 20, 2025 - 14:30',
       ipAddress: '192.168.1.45',
       shop: 'Sakura Sushi Tokyo',
-      reason: 'Excessive token usage',
-      status: 'New',
+      reason: 'User hung up the phone',
+      status: 'Pending Review',
+      conversationId: 'C001'
     },
     {
       id: 2,
-      timestamp: '15 min ago',
+      timestamp: 'May 20, 2025 - 13:15',
       ipAddress: '192.168.3.78',
       shop: 'Milano Pasta House',
-      reason: 'Excessive token usage',
-      status: 'New',
+      reason: 'User went off-topic during the call',
+      status: 'Pending Review',
+      conversationId: 'C002'
     },
     {
       id: 3,
-      timestamp: '1 hour ago',
+      timestamp: 'May 19, 2025 - 18:45',
       ipAddress: '192.168.5.12',
       shop: 'Paris Bistro',
-      reason: 'Excessive token usage',
+      reason: 'User hung up the phone',
       status: 'Blocked',
+      conversationId: 'C003'
     },
     {
       id: 4,
-      timestamp: '3 hours ago',
+      timestamp: 'May 19, 2025 - 15:22',
       ipAddress: '192.168.9.33',
       shop: 'New York Steakhouse',
-      reason: 'Excessive token usage',
+      reason: 'User went off-topic during the call',
       status: 'Blocked',
+      conversationId: 'C004'
     },
     {
       id: 5,
-      timestamp: '8 hours ago',
+      timestamp: 'May 18, 2025 - 09:10',
       ipAddress: '192.168.2.55',
       shop: 'Tokyo Ramen',
-      reason: 'Excessive token usage',
-      status: 'New',
+      reason: 'User hung up the phone',
+      status: 'Reviewed',
+      conversationId: 'C005'
     },
     {
       id: 6,
-      timestamp: '1 day ago',
+      timestamp: 'May 17, 2025 - 20:05',
       ipAddress: '192.168.7.21',
       shop: 'Barcelona Tapas',
-      reason: 'Excessive token usage',
+      reason: 'User went off-topic during the call',
       status: 'Blocked',
+      conversationId: 'C006'
     },
   ]);
 
@@ -83,10 +92,30 @@ const SystemAlerts = () => {
     alert.ipAddress.includes(searchTerm)
   );
 
-  const handleOpenBlockDialog = (ipAddress: string, alertId: number) => {
+  const handleToggleBlock = (ipAddress: string, alertId: number, currentStatus: AlertStatus) => {
+    // If already blocked, unblock directly
+    if (currentStatus === 'Blocked') {
+      handleUnblock(alertId);
+      return;
+    }
+    
+    // If not blocked, open confirmation dialog
     setSelectedIP(ipAddress);
     setSelectedAlertId(alertId);
     setOpenDialog(true);
+  };
+
+  const handleUnblock = (alertId: number) => {
+    setSystemAlerts(prevAlerts => 
+      prevAlerts.map(alert => 
+        alert.id === alertId ? { ...alert, status: 'Reviewed' } : alert
+      )
+    );
+    
+    toast({
+      title: "IP Unblocked",
+      description: "The IP address has been unblocked successfully.",
+    });
   };
 
   const handleConfirmBlock = () => {
@@ -104,6 +133,10 @@ const SystemAlerts = () => {
       description: `${selectedIP} has been blocked successfully.`,
     });
     setOpenDialog(false);
+  };
+
+  const handleViewConversation = (conversationId: string) => {
+    navigate(`/admin/bookings/conversation/${conversationId}`);
   };
 
   return (
@@ -149,26 +182,43 @@ const SystemAlerts = () => {
                   <TableCell className="max-w-xs">{alert.reason}</TableCell>
                   <TableCell>
                     <Badge 
-                      variant={alert.status === 'New' ? 'default' : 'outline'} 
-                      className={alert.status === 'New' 
+                      variant={alert.status === 'Pending Review' 
+                        ? 'default' 
+                        : alert.status === 'Blocked'
+                        ? 'outline'
+                        : 'secondary'
+                      } 
+                      className={alert.status === 'Pending Review' 
                         ? 'bg-red-500 hover:bg-red-600' 
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : alert.status === 'Blocked'
+                        ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-green-500 hover:bg-green-600'
                       }
                     >
                       {alert.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
-                      className="flex items-center justify-center"
-                      onClick={() => handleOpenBlockDialog(alert.ipAddress, alert.id)}
-                      disabled={alert.status === 'Blocked'}
-                    >
-                      <ShieldAlert className="h-4 w-4 mr-1" />
-                      Block
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center justify-center"
+                        onClick={() => alert.conversationId && handleViewConversation(alert.conversationId)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        View Conversation
+                      </Button>
+                      <Button 
+                        variant={alert.status === 'Blocked' ? 'outline' : 'destructive'} 
+                        size="sm" 
+                        className="flex items-center justify-center"
+                        onClick={() => handleToggleBlock(alert.ipAddress, alert.id, alert.status)}
+                      >
+                        <ShieldAlert className="h-4 w-4 mr-1" />
+                        {alert.status === 'Blocked' ? 'Unblock' : 'Block'}
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
