@@ -92,7 +92,7 @@ const ViewConversation = () => {
   };
 
   const handleBack = () => {
-    navigate('/bookings');
+    navigate('/admin/bookings');
   };
 
   return (
@@ -142,7 +142,7 @@ const ViewConversation = () => {
             <CardContent>
               <p className="text-2xl font-semibold">{conversation.duration}</p>
               <p className="text-sm text-muted-foreground">
-                {conversation.startTime} - {conversation.endTime}
+                {conversation.startTime} - {conversation.endTime} JST
               </p>
             </CardContent>
           </Card>

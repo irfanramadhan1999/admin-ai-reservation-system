@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -11,11 +12,11 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
+import { format } from 'date-fns';
 import { 
   Edit, 
   CalendarDays, 
   Plus, 
-  Calendar, 
   ExternalLink
 } from 'lucide-react';
 import { 
@@ -27,6 +28,17 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from '@/components/ui/pagination';
+import { 
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 // Sample data
 const shopData = [
@@ -39,7 +51,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 42,
-    createdAt: "2025-01-15",
+    createdAt: "2025-01-15T14:30:00",
     isActive: true,
     frontendUrl: "https://olivegarden.reserveai.jp"
   },
@@ -52,7 +64,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 28,
-    createdAt: "2025-02-03",
+    createdAt: "2025-02-03T09:15:00",
     isActive: true,
     frontendUrl: "https://sushiheaven.reserveai.jp"
   },
@@ -65,7 +77,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 36,
-    createdAt: "2025-02-20",
+    createdAt: "2025-02-20T16:45:00",
     isActive: false,
     frontendUrl: "https://pastaparadise.reserveai.jp"
   },
@@ -78,7 +90,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 24,
-    createdAt: "2025-03-05",
+    createdAt: "2025-03-05T11:20:00",
     isActive: true,
     frontendUrl: "https://burgerbliss.reserveai.jp"
   },
@@ -91,7 +103,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 32,
-    createdAt: "2025-03-18",
+    createdAt: "2025-03-18T13:40:00",
     isActive: true,
     frontendUrl: "https://thaidelight.reserveai.jp"
   },
@@ -104,7 +116,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 29,
-    createdAt: "2025-03-25",
+    createdAt: "2025-03-25T15:10:00",
     isActive: true,
     frontendUrl: "https://mexicanfiesta.reserveai.jp"
   },
@@ -117,7 +129,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 22,
-    createdAt: "2025-04-02",
+    createdAt: "2025-04-02T10:30:00",
     isActive: false,
     frontendUrl: "https://frenchbistro.reserveai.jp"
   },
@@ -130,7 +142,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 38,
-    createdAt: "2025-04-10",
+    createdAt: "2025-04-10T12:15:00",
     isActive: true,
     frontendUrl: "https://indianspice.reserveai.jp"
   },
@@ -143,7 +155,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 45,
-    createdAt: "2025-04-17",
+    createdAt: "2025-04-17T18:45:00",
     isActive: true,
     frontendUrl: "https://steakhouseprime.reserveai.jp"
   },
@@ -156,7 +168,7 @@ const shopData = [
       limit: 5000
     },
     totalBookings: 31,
-    createdAt: "2025-04-25",
+    createdAt: "2025-04-25T17:20:00",
     isActive: true,
     frontendUrl: "https://seafoodharbor.reserveai.jp"
   }
@@ -167,13 +179,41 @@ const Shops = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [shops, setShops] = useState(shopData);
-  const itemsPerPage = 8;
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   
-  // Filtered shops based on search term
-  const filteredShops = shops.filter(shop => 
-    shop.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    shop.contact.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter shops based on search term and date range
+  const filteredShops = shops.filter(shop => {
+    // Search filter
+    const matchesSearch = shop.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          shop.contact.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Date range filter
+    let matchesDateRange = true;
+    const shopDate = new Date(shop.createdAt);
+    
+    if (startDate && endDate) {
+      // Set time to beginning and end of day for proper comparison
+      const startOfDay = new Date(startDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      
+      matchesDateRange = shopDate >= startOfDay && shopDate <= endOfDay;
+    } else if (startDate) {
+      const startOfDay = new Date(startDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      matchesDateRange = shopDate >= startOfDay;
+    } else if (endDate) {
+      const endOfDay = new Date(endDate);
+      endOfDay.setHours(23, 59, 59, 999);
+      matchesDateRange = shopDate <= endOfDay;
+    }
+    
+    return matchesSearch && matchesDateRange;
+  });
   
   // Calculate total pages
   const totalPages = Math.ceil(filteredShops.length / itemsPerPage);
@@ -204,6 +244,21 @@ const Shops = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+
+  const clearDateFilters = () => {
+    setStartDate(undefined);
+    setEndDate(undefined);
+  };
+  
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${format(date, 'yyyy-MM-dd')}, ${format(date, 'HH:mm')} JST`;
+  };
   
   return (
     <DashboardLayout>
@@ -221,14 +276,67 @@ const Shops = () => {
           </Button>
         </div>
         
-        {/* Search Section */}
-        <div className="w-full">
-          <Input
-            placeholder="Search by shop name or contact"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-full"
-          />
+        {/* Search and Filters Section */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div className="md:col-span-5">
+            <Input
+              placeholder="Search by shop name or contact"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          
+          {/* Date Range Filter */}
+          <div className="md:col-span-3">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className="w-full justify-start text-left"
+                >
+                  {startDate ? format(startDate, "yyyy-MM-dd") : "Start Date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          
+          <div className="md:col-span-3">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className="w-full justify-start text-left"
+                >
+                  {endDate ? format(endDate, "yyyy-MM-dd") : "End Date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          
+          <div className="md:col-span-1">
+            <Button variant="ghost" onClick={clearDateFilters} className="w-full">
+              Clear
+            </Button>
+          </div>
         </div>
         
         {/* Table Section */}
@@ -265,10 +373,7 @@ const Shops = () => {
                   </TableCell>
                   <TableCell>{shop.totalBookings}</TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span>{new Date(shop.createdAt).toLocaleDateString()}</span>
-                    </div>
+                    {formatDateTime(shop.createdAt)}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -303,9 +408,25 @@ const Shops = () => {
             </TableBody>
           </Table>
           
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center py-4">
+          {/* Pagination and Items Per Page Controls */}
+          <div className="flex flex-col md:flex-row justify-between items-center p-4 border-t">
+            <div className="flex items-center gap-2 mb-4 md:mb-0">
+              <span className="text-sm text-muted-foreground">Rows per page:</span>
+              <Select value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
+                <SelectTrigger className="w-[80px]">
+                  <SelectValue placeholder={itemsPerPage.toString()} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {totalPages > 1 && (
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -334,8 +455,8 @@ const Shops = () => {
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </DashboardLayout>

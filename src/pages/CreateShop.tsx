@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -18,6 +19,7 @@ const CreateShop = () => {
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [shopActive, setShopActive] = useState(true);
+  const [aiAssistantEnabled, setAiAssistantEnabled] = useState(true);
   const navigate = useNavigate();
   
   // Form state
@@ -35,6 +37,10 @@ const CreateShop = () => {
     cuisine: '',
     priceRange: 'moderate',
     capacity: '',
+    defaultLanguage: 'english',
+    ownerEmail: '',
+    ownerPassword: '',
+    ownerConfirmPassword: '',
     openingHours: {
       monday: { open: '09:00', close: '22:00', closed: false },
       tuesday: { open: '09:00', close: '22:00', closed: false },
@@ -65,6 +71,10 @@ const CreateShop = () => {
         cuisine: 'Japanese',
         priceRange: 'expensive',
         capacity: '50',
+        defaultLanguage: 'japanese',
+        ownerEmail: 'owner@sakurasushi.jp',
+        ownerPassword: '',
+        ownerConfirmPassword: '',
         openingHours: {
           monday: { open: '11:00', close: '22:00', closed: false },
           tuesday: { open: '11:00', close: '22:00', closed: false },
@@ -76,6 +86,7 @@ const CreateShop = () => {
         }
       });
       setShopActive(true); // This would be set from fetched data
+      setAiAssistantEnabled(true); // This would be set from fetched data
     }
   }, [id]);
 
@@ -188,120 +199,238 @@ const CreateShop = () => {
           <form onSubmit={handleSubmit}>
             <TabsContent value="basic">
               <Card className="p-6">
-                <h2 className="text-lg font-medium mb-4">Basic Information</h2>
-                
-                {/* Add Shop Active Toggle for Edit mode only */}
-                {isEditing && (
-                  <ShopActiveToggle 
-                    isActive={shopActive} 
-                    onToggle={handleShopActiveToggle} 
-                  />
-                )}
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h2 className="text-lg font-medium mb-4">Basic Information</h2>
+                    
+                    <div className="space-y-4">
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="name">Shop Name</Label>
+                        <Input 
+                          id="name" 
+                          name="name" 
+                          value={formData.name} 
+                          onChange={handleInputChange} 
+                          required 
+                        />
+                      </div>
+                      
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="cuisine">Cuisine Type</Label>
+                        <Select 
+                          value={formData.cuisine} 
+                          onValueChange={(value) => handleSelectChange('cuisine', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select cuisine type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="japanese">Japanese</SelectItem>
+                            <SelectItem value="italian">Italian</SelectItem>
+                            <SelectItem value="chinese">Chinese</SelectItem>
+                            <SelectItem value="french">French</SelectItem>
+                            <SelectItem value="indian">Indian</SelectItem>
+                            <SelectItem value="thai">Thai</SelectItem>
+                            <SelectItem value="mexican">Mexican</SelectItem>
+                            <SelectItem value="american">American</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea 
+                          id="description" 
+                          name="description" 
+                          value={formData.description} 
+                          onChange={handleInputChange} 
+                          rows={3} 
+                        />
+                      </div>
+
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="defaultLanguage">Default Language</Label>
+                        <Select 
+                          value={formData.defaultLanguage} 
+                          onValueChange={(value) => handleSelectChange('defaultLanguage', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select default language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="english">English</SelectItem>
+                            <SelectItem value="japanese">Japanese</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium">Shop Status</h3>
+                          <p className="text-sm text-muted-foreground">Enable or disable this shop</p>
+                        </div>
+                        <Switch 
+                          checked={shopActive}
+                          onCheckedChange={setShopActive}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium">AI Assistant</h3>
+                          <p className="text-sm text-muted-foreground">Enable or disable AI booking assistant</p>
+                        </div>
+                        <Switch 
+                          checked={aiAssistantEnabled}
+                          onCheckedChange={setAiAssistantEnabled}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h2 className="text-lg font-medium mb-4">Location & Contact</h2>
+                    
+                    <div className="space-y-4">
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="address">Address</Label>
+                        <Input 
+                          id="address" 
+                          name="address" 
+                          value={formData.address} 
+                          onChange={handleInputChange} 
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col space-y-2">
+                          <Label htmlFor="city">City</Label>
+                          <Input 
+                            id="city" 
+                            name="city" 
+                            value={formData.city} 
+                            onChange={handleInputChange} 
+                          />
+                        </div>
+                        
+                        <div className="flex flex-col space-y-2">
+                          <Label htmlFor="state">Prefecture</Label>
+                          <Input 
+                            id="state" 
+                            name="state" 
+                            value={formData.state} 
+                            onChange={handleInputChange} 
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col space-y-2">
+                          <Label htmlFor="zipCode">Postal Code</Label>
+                          <Input 
+                            id="zipCode" 
+                            name="zipCode" 
+                            value={formData.zipCode} 
+                            onChange={handleInputChange} 
+                          />
+                        </div>
+                        
+                        <div className="flex flex-col space-y-2">
+                          <Label htmlFor="country">Country</Label>
+                          <Select 
+                            value={formData.country} 
+                            onValueChange={(value) => handleSelectChange('country', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select country" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Japan">Japan</SelectItem>
+                              <SelectItem value="United States">United States</SelectItem>
+                              <SelectItem value="United Kingdom">United Kingdom</SelectItem>
+                              <SelectItem value="Canada">Canada</SelectItem>
+                              <SelectItem value="Australia">Australia</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="phone">Phone Number</Label>
+                        <Input 
+                          id="phone" 
+                          name="phone" 
+                          value={formData.phone} 
+                          onChange={handleInputChange} 
+                        />
+                      </div>
+                      
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="email">Email Address</Label>
+                        <Input 
+                          id="email" 
+                          name="email" 
+                          type="email" 
+                          value={formData.email} 
+                          onChange={handleInputChange} 
+                        />
+                      </div>
+                      
+                      <div className="flex flex-col space-y-2">
+                        <Label htmlFor="website">Website</Label>
+                        <Input 
+                          id="website" 
+                          name="website" 
+                          value={formData.website} 
+                          onChange={handleInputChange} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6 mt-6">
+                <h2 className="text-lg font-medium mb-4">Shop Owner Login Credentials</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Shop Name</Label>
+                    <Label htmlFor="ownerEmail">Email</Label>
                     <Input 
-                      id="name" 
-                      name="name" 
-                      value={formData.name} 
+                      id="ownerEmail" 
+                      name="ownerEmail" 
+                      type="email" 
+                      value={formData.ownerEmail} 
                       onChange={handleInputChange} 
-                      required 
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="cuisine">Cuisine Type</Label>
-                    <Select 
-                      value={formData.cuisine} 
-                      onValueChange={(value) => handleSelectChange('cuisine', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select cuisine type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="japanese">Japanese</SelectItem>
-                        <SelectItem value="italian">Italian</SelectItem>
-                        <SelectItem value="chinese">Chinese</SelectItem>
-                        <SelectItem value="french">French</SelectItem>
-                        <SelectItem value="indian">Indian</SelectItem>
-                        <SelectItem value="thai">Thai</SelectItem>
-                        <SelectItem value="mexican">Mexican</SelectItem>
-                        <SelectItem value="american">American</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="ownerPassword">Password</Label>
+                    <Input 
+                      id="ownerPassword" 
+                      name="ownerPassword" 
+                      type="password" 
+                      value={formData.ownerPassword} 
+                      onChange={handleInputChange} 
+                    />
                   </div>
                   
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea 
-                      id="description" 
-                      name="description" 
-                      value={formData.description} 
-                      onChange={handleInputChange} 
-                      rows={3} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="address">Address</Label>
+                    <Label htmlFor="ownerConfirmPassword">Confirm Password</Label>
                     <Input 
-                      id="address" 
-                      name="address" 
-                      value={formData.address} 
+                      id="ownerConfirmPassword" 
+                      name="ownerConfirmPassword" 
+                      type="password" 
+                      value={formData.ownerConfirmPassword} 
                       onChange={handleInputChange} 
                     />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input 
-                      id="city" 
-                      name="city" 
-                      value={formData.city} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="state">State/Prefecture</Label>
-                    <Input 
-                      id="state" 
-                      name="state" 
-                      value={formData.state} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="zipCode">Postal Code</Label>
-                    <Input 
-                      id="zipCode" 
-                      name="zipCode" 
-                      value={formData.zipCode} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="country">Country</Label>
-                    <Select 
-                      value={formData.country} 
-                      onValueChange={(value) => handleSelectChange('country', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Japan">Japan</SelectItem>
-                        <SelectItem value="United States">United States</SelectItem>
-                        <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                        <SelectItem value="Canada">Canada</SelectItem>
-                        <SelectItem value="Australia">Australia</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
+                </div>
+              </Card>
+              
+              <Card className="p-6 mt-6">
+                <h2 className="text-lg font-medium mb-4">Additional Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="priceRange">Price Range</Label>
                     <Select 
@@ -318,42 +447,6 @@ const CreateShop = () => {
                         <SelectItem value="luxury">Luxury (¥¥¥¥)</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-                </div>
-              </Card>
-              
-              <Card className="p-6 mt-6">
-                <h2 className="text-lg font-medium mb-4">Contact Information</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input 
-                      id="phone" 
-                      name="phone" 
-                      value={formData.phone} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input 
-                      id="email" 
-                      name="email" 
-                      type="email" 
-                      value={formData.email} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="website">Website</Label>
-                    <Input 
-                      id="website" 
-                      name="website" 
-                      value={formData.website} 
-                      onChange={handleInputChange} 
-                    />
                   </div>
                   
                   <div className="space-y-2">
