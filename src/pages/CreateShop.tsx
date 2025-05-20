@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -21,6 +20,14 @@ const CreateShop = () => {
   const [address, setAddress] = useState(isEditing ? '1-2-3 Shibuya, Shibuya-ku, Tokyo, Japan 150-0002' : '');
   const [subdomain, setSubdomain] = useState(isEditing ? 'sakura' : '');
   const [shopImage, setShopImage] = useState<string | null>(null);
+  const [defaultLanguage, setDefaultLanguage] = useState(isEditing ? 'japanese' : 'english');
+  const [shopActive, setShopActive] = useState(isEditing ? true : false);
+  const [aiAssistantEnabled, setAiAssistantEnabled] = useState(isEditing ? true : false);
+  
+  // Owner credentials state
+  const [ownerEmail, setOwnerEmail] = useState(isEditing ? 'owner@sakura-restaurant.com' : '');
+  const [ownerPassword, setOwnerPassword] = useState('');
+  const [ownerConfirmPassword, setOwnerConfirmPassword] = useState('');
   
   // Knowledge management state
   const [shopKnowledge, setShopKnowledge] = useState('');
@@ -114,6 +121,14 @@ const CreateShop = () => {
     });
   };
 
+  // Handle owner credential changes
+  const handleOwnerCredentialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (name === 'ownerEmail') setOwnerEmail(value);
+    else if (name === 'ownerPassword') setOwnerPassword(value);
+    else if (name === 'ownerConfirmPassword') setOwnerConfirmPassword(value);
+  };
+
   // Handle save changes
   const handleSaveChanges = (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,6 +170,33 @@ const CreateShop = () => {
       return;
     }
     
+    if (!ownerEmail.trim()) {
+      toast({
+        title: "Missing Information",
+        description: "Owner email is required.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!isEditing && (!ownerPassword.trim() || !ownerConfirmPassword.trim())) {
+      toast({
+        title: "Missing Information",
+        description: "Owner password is required.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (ownerPassword !== ownerConfirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Password and confirm password do not match.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     toast({
       title: isEditing ? "Shop Updated" : "Shop Created",
       description: `${shopName} has been ${isEditing ? "updated" : "created"} successfully.`
@@ -169,7 +211,7 @@ const CreateShop = () => {
       {/* Page Header */}
       <CreateShopHeader isEditing={isEditing} />
       
-      <form onSubmit={handleSaveChanges}>
+      <form onSubmit={handleSaveChanges} className="space-y-6">
         {/* Basic Information Section */}
         <ShopBasicInfoSection 
           shopName={shopName}
@@ -182,6 +224,16 @@ const CreateShop = () => {
           setSubdomain={setSubdomain}
           shopImage={shopImage}
           handleShopImageUpload={handleShopImageUpload}
+          defaultLanguage={defaultLanguage}
+          setDefaultLanguage={setDefaultLanguage}
+          shopActive={shopActive}
+          setShopActive={setShopActive}
+          aiAssistantEnabled={aiAssistantEnabled}
+          setAiAssistantEnabled={setAiAssistantEnabled}
+          ownerEmail={ownerEmail}
+          ownerPassword={ownerPassword}
+          ownerConfirmPassword={ownerConfirmPassword}
+          handleOwnerCredentialChange={handleOwnerCredentialChange}
         />
         
         {/* Operating Hours Section */}

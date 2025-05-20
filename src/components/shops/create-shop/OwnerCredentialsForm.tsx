@@ -36,6 +36,7 @@ export const OwnerCredentialsForm = ({
             required
             placeholder="shop.owner@example.com"
           />
+          <p className="text-xs text-muted-foreground">This email will be used for owner login and Google Calendar integration.</p>
         </div>
         
         <div className="space-y-2">
