@@ -1,28 +1,17 @@
+
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { 
   Store, 
   CalendarDays, 
   Zap, 
-  Activity,
-  ArrowRight,
-  MessageSquare,
-  ShieldAlert
+  Activity
 } from 'lucide-react';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { KpiCards } from '@/components/dashboard/kpi-cards';
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { AlertsTable } from '@/components/system-alerts/AlertsTable';
+import { RecentShops } from '@/components/dashboard/recent-shops';
+import { RecentAlerts } from '@/components/dashboard/recent-alerts';
 import { SystemAlert } from '@/components/system-alerts/types';
 
 const Dashboard = () => {
@@ -187,16 +176,8 @@ const Dashboard = () => {
     },
   ];
 
-  const handleViewBookings = (shopId: string) => {
-    navigate('/admin/bookings');
-  };
-
   const handleToggleBlock = (ipAddress: string, alertId: number, currentStatus: SystemAlert['status']) => {
     navigate('/admin/system-alerts');
-  };
-
-  const handleViewConversation = (conversationId: string) => {
-    navigate(`/admin/bookings/conversation/${conversationId}`);
   };
 
   // Format current date for display
@@ -220,87 +201,13 @@ const Dashboard = () => {
       <KpiCards kpiData={kpiData} />
 
       {/* Recent Shops Section */}
-      <Card className="p-6 bg-white mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Recent Shops</h2>
-          <Link 
-            to="/admin/shops" 
-            className="text-sm flex items-center text-blue-500 hover:underline"
-          >
-            View All
-            <ArrowRight className="h-4 w-4 ml-1" />
-          </Link>
-        </div>
-        
-        <div className="rounded-lg border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Shop Information</TableHead>
-                <TableHead>Token Usage</TableHead>
-                <TableHead>Total Bookings</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentShops.map((shop) => (
-                <TableRow key={shop.id}>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{shop.name}</span>
-                      <span className="text-sm text-muted-foreground">{shop.contact}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{shop.tokenUsage.used.toLocaleString()} / {shop.tokenUsage.limit.toLocaleString()}</span>
-                      <div className="w-full bg-gray-200 h-2 rounded-full mt-1">
-                        <div 
-                          className={`h-2 rounded-full ${shop.tokenUsage.used / shop.tokenUsage.limit > 0.8 ? 'bg-red-500' : 'bg-green-500'}`}
-                          style={{ width: `${(shop.tokenUsage.used / shop.tokenUsage.limit) * 100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{shop.totalBookings}</TableCell>
-                  <TableCell>{new Date(shop.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => handleViewBookings(shop.id)}
-                    >
-                      View Booking
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+      <RecentShops shops={recentShops} />
 
-      {/* Recent Suspicious Activities Section - Updated to use the AlertsTable component */}
-      <Card className="p-6 bg-white mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Recent Suspicious Activities</h2>
-          <Link 
-            to="/admin/system-alerts" 
-            className="text-sm flex items-center text-blue-500 hover:underline"
-          >
-            View All
-            <ArrowRight className="h-4 w-4 ml-1" />
-          </Link>
-        </div>
-        
-        <div className="rounded-lg border bg-card">
-          <AlertsTable 
-            alerts={recentAlerts.slice(0, 5)} 
-            onToggleBlock={handleToggleBlock} 
-          />
-        </div>
-      </Card>
+      {/* Recent Suspicious Activities Section */}
+      <RecentAlerts 
+        alerts={recentAlerts} 
+        onToggleBlock={handleToggleBlock} 
+      />
     </DashboardLayout>
   );
 };
