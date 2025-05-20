@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -35,9 +35,33 @@ export function BlockTimeSlotDialog({
     startTime: editingSlot?.startTime || '09:00',
     endTime: editingSlot?.endTime || '17:00',
     tableTypeId: editingSlot?.tableTypeId || '',
-    tableQuantity: editingSlot?.tableQuantity || 1,
     selectedTables: editingSlot?.tables || []
   });
+  
+  // State for generated tables based on selected table type
+  const [availableTables, setAvailableTables] = useState<string[]>([]);
+  
+  // Update available tables when table type changes
+  useEffect(() => {
+    if (formValues.tableTypeId) {
+      const selectedType = tableTypes.find(t => t.id === formValues.tableTypeId);
+      if (selectedType) {
+        // If we have predefined tables for this type, use them
+        if (tablesByType[selectedType.name]) {
+          setAvailableTables(tablesByType[selectedType.name]);
+        } else {
+          // Otherwise, generate numbered tables based on quantity
+          const quantity = selectedType.quantity || 1;
+          const tables = Array.from({ length: quantity }, (_, i) => 
+            `${selectedType.name} ${i + 1}`
+          );
+          setAvailableTables(tables);
+        }
+      }
+    } else {
+      setAvailableTables([]);
+    }
+  }, [formValues.tableTypeId, tableTypes, tablesByType]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,42 +93,32 @@ export function BlockTimeSlotDialog({
     setFormValues({
       ...formValues,
       tableTypeId: value,
-      tableQuantity: 1
+      selectedTables: [] // Reset selected tables when table type changes
     });
   };
 
-  const handleAddTable = () => {
-    if (formValues.tableTypeId) {
-      const tableType = tableTypes.find(t => t.id === formValues.tableTypeId);
-      if (tableType) {
-        const newTables = [...formValues.selectedTables];
-        
-        // Add tables based on quantity
-        for (let i = 0; i < formValues.tableQuantity; i++) {
-          newTables.push(tableType.name);
-        }
-        
-        setFormValues({
-          ...formValues,
-          selectedTables: newTables,
-          tableTypeId: '',
-          tableQuantity: 1
-        });
-      }
+  // Handle table selection via checkbox
+  const handleTableSelection = (tableName: string, isChecked: boolean) => {
+    if (isChecked) {
+      // Add table to selection
+      setFormValues({
+        ...formValues,
+        selectedTables: [...formValues.selectedTables, tableName]
+      });
+    } else {
+      // Remove table from selection
+      setFormValues({
+        ...formValues,
+        selectedTables: formValues.selectedTables.filter(t => t !== tableName)
+      });
     }
-  };
-
-  const handleRemoveTable = (index: number) => {
-    const newTables = [...formValues.selectedTables];
-    newTables.splice(index, 1);
-    setFormValues({
-      ...formValues,
-      selectedTables: newTables
-    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Find the table type name based on ID for display purposes
+    const tableType = tableTypes.find(t => t.id === formValues.tableTypeId);
     
     const blockedSlot = {
       id: editingSlot?.id || Date.now().toString(),
@@ -113,6 +127,7 @@ export function BlockTimeSlotDialog({
       blockEntireDay: formValues.blockEntireDay,
       startTime: formValues.startTime,
       endTime: formValues.endTime,
+      tableType: tableType ? tableType.name : 'All Types',
       tables: formValues.selectedTables
     };
     
@@ -208,67 +223,70 @@ export function BlockTimeSlotDialog({
             </div>
           )}
           
-          {/* Tables */}
+          {/* Table Type Selection */}
           <div className="space-y-4">
-            <Label>Tables</Label>
+            <div className="space-y-2">
+              <Label htmlFor="tableType">Table Type</Label>
+              <Select value={formValues.tableTypeId} onValueChange={handleTableTypeChange}>
+                <SelectTrigger id="tableType">
+                  <SelectValue placeholder="Select table type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tableTypes.map((type) => (
+                    <SelectItem key={type.id} value={type.id}>
+                      {type.name} ({type.capacity} people) - {type.quantity} tables
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             
-            {/* Selected Tables */}
-            <div className="flex flex-wrap gap-2">
-              {formValues.selectedTables.map((table, index) => (
-                <div key={index} className="bg-blue-100 px-2 py-1 rounded-md flex items-center gap-1">
-                  {table}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTable(index)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    ×
-                  </button>
+            {/* Specific Table Selection with Checkboxes */}
+            {formValues.tableTypeId && availableTables.length > 0 && (
+              <div className="space-y-2">
+                <Label>Select Tables</Label>
+                <div className="border rounded-md p-3 max-h-48 overflow-y-auto grid grid-cols-2 gap-2">
+                  {availableTables.map((table, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={`table-${index}`} 
+                        checked={formValues.selectedTables.includes(table)}
+                        onCheckedChange={(checked) => handleTableSelection(table, checked === true)}
+                      />
+                      <Label htmlFor={`table-${index}`} className="cursor-pointer">
+                        {table}
+                      </Label>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+                {formValues.selectedTables.length > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    {formValues.selectedTables.length} table(s) selected
+                  </p>
+                )}
+              </div>
+            )}
             
-            {/* Add Tables */}
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <Select value={formValues.tableTypeId} onValueChange={handleTableTypeChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Table Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {tableTypes.map((type) => (
-                      <SelectItem key={type.id} value={type.id}>
-                        {type.name} ({type.capacity} people)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            {/* Show selected tables */}
+            {formValues.selectedTables.length > 0 && (
+              <div className="space-y-2">
+                <Label>Selected Tables</Label>
+                <div className="flex flex-wrap gap-2">
+                  {formValues.selectedTables.map((table, index) => (
+                    <div key={index} className="bg-blue-100 px-2 py-1 rounded-md flex items-center gap-1">
+                      {table}
+                      <button
+                        type="button"
+                        onClick={() => handleTableSelection(table, false)}
+                        className="text-gray-500 hover:text-gray-700 ml-1"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div>
-                <Input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={formValues.tableQuantity}
-                  onChange={(e) => setFormValues({
-                    ...formValues,
-                    tableQuantity: parseInt(e.target.value) || 1
-                  })}
-                  placeholder="Qty"
-                />
-              </div>
-              <div>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={handleAddTable}
-                  disabled={!formValues.tableTypeId}
-                  className="w-full"
-                >
-                  Add
-                </Button>
-              </div>
-            </div>
+            )}
           </div>
           
           <DialogFooter>

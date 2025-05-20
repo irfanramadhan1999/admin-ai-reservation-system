@@ -9,8 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Asterisk, Trash2, Eye } from 'lucide-react';
+import { Asterisk, Trash2, Eye, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
@@ -26,6 +25,9 @@ const ShopInformation = () => {
   
   // Knowledge management state
   const [shopKnowledge, setShopKnowledge] = useState('');
+  const [documents, setDocuments] = useState<{ name: string; file: File | null }[]>([
+    { name: 'business-license.pdf', file: null }
+  ]);
   
   // Operating hours state
   const [is24Hours, setIs24Hours] = useState(false);
@@ -38,18 +40,6 @@ const ShopInformation = () => {
     { day: 'Saturday', isOpen: true, openTime: '10:00', closeTime: '23:00', lastOrder: true, lastOrderTime: '22:00' },
     { day: 'Sunday', isOpen: true, openTime: '10:00', closeTime: '21:00', lastOrder: true, lastOrderTime: '20:00' },
   ]);
-  
-  // Available time options
-  const timeOptions = [
-    '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30',
-    '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30',
-    '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-    '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30',
-    '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'
-  ];
-  
-  // Document state
-  const [documentName, setDocumentName] = useState<string | null>('business-license.pdf');
   
   // Handle operating hours toggle
   const handleToggleDay = (index: number) => {
@@ -99,7 +89,8 @@ const ShopInformation = () => {
   const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.name.endsWith('.pdf')) {
-      setDocumentName(file.name);
+      // Add new document to the list
+      setDocuments([...documents, { name: file.name, file }]);
       toast({
         title: "Document Uploaded",
         description: "Your document has been successfully uploaded."
@@ -114,8 +105,10 @@ const ShopInformation = () => {
   };
 
   // Handle document delete
-  const handleDocumentDelete = () => {
-    setDocumentName(null);
+  const handleDocumentDelete = (index: number) => {
+    const updatedDocuments = [...documents];
+    updatedDocuments.splice(index, 1);
+    setDocuments(updatedDocuments);
     toast({
       title: "Document Deleted",
       description: "Your document has been successfully deleted."
@@ -282,7 +275,7 @@ const ShopInformation = () => {
           </CardContent>
         </Card>
         
-        {/* Operating Hours Section */}
+        {/* Operating Hours Section - Updated with time input fields */}
         <Card className="mb-8 rounded-2xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
@@ -324,39 +317,21 @@ const ShopInformation = () => {
                         <td className="py-3">
                           {hours.isOpen ? (
                             <div className="flex items-center gap-2">
-                              <Select
+                              <Input
+                                type="time"
                                 value={hours.openTime}
-                                onValueChange={(value) => handleTimeChange(index, 'openTime', value)}
+                                onChange={(e) => handleTimeChange(index, 'openTime', e.target.value)}
+                                className="w-32"
                                 disabled={!hours.isOpen}
-                              >
-                                <SelectTrigger className="w-24">
-                                  <SelectValue placeholder="Open" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {timeOptions.map((time) => (
-                                    <SelectItem key={`open-${time}`} value={time}>
-                                      {time}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              />
                               <span>to</span>
-                              <Select
+                              <Input
+                                type="time"
                                 value={hours.closeTime}
-                                onValueChange={(value) => handleTimeChange(index, 'closeTime', value)}
+                                onChange={(e) => handleTimeChange(index, 'closeTime', e.target.value)}
+                                className="w-32"
                                 disabled={!hours.isOpen}
-                              >
-                                <SelectTrigger className="w-24">
-                                  <SelectValue placeholder="Close" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {timeOptions.map((time) => (
-                                    <SelectItem key={`close-${time}`} value={time}>
-                                      {time}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              />
                             </div>
                           ) : (
                             <span className="text-muted-foreground">Closed</span>
@@ -371,22 +346,13 @@ const ShopInformation = () => {
                                 disabled={!hours.isOpen}
                               />
                               {hours.lastOrder ? (
-                                <Select
+                                <Input
+                                  type="time"
                                   value={hours.lastOrderTime}
-                                  onValueChange={(value) => handleTimeChange(index, 'lastOrderTime', value)}
+                                  onChange={(e) => handleTimeChange(index, 'lastOrderTime', e.target.value)}
+                                  className="w-32"
                                   disabled={!hours.isOpen || !hours.lastOrder}
-                                >
-                                  <SelectTrigger className="w-24">
-                                    <SelectValue placeholder="Time" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {timeOptions.map((time) => (
-                                      <SelectItem key={`last-order-${time}`} value={time}>
-                                        {time}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                />
                               ) : (
                                 <span className="text-muted-foreground">Not set</span>
                               )}
@@ -402,7 +368,7 @@ const ShopInformation = () => {
           </CardContent>
         </Card>
         
-        {/* Knowledge Management Section - Merged */}
+        {/* Knowledge Management Section - Supporting multiple documents */}
         <Card className="mb-8 rounded-2xl shadow-sm">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-4">Knowledge Management</h2>
@@ -422,32 +388,56 @@ const ShopInformation = () => {
               </div>
 
               <div>
-                <Label htmlFor="documentUpload">Upload Document (PDF)</Label>
-                <Input
-                  id="documentUpload"
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleDocumentUpload}
-                  className="mt-1"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Upload PDF documents containing additional information about your shop.
-                </p>
-              </div>
-              
-              {documentName && (
-                <div className="flex items-center justify-between p-3 border rounded-md">
-                  <span>{documentName}</span>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
-                      <Eye className="h-4 w-4 mr-1" /> Preview
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={handleDocumentDelete} className="text-destructive border-destructive hover:bg-destructive/10">
-                      <Trash2 className="h-4 w-4 mr-1" /> Delete
-                    </Button>
+                <Label className="block mb-2">Documents (PDF)</Label>
+                
+                {/* Display current documents */}
+                {documents.length > 0 ? (
+                  <div className="space-y-3 mb-4">
+                    {documents.map((doc, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 border rounded-md">
+                        <div className="flex items-center">
+                          <FileText className="h-5 w-5 mr-2 text-blue-500" />
+                          <span>{doc.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm">
+                            <Eye className="h-4 w-4 mr-1" /> Preview
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleDocumentDelete(index)} 
+                            className="text-destructive border-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" /> Delete
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground mb-4">No documents uploaded yet.</p>
+                )}
+                
+                {/* Document upload button */}
+                <div>
+                  <input
+                    id="documentUpload"
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleDocumentUpload}
+                    className="hidden"
+                  />
+                  <label htmlFor="documentUpload">
+                    <Button type="button" variant="outline" className="cursor-pointer">
+                      Upload New Document
+                    </Button>
+                  </label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Upload PDF documents containing additional information about your shop.
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           </CardContent>
         </Card>
