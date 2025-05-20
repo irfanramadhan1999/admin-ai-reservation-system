@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -23,6 +22,8 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { AlertsTable } from '@/components/system-alerts/AlertsTable';
+import { SystemAlert } from '@/components/system-alerts/types';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ const Dashboard = () => {
   ];
 
   // Mock data for recent system alerts
-  const recentAlerts = [
+  const recentAlerts: SystemAlert[] = [
     {
       id: 1,
       timestamp: 'May 20, 2025 - 14:30',
@@ -188,6 +189,10 @@ const Dashboard = () => {
 
   const handleViewBookings = (shopId: string) => {
     navigate('/admin/bookings');
+  };
+
+  const handleToggleBlock = (ipAddress: string, alertId: number, currentStatus: SystemAlert['status']) => {
+    navigate('/admin/system-alerts');
   };
 
   const handleViewConversation = (conversationId: string) => {
@@ -276,7 +281,7 @@ const Dashboard = () => {
         </div>
       </Card>
 
-      {/* Recent Suspicious Activities Section */}
+      {/* Recent Suspicious Activities Section - Updated to use the AlertsTable component */}
       <Card className="p-6 bg-white mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Recent Suspicious Activities</h2>
@@ -290,43 +295,10 @@ const Dashboard = () => {
         </div>
         
         <div className="rounded-lg border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Timestamp</TableHead>
-                <TableHead>IP Address</TableHead>
-                <TableHead>Shop</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentAlerts.map((alert) => (
-                <TableRow key={alert.id}>
-                  <TableCell className="text-sm">{alert.timestamp}</TableCell>
-                  <TableCell className="font-mono text-sm">{alert.ipAddress}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span>{alert.shop}</span>
-                      <span className="text-sm text-muted-foreground">{alert.shopContact}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="max-w-xs">{alert.reason}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center justify-center"
-                      onClick={() => alert.conversationId && handleViewConversation(alert.conversationId)}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      View
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <AlertsTable 
+            alerts={recentAlerts.slice(0, 5)} 
+            onToggleBlock={handleToggleBlock} 
+          />
         </div>
       </Card>
     </DashboardLayout>
