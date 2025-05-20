@@ -32,7 +32,7 @@ export function RecentShopsTable({ shops, onViewBookings }: RecentShopsTableProp
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Recent Shops</h2>
         <Link 
-          to="/shops" 
+          to="/admin/shops" 
           className="text-sm flex items-center text-blue-500 hover:underline"
         >
           View All

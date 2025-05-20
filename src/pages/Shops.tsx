@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -14,14 +13,11 @@ import {
 } from '@/components/ui/table';
 import { 
   Edit, 
-  Check, 
-  X, 
   CalendarDays, 
   Plus, 
   Calendar, 
   ExternalLink
 } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
 import { 
   Pagination, 
   PaginationContent, 
@@ -192,17 +188,6 @@ const Shops = () => {
     navigate(`/admin/shops/edit/${id}`);
   };
   
-  const handleToggleShopStatus = (id: string, currentStatus: boolean) => {
-    setShops(prevShops => prevShops.map(shop => 
-      shop.id === id ? { ...shop, isActive: !currentStatus } : shop
-    ));
-    
-    toast({
-      title: currentStatus ? "Shop Deactivated" : "Shop Activated",
-      description: `Shop has been ${currentStatus ? "deactivated" : "activated"} successfully.`
-    });
-  };
-  
   const handleViewBookings = (id: string) => {
     navigate('/admin/bookings');
   };
@@ -294,18 +279,6 @@ const Shops = () => {
                         title="Edit"
                       >
                         <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleToggleShopStatus(shop.id, shop.isActive)}
-                        title={shop.isActive ? "Deactivate" : "Activate"}
-                        className={shop.isActive 
-                          ? "text-destructive hover:bg-destructive/10" 
-                          : "text-green-600 hover:bg-green-100"
-                        }
-                      >
-                        {shop.isActive ? <X className="h-4 w-4" /> : <Check className="h-4 w-4" />}
                       </Button>
                       <Button
                         variant="outline"

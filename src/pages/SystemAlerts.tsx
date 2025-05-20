@@ -4,8 +4,7 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { ShieldAlert, Eye } from 'lucide-react';
+import { ShieldAlert, MessageSquare } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { toast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
@@ -169,7 +168,6 @@ const SystemAlerts = () => {
                 <TableHead>IP Address</TableHead>
                 <TableHead>Shop</TableHead>
                 <TableHead>Reason</TableHead>
-                <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -180,24 +178,6 @@ const SystemAlerts = () => {
                   <TableCell className="font-mono text-sm">{alert.ipAddress}</TableCell>
                   <TableCell>{alert.shop}</TableCell>
                   <TableCell className="max-w-xs">{alert.reason}</TableCell>
-                  <TableCell>
-                    <Badge 
-                      variant={alert.status === 'Pending Review' 
-                        ? 'default' 
-                        : alert.status === 'Blocked'
-                        ? 'outline'
-                        : 'secondary'
-                      } 
-                      className={alert.status === 'Pending Review' 
-                        ? 'bg-red-500 hover:bg-red-600' 
-                        : alert.status === 'Blocked'
-                        ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        : 'bg-green-500 hover:bg-green-600'
-                      }
-                    >
-                      {alert.status}
-                    </Badge>
-                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button
@@ -206,8 +186,8 @@ const SystemAlerts = () => {
                         className="flex items-center justify-center"
                         onClick={() => alert.conversationId && handleViewConversation(alert.conversationId)}
                       >
-                        <Eye className="h-4 w-4 mr-1" />
-                        View Conversation
+                        <MessageSquare className="h-4 w-4 mr-1" />
+                        View
                       </Button>
                       <Button 
                         variant={alert.status === 'Blocked' ? 'outline' : 'destructive'} 

@@ -1,567 +1,468 @@
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
+import { ShopActiveToggle } from '@/components/shops/shop-active-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Eye, EyeOff, File, Plus, Trash2, User } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
-import { TableTypeCard, TableType } from '@/components/shops/table-type-card';
-import { TableTypeDialog } from '@/components/shops/table-type-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
-// Days of the week
-const daysOfWeek = [
-  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-];
-
-// Sample table types
-const initialTableTypes: TableType[] = [
-  { id: '1', name: 'Counter', capacity: 1, quantity: 8 },
-  { id: '2', name: 'Table for Two', capacity: 2, quantity: 6 },
-  { id: '3', name: 'Family Table', capacity: 4, quantity: 4 }
-];
+import { ArrowLeft, Save, Trash } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const CreateShop = () => {
+  const { id } = useParams();
+  const [isEditing, setIsEditing] = useState(false);
+  const [shopActive, setShopActive] = useState(true);
   const navigate = useNavigate();
-  const [is24Hours, setIs24Hours] = useState(false);
-  const [openingHours, setOpeningHours] = useState(
-    daysOfWeek.map(day => ({
-      day,
-      isOpen: true,
-      openTime: '09:00',
-      closeTime: '22:00',
-      lastOrder: '21:30',
-      hasLastOrder: true
-    }))
-  );
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [tableTypes, setTableTypes] = useState<TableType[]>(initialTableTypes);
-  const [tableTypeModalOpen, setTableTypeModalOpen] = useState(false);
-  const [editingTableType, setEditingTableType] = useState<TableType | null>(null);
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [knowledgeText, setKnowledgeText] = useState('');
-  const [profileImage, setProfileImage] = useState<string | null>(null);
   
-  const form = useForm({
-    defaultValues: {
-      name: '',
-      phone: '',
-      email: '',
-      address: '',
-      password: '',
-      confirmPassword: ''
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: 'Japan',
+    phone: '',
+    email: '',
+    website: '',
+    cuisine: '',
+    priceRange: 'moderate',
+    capacity: '',
+    openingHours: {
+      monday: { open: '09:00', close: '22:00', closed: false },
+      tuesday: { open: '09:00', close: '22:00', closed: false },
+      wednesday: { open: '09:00', close: '22:00', closed: false },
+      thursday: { open: '09:00', close: '22:00', closed: false },
+      friday: { open: '09:00', close: '23:00', closed: false },
+      saturday: { open: '10:00', close: '23:00', closed: false },
+      sunday: { open: '10:00', close: '21:00', closed: false },
     }
   });
   
-  const handleDayToggle = (index: number) => {
-    setOpeningHours(prev => 
-      prev.map((item, i) => 
-        i === index ? { ...item, isOpen: !item.isOpen } : item
-      )
-    );
-  };
-  
-  const handleTimeChange = (index: number, field: 'openTime' | 'closeTime' | 'lastOrder', value: string) => {
-    setOpeningHours(prev => 
-      prev.map((item, i) => 
-        i === index ? { ...item, [field]: value } : item
-      )
-    );
-  };
-  
-  const handleLastOrderToggle = (index: number) => {
-    setOpeningHours(prev => 
-      prev.map((item, i) => 
-        i === index ? { ...item, hasLastOrder: !item.hasLastOrder } : item
-      )
-    );
-  };
-  
-  const handleAddTableType = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setEditingTableType(null);
-    setTableTypeModalOpen(true);
-  };
-  
-  const handleEditTableType = (tableType: TableType) => {
-    setEditingTableType(tableType);
-    setTableTypeModalOpen(true);
-  };
-  
-  const handleDeleteTableType = (id: string) => {
-    setTableTypes(prev => prev.filter(type => type.id !== id));
-    toast({
-      title: "Table Type Deleted",
-      description: "The table type has been removed"
-    });
-  };
-  
-  const handleTableTypeSubmit = (data: Omit<TableType, 'id'>) => {
-    if (editingTableType) {
-      // Update existing table type
-      setTableTypes(prev => 
-        prev.map(type => 
-          type.id === editingTableType.id ? { ...type, ...data } : type
-        )
-      );
-      toast({
-        title: "Table Type Updated",
-        description: `${data.name} has been updated`
+  useEffect(() => {
+    if (id) {
+      setIsEditing(true);
+      // Here you would fetch the shop data
+      // For demo purposes, we'll simulate fetching data
+      setFormData({
+        name: 'Sakura Sushi Tokyo',
+        description: 'Authentic Japanese sushi restaurant in the heart of Tokyo.',
+        address: '1-2-3 Shibuya',
+        city: 'Tokyo',
+        state: 'Tokyo',
+        zipCode: '150-0002',
+        country: 'Japan',
+        phone: '+81 3-1234-5678',
+        email: 'contact@sakurasushi.jp',
+        website: 'https://sakurasushi.jp',
+        cuisine: 'Japanese',
+        priceRange: 'expensive',
+        capacity: '50',
+        openingHours: {
+          monday: { open: '11:00', close: '22:00', closed: false },
+          tuesday: { open: '11:00', close: '22:00', closed: false },
+          wednesday: { open: '11:00', close: '22:00', closed: false },
+          thursday: { open: '11:00', close: '22:00', closed: false },
+          friday: { open: '11:00', close: '23:00', closed: false },
+          saturday: { open: '12:00', close: '23:00', closed: false },
+          sunday: { open: '12:00', close: '21:00', closed: false },
+        }
       });
-    } else {
-      // Add new table type
-      const newTableType = {
-        id: `temp-${Date.now()}`,
-        ...data
-      };
-      setTableTypes(prev => [...prev, newTableType]);
-      toast({
-        title: "Table Type Added",
-        description: `${data.name} has been added`
-      });
+      setShopActive(true); // This would be set from fetched data
     }
-  };
-  
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
-      setUploadedFiles(prev => [...prev, file]);
-      toast({
-        title: "File Uploaded",
-        description: `${file.name} has been uploaded`
-      });
-    } else {
-      toast({
-        title: "Upload Failed",
-        description: "Please select a valid PDF file",
-        variant: "destructive"
-      });
-    }
-  };
-  
-  const handleRemoveFile = (index: number) => {
-    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
-    toast({
-      title: "File Removed",
-      description: "The document has been removed"
-    });
-  };
+  }, [id]);
 
-  const handleProfileImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      
-      toast({
-        title: "Profile Image Uploaded",
-        description: "Profile image has been updated"
-      });
-    } else {
-      toast({
-        title: "Upload Failed",
-        description: "Please select a valid image file",
-        variant: "destructive"
-      });
-    }
+  const handleShopActiveToggle = (active: boolean) => {
+    setShopActive(active);
+    // Here you would update the shop active status in your backend
   };
   
-  const handleSubmit = (data: any) => {
-    // Here you would normally validate and send data to an API
-    console.log("Form submitted:", {
-      ...data,
-      is24Hours,
-      openingHours: is24Hours ? [] : openingHours,
-      tableTypes,
-      documents: uploadedFiles,
-      knowledgeText,
-      profileImage
-    });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleHoursChange = (day: string, field: 'open' | 'close', value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      openingHours: {
+        ...prev.openingHours,
+        [day]: {
+          ...prev.openingHours[day as keyof typeof prev.openingHours],
+          [field]: value
+        }
+      }
+    }));
+  };
+  
+  const handleDayClosed = (day: string, closed: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      openingHours: {
+        ...prev.openingHours,
+        [day]: {
+          ...prev.openingHours[day as keyof typeof prev.openingHours],
+          closed
+        }
+      }
+    }));
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     
+    // Here you would submit the form data to your API
     toast({
-      title: "Shop Created",
-      description: `${data.name} has been successfully created`
+      title: isEditing ? "Shop Updated" : "Shop Created",
+      description: `${formData.name} has been ${isEditing ? "updated" : "created"} successfully.`,
     });
     
-    navigate('/shops');
+    // Navigate back to shops list
+    navigate('/admin/shops');
+  };
+  
+  const handleDelete = () => {
+    // Here you would delete the shop
+    toast({
+      title: "Shop Deleted",
+      description: `${formData.name} has been deleted successfully.`,
+      variant: "destructive"
+    });
+    
+    navigate('/admin/shops');
   };
   
   return (
     <DashboardLayout>
-      <div className="flex flex-col gap-8 pb-20">
-        {/* Header Section */}
-        <div className="flex items-start justify-between">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
           <div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => navigate('/shops')}
-              className="mb-4 -ml-2 gap-1"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back to Shops
-            </Button>
-            <h1 className="text-2xl font-bold">Create New Shop</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Fill in the restaurant details below to register a new shop on the reservation system.
+            <h1 className="text-2xl font-bold">
+              {isEditing ? 'Edit Shop' : 'Create New Shop'}
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              {isEditing 
+                ? 'Update the restaurant information and settings.' 
+                : 'Add a new restaurant to the system.'
+              }
             </p>
+          </div>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/admin/shops')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Shops
+            </Button>
+            {isEditing && (
+              <Button 
+                variant="destructive" 
+                onClick={handleDelete}
+              >
+                <Trash className="h-4 w-4 mr-2" />
+                Delete Shop
+              </Button>
+            )}
           </div>
         </div>
         
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          {/* Basic Information */}
-          <Card className="rounded-xl shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold">Basic Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-6 mb-6">
-                <div className="flex flex-col items-center">
-                  <div className="mb-2">
-                    <Avatar className="w-24 h-24">
-                      <AvatarImage src={profileImage || ""} />
-                      <AvatarFallback className="bg-muted">
-                        <User className="h-12 w-12 text-muted-foreground" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div>
-                    <input
-                      type="file"
-                      id="profile-image"
-                      accept="image/*"
-                      onChange={handleProfileImageUpload}
-                      className="hidden"
+        <Tabs defaultValue="basic">
+          <TabsList className="mb-4">
+            <TabsTrigger value="basic">Basic Information</TabsTrigger>
+            <TabsTrigger value="hours">Opening Hours</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
+          
+          <form onSubmit={handleSubmit}>
+            <TabsContent value="basic">
+              <Card className="p-6">
+                <h2 className="text-lg font-medium mb-4">Basic Information</h2>
+                
+                {/* Add Shop Active Toggle for Edit mode only */}
+                {isEditing && (
+                  <ShopActiveToggle 
+                    isActive={shopActive} 
+                    onToggle={handleShopActiveToggle} 
+                  />
+                )}
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Shop Name</Label>
+                    <Input 
+                      id="name" 
+                      name="name" 
+                      value={formData.name} 
+                      onChange={handleInputChange} 
+                      required 
                     />
-                    <label htmlFor="profile-image">
-                      <Button type="button" variant="outline" size="sm" className="cursor-pointer">
-                        Upload Photo
-                      </Button>
-                    </label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="cuisine">Cuisine Type</Label>
+                    <Select 
+                      value={formData.cuisine} 
+                      onValueChange={(value) => handleSelectChange('cuisine', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select cuisine type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="japanese">Japanese</SelectItem>
+                        <SelectItem value="italian">Italian</SelectItem>
+                        <SelectItem value="chinese">Chinese</SelectItem>
+                        <SelectItem value="french">French</SelectItem>
+                        <SelectItem value="indian">Indian</SelectItem>
+                        <SelectItem value="thai">Thai</SelectItem>
+                        <SelectItem value="mexican">Mexican</SelectItem>
+                        <SelectItem value="american">American</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea 
+                      id="description" 
+                      name="description" 
+                      value={formData.description} 
+                      onChange={handleInputChange} 
+                      rows={3} 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Input 
+                      id="address" 
+                      name="address" 
+                      value={formData.address} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input 
+                      id="city" 
+                      name="city" 
+                      value={formData.city} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="state">State/Prefecture</Label>
+                    <Input 
+                      id="state" 
+                      name="state" 
+                      value={formData.state} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="zipCode">Postal Code</Label>
+                    <Input 
+                      id="zipCode" 
+                      name="zipCode" 
+                      value={formData.zipCode} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="country">Country</Label>
+                    <Select 
+                      value={formData.country} 
+                      onValueChange={(value) => handleSelectChange('country', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Japan">Japan</SelectItem>
+                        <SelectItem value="United States">United States</SelectItem>
+                        <SelectItem value="United Kingdom">United Kingdom</SelectItem>
+                        <SelectItem value="Canada">Canada</SelectItem>
+                        <SelectItem value="Australia">Australia</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="priceRange">Price Range</Label>
+                    <Select 
+                      value={formData.priceRange} 
+                      onValueChange={(value) => handleSelectChange('priceRange', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select price range" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="budget">Budget (¥)</SelectItem>
+                        <SelectItem value="moderate">Moderate (¥¥)</SelectItem>
+                        <SelectItem value="expensive">Expensive (¥¥¥)</SelectItem>
+                        <SelectItem value="luxury">Luxury (¥¥¥¥)</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
-
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="name">Restaurant Name</Label>
-                    <Input 
-                      id="name"
-                      placeholder="Enter restaurant name"
-                      {...form.register('name')}
-                      className="mt-1.5"
-                    />
-                  </div>
-                  <div>
+              </Card>
+              
+              <Card className="p-6 mt-6">
+                <h2 className="text-lg font-medium mb-4">Contact Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input 
-                      id="phone"
-                      placeholder="Enter phone number"
-                      {...form.register('phone')}
-                      className="mt-1.5"
+                      id="phone" 
+                      name="phone" 
+                      value={formData.phone} 
+                      onChange={handleInputChange} 
                     />
                   </div>
-                  <div>
+                  
+                  <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
                     <Input 
-                      id="email"
-                      placeholder="Enter email address"
-                      type="email"
-                      {...form.register('email')}
-                      className="mt-1.5"
+                      id="email" 
+                      name="email" 
+                      type="email" 
+                      value={formData.email} 
+                      onChange={handleInputChange} 
                     />
                   </div>
-                  <div className="relative">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="relative mt-1.5">
-                      <Input 
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter password"
-                        {...form.register('password')}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="website">Website</Label>
+                    <Input 
+                      id="website" 
+                      name="website" 
+                      value={formData.website} 
+                      onChange={handleInputChange} 
+                    />
                   </div>
-                  <div className="relative">
-                    <Label htmlFor="confirmPassword">Confirm Password</Label>
-                    <div className="relative mt-1.5">
-                      <Input 
-                        id="confirmPassword"
-                        type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Confirm password"
-                        {...form.register('confirmPassword')}
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="address">Address</Label>
-                    <Textarea 
-                      id="address"
-                      placeholder="Enter full address"
-                      {...form.register('address')}
-                      rows={3}
-                      className="mt-1.5"
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="capacity">Seating Capacity</Label>
+                    <Input 
+                      id="capacity" 
+                      name="capacity" 
+                      type="number" 
+                      value={formData.capacity} 
+                      onChange={handleInputChange} 
                     />
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Operating Hours */}
-          <Card className="rounded-xl shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold">Operating Hours</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-4">
-                <div></div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="open24" className="cursor-pointer">Open 24/7</Label>
-                  <Switch 
-                    id="open24" 
-                    checked={is24Hours} 
-                    onCheckedChange={setIs24Hours}
-                  />
-                </div>
-              </div>
-              
-              {!is24Hours && (
-                <div>
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-2 font-medium">Day</th>
-                        <th className="text-left py-2 font-medium">Open</th>
-                        <th className="text-left py-2 font-medium">Hours</th>
-                        <th className="text-left py-2 font-medium">Last Order</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {openingHours.map((day, index) => (
-                        <tr key={day.day} className="border-b last:border-b-0">
-                          <td className="py-3">
-                            <div className="flex items-center gap-3">
-                              <Checkbox 
-                                id={`day-${index}`}
-                                checked={day.isOpen}
-                                onCheckedChange={() => handleDayToggle(index)}
-                              />
-                              <Label htmlFor={`day-${index}`} className="w-[100px]">{day.day}</Label>
-                            </div>
-                          </td>
-                          <td className="py-3">
-                            {day.isOpen ? "Yes" : "Closed"}
-                          </td>
-                          <td className="py-3">
-                            <div className="flex items-center gap-3">
-                              <Input 
-                                type="time"
-                                value={day.openTime}
-                                onChange={(e) => handleTimeChange(index, 'openTime', e.target.value)}
-                                disabled={!day.isOpen}
-                                className="w-[120px]"
-                              />
-                              <span>to</span>
-                              <Input 
-                                type="time"
-                                value={day.closeTime}
-                                onChange={(e) => handleTimeChange(index, 'closeTime', e.target.value)}
-                                disabled={!day.isOpen}
-                                className="w-[120px]"
-                              />
-                            </div>
-                          </td>
-                          <td className="py-3">
-                            <div className="flex items-center gap-3">
-                              <Checkbox 
-                                id={`lastOrder-${index}`}
-                                checked={day.hasLastOrder}
-                                onCheckedChange={() => handleLastOrderToggle(index)}
-                                disabled={!day.isOpen}
-                              />
-                              <Input 
-                                type="time"
-                                value={day.lastOrder}
-                                onChange={(e) => handleTimeChange(index, 'lastOrder', e.target.value)}
-                                disabled={!day.isOpen || !day.hasLastOrder}
-                                className="w-[120px]"
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-          
-          {/* Seat Configuration */}
-          <Card className="rounded-xl shadow-sm">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">Seat Configuration</CardTitle>
-              <Button 
-                onClick={handleAddTableType} 
-                size="sm" 
-                variant="outline" 
-                className="gap-1"
-                type="button"
-              >
-                <Plus className="h-4 w-4" /> Add Table Type
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {tableTypes.map((tableType) => (
-                  <TableTypeCard 
-                    key={tableType.id}
-                    tableType={tableType}
-                    onEdit={handleEditTableType}
-                    onDelete={handleDeleteTableType}
-                  />
-                ))}
-                {tableTypes.length === 0 && (
-                  <p className="text-muted-foreground col-span-2 text-center py-10">
-                    No table types added yet. Click "Add Table Type" to create one.
-                  </p>
-                )}
-              </div>
-              
-              <TableTypeDialog 
-                open={tableTypeModalOpen}
-                onOpenChange={setTableTypeModalOpen}
-                editingTableType={editingTableType}
-                onSubmit={handleTableTypeSubmit}
-              />
-            </CardContent>
-          </Card>
-          
-          {/* Knowledge Management */}
-          <Card className="rounded-xl shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-semibold">Knowledge Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div>
-                  <Label htmlFor="knowledge-text">Knowledge Base Text</Label>
-                  <Textarea
-                    id="knowledge-text"
-                    placeholder="Enter knowledge information about the restaurant that the AI can use..."
-                    value={knowledgeText}
-                    onChange={(e) => setKnowledgeText(e.target.value)}
-                    rows={5}
-                    className="mt-2"
-                  />
-                </div>
-
-                <div className="border-t pt-6">
-                  <Label className="mb-2 block">Document Upload</Label>
-                  {uploadedFiles.length === 0 ? (
-                    <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
-                      <input 
-                        type="file"
-                        id="pdf-upload"
-                        accept="application/pdf"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                      />
-                      <label 
-                        htmlFor="pdf-upload" 
-                        className="cursor-pointer flex flex-col items-center gap-2"
-                      >
-                        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                          <File className="h-6 w-6" />
-                        </div>
-                        <span className="font-medium">Upload PDF Document</span>
-                        <span className="text-sm text-muted-foreground">Click to browse or drop file here</span>
-                      </label>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {uploadedFiles.map((file, index) => (
-                        <div key={index} className="border rounded-lg p-4 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <File className="h-10 w-10 text-blue-500" />
-                            <div>
-                              <p className="font-medium">{file.name}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {Math.round(file.size / 1024)} KB
-                              </p>
-                            </div>
-                          </div>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleRemoveFile(index)}
-                            className="text-destructive hover:bg-destructive/10"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-
-                      <div className="pt-4">
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="hours">
+              <Card className="p-6">
+                <h2 className="text-lg font-medium mb-4">Opening Hours</h2>
+                <div className="space-y-4">
+                  {Object.entries(formData.openingHours).map(([day, hours]) => (
+                    <div key={day} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+                      <div className="font-medium capitalize">{day}</div>
+                      <div className="flex items-center gap-2">
                         <input 
-                          type="file"
-                          id="pdf-upload"
-                          accept="application/pdf"
-                          onChange={handleFileUpload}
-                          className="hidden"
+                          type="checkbox" 
+                          id={`${day}-closed`} 
+                          checked={hours.closed} 
+                          onChange={(e) => handleDayClosed(day, e.target.checked)} 
+                          className="mr-2"
                         />
-                        <label htmlFor="pdf-upload">
-                          <Button type="button" variant="outline" size="sm">
-                            <Plus className="h-4 w-4 mr-1" />
-                            Add More Documents
-                          </Button>
-                        </label>
+                        <Label htmlFor={`${day}-closed`}>Closed</Label>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`${day}-open`}>Opening Time</Label>
+                        <Input 
+                          id={`${day}-open`} 
+                          type="time" 
+                          value={hours.open} 
+                          onChange={(e) => handleHoursChange(day, 'open', e.target.value)} 
+                          disabled={hours.closed}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`${day}-close`}>Closing Time</Label>
+                        <Input 
+                          id={`${day}-close`} 
+                          type="time" 
+                          value={hours.close} 
+                          onChange={(e) => handleHoursChange(day, 'close', e.target.value)} 
+                          disabled={hours.closed}
+                        />
                       </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-4 mt-10 sticky bottom-0 bg-white p-4 border-t -mx-8 px-8">
-            <Button variant="outline" type="button" onClick={() => navigate('/shops')}>
-              Cancel
-            </Button>
-            <Button type="submit" className="bg-purple-400 hover:bg-purple-500">
-              Save Shop
-            </Button>
-          </div>
-        </form>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="settings">
+              <Card className="p-6">
+                <h2 className="text-lg font-medium mb-4">Shop Settings</h2>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label>Booking Settings</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="maxPartySize">Maximum Party Size</Label>
+                        <Input id="maxPartySize" type="number" defaultValue="10" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="minAdvanceBooking">Minimum Advance Booking (hours)</Label>
+                        <Input id="minAdvanceBooking" type="number" defaultValue="1" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="maxAdvanceBooking">Maximum Advance Booking (days)</Label>
+                        <Input id="maxAdvanceBooking" type="number" defaultValue="30" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="defaultStayDuration">Default Stay Duration (minutes)</Label>
+                        <Input id="defaultStayDuration" type="number" defaultValue="90" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label>API Integration</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="apiKey">API Key</Label>
+                        <Input id="apiKey" defaultValue="sk_live_example123456789" type="password" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="webhookUrl">Webhook URL</Label>
+                        <Input id="webhookUrl" defaultValue="https://example.com/webhook" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </TabsContent>
+            
+            <div className="mt-6 flex justify-end">
+              <Button type="submit" size="lg">
+                <Save className="h-4 w-4 mr-2" />
+                {isEditing ? 'Update Shop' : 'Create Shop'}
+              </Button>
+            </div>
+          </form>
+        </Tabs>
       </div>
     </DashboardLayout>
   );
