@@ -1,24 +1,13 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
-import { Calendar, Users, Bot } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
 import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
 import { ShopOwnerKpiCards } from '@/components/shop-owner/shop-owner-kpi-cards';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
+import { StatusCards } from '@/components/shop-owner/status-cards';
 
 const ShopOwnerDashboard = () => {
-  const navigate = useNavigate();
   const [isAiActive, setIsAiActive] = useState(true);
   const [isCalendarSynced, setIsCalendarSynced] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -171,84 +160,14 @@ const ShopOwnerDashboard = () => {
         })}
       />
 
-      {/* KPI Cards Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        {/* Today's Bookings */}
-        <Card className="p-6 rounded-2xl shadow-sm relative">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium text-muted-foreground">Today's Bookings</h3>
-              <div className="flex items-end gap-2">
-                <span className="text-2xl font-semibold">{kpiData[0].value}</span>
-              </div>
-            </div>
-            <div className="p-2 rounded-full bg-blue-50">
-              <Calendar className="h-5 w-5 text-blue-500" />
-            </div>
-          </div>
-        </Card>
-
-        {/* Today's Customers */}
-        <Card className="p-6 rounded-2xl shadow-sm relative">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium text-muted-foreground">Today's Customers</h3>
-              <div className="flex items-end gap-2">
-                <span className="text-2xl font-semibold">{kpiData[1].value}</span>
-              </div>
-            </div>
-            <div className="p-2 rounded-full bg-purple-50">
-              <Users className="h-5 w-5 text-purple-500" />
-            </div>
-          </div>
-        </Card>
-
-        {/* AI Activation */}
-        <Card className="p-6 rounded-2xl shadow-sm relative">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium text-muted-foreground">AI Activation</h3>
-              <div className="flex items-center gap-3 mt-2">
-                <Switch 
-                  checked={isAiActive} 
-                  onCheckedChange={setIsAiActive} 
-                  className="data-[state=checked]:bg-green-500"
-                />
-                <span className="text-sm">
-                  {isAiActive ? "AI Assistant is active" : "AI Assistant is off"}
-                </span>
-              </div>
-            </div>
-            <div className="p-2 rounded-full bg-emerald-50">
-              <Bot className="h-5 w-5 text-emerald-500" />
-            </div>
-          </div>
-        </Card>
-
-        {/* Google Calendar Notice - Updated to use button instead of toggle */}
-        <Card className="p-6 rounded-2xl shadow-sm relative">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <h3 className="text-sm font-medium text-muted-foreground">Google Calendar</h3>
-              <div className="flex items-center gap-3 mt-2">
-                <button
-                  onClick={() => navigate('/shop-admin/calendar-sync')}
-                  className={`px-3 py-1 rounded-md text-sm ${
-                    isCalendarSynced
-                      ? 'bg-green-50 text-green-600 border border-green-200'
-                      : 'bg-blue-500 text-white hover:bg-blue-600'
-                  }`}
-                >
-                  {isCalendarSynced ? 'Calendar Connected' : 'Sync with Google Calendar'}
-                </button>
-              </div>
-            </div>
-            <div className="p-2 rounded-full bg-blue-50">
-              <Calendar className="h-5 w-5 text-blue-500" />
-            </div>
-          </div>
-        </Card>
-      </div>
+      {/* Status Cards Section */}
+      <StatusCards 
+        bookingsCount={kpiData[0].value}
+        customersCount={kpiData[1].value}
+        isAiActive={isAiActive}
+        isCalendarSynced={isCalendarSynced}
+        onAiToggle={setIsAiActive}
+      />
 
       {/* Today's Bookings Section */}
       <div className="mb-8">
@@ -260,49 +179,11 @@ const ShopOwnerDashboard = () => {
         
         {/* Pagination */}
         {allBookings.length > itemsPerPage && (
-          <div className="mt-4 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious 
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-                
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNumber;
-                  if (totalPages <= 5) {
-                    pageNumber = i + 1;
-                  } else if (currentPage <= 3) {
-                    pageNumber = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNumber = totalPages - 4 + i;
-                  } else {
-                    pageNumber = currentPage - 2 + i;
-                  }
-                  
-                  return (
-                    <PaginationItem key={i}>
-                      <PaginationLink
-                        isActive={pageNumber === currentPage}
-                        onClick={() => setCurrentPage(pageNumber)}
-                      >
-                        {pageNumber}
-                      </PaginationLink>
-                    </PaginationItem>
-                  );
-                })}
-                
-                <PaginationItem>
-                  <PaginationNext 
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <BookingsPagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         )}
       </div>
     </DashboardLayout>
