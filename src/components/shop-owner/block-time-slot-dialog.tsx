@@ -26,8 +26,8 @@ import {
 } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
 import { 
-  CheckboxGroup, 
-  Checkbox 
+  Checkbox, 
+  CheckboxGroup 
 } from '@/components/ui/checkbox';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -220,7 +220,7 @@ export const BlockTimeSlotDialog = ({
               </div>
             </div>
             <div className="max-h-[200px] overflow-y-auto border rounded-md p-2">
-              <CheckboxGroup>
+              <CheckboxGroup className="space-y-2">
                 {allTables.map((table) => (
                   <div key={table} className="flex items-center space-x-2">
                     <Checkbox

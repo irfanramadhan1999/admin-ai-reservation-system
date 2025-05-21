@@ -363,19 +363,14 @@ const ShopOwnerBookings = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span>{booking.date}</span>
+                      <span>{format(new Date(booking.startTime), 'MMM d, yyyy')}</span>
                       <span className="text-sm">
-                        {booking.timeStart} - {booking.timeEnd} JST
+                        {formatTimeRange(booking.startTime, booking.endTime)}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    {booking.tables.map((table, i) => (
-                      <span key={i}>
-                        {table.type} {table.number}
-                        {i < booking.tables.length - 1 ? ", " : ""}
-                      </span>
-                    ))}
+                    {booking.tables.join(', ')}
                   </TableCell>
                   <TableCell>
                     {getStatusBadge(booking.status)}
