@@ -19,6 +19,7 @@ import { BookingsFilters } from '@/components/shop-owner/bookings-filters';
 import { BookingsTable } from '@/components/shop-owner/bookings-table';
 import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
 import { ItemsPerPage } from '@/components/shop-owner/items-per-page';
+import { AiCallButton } from '@/components/shop-owner/ai-call-button';
 import { useBookings } from '@/hooks/useBookings';
 
 const ShopOwnerBookings = () => {
@@ -57,6 +58,11 @@ const ShopOwnerBookings = () => {
         subtitle="Manage your restaurant reservations"
         date={format(new Date(), 'PPPP')}
       />
+      
+      {/* Action Buttons */}
+      <div className="mb-6">
+        <AiCallButton variant="default" />
+      </div>
       
       {/* Filters */}
       <BookingsFilters

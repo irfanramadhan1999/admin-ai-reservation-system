@@ -6,14 +6,18 @@ import { ReservationTrend } from '@/components/dashboard/reservation-trend';
 import { LatestReservations } from '@/components/dashboard/latest-reservations';
 import { SeatAvailability } from '@/components/dashboard/seat-availability';
 import { Calendar, Phone, MessageSquare } from 'lucide-react';
+import { AiCallButton } from '@/components/shop-owner/ai-call-button';
 
 const Index = () => {
   return (
     <DashboardLayout>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <div className="text-sm text-muted-foreground">
-          Wednesday, May 15, 2025
+        <div className="flex items-center gap-4">
+          <AiCallButton variant="outline" size="sm" />
+          <div className="text-sm text-muted-foreground">
+            Wednesday, May 15, 2025
+          </div>
         </div>
       </div>
 
