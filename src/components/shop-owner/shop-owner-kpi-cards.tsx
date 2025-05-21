@@ -20,9 +20,10 @@ interface KpiItem {
 interface ShopOwnerKpiCardsProps {
   kpiData: KpiItem[];
   isCalendarSynced?: boolean;
+  lastCalendarSync?: string;
 }
 
-export function ShopOwnerKpiCards({ kpiData, isCalendarSynced = false }: ShopOwnerKpiCardsProps) {
+export function ShopOwnerKpiCards({ kpiData, isCalendarSynced = false, lastCalendarSync = "1 day ago" }: ShopOwnerKpiCardsProps) {
   const navigate = useNavigate();
 
   const handleCalendarSync = () => {
@@ -69,7 +70,7 @@ export function ShopOwnerKpiCards({ kpiData, isCalendarSynced = false }: ShopOwn
           
           <p className="text-xs text-muted-foreground">
             {isCalendarSynced 
-              ? "Your restaurant calendar is synced with Google Calendar" 
+              ? `Your restaurant calendar is synced with Google Calendar. Last sync: ${lastCalendarSync}` 
               : "Connect your Google Calendar to sync reservations automatically"}
           </p>
         </div>

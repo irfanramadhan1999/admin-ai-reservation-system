@@ -11,6 +11,7 @@ const CalendarSync = () => {
   const { toast } = useToast();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [lastSync, setLastSync] = useState("1 day ago");
 
   const handleConnectCalendar = () => {
     setIsConnecting(true);
@@ -19,6 +20,7 @@ const CalendarSync = () => {
     setTimeout(() => {
       setIsConnecting(false);
       setIsConnected(true);
+      setLastSync("1 day ago");
       
       toast({
         title: "Calendar Connected",
@@ -77,6 +79,10 @@ const CalendarSync = () => {
                       <div className="flex items-center gap-2 text-green-600 bg-green-50 py-2 px-3 rounded-md">
                         <Check className="h-5 w-5" />
                         <span>Calendar connected successfully</span>
+                      </div>
+                      
+                      <div className="text-sm text-muted-foreground">
+                        Last sync: {lastSync}
                       </div>
                       
                       <Button 

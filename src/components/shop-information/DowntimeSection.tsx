@@ -70,7 +70,6 @@ export const DowntimeSection: React.FC<DowntimeSectionProps> = ({
                 <TableHead>Event Name</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Time Range</TableHead>
-                <TableHead>Tables</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -83,9 +82,6 @@ export const DowntimeSection: React.FC<DowntimeSectionProps> = ({
                     {slot.blockEntireDay 
                       ? "All Day" 
                       : `${slot.startTime} - ${slot.endTime}`}
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-xs text-muted-foreground">{slot.tables.join(', ')}</span>
                   </TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
@@ -110,7 +106,7 @@ export const DowntimeSection: React.FC<DowntimeSectionProps> = ({
               ))}
               {blockedTimeSlots.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6">
+                  <TableCell colSpan={4} className="text-center py-6">
                     No downtime slots found
                   </TableCell>
                 </TableRow>

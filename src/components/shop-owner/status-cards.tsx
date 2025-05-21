@@ -99,8 +99,8 @@ export function StatusCards({
                 {isCalendarSynced ? 'Calendar Connected' : 'Sync with Google Calendar'}
               </button>
             </div>
-            {isCalendarSynced && lastCalendarSync && (
-              <p className="text-xs text-muted-foreground mt-1">Last sync: {lastCalendarSync}</p>
+            {isCalendarSynced && (
+              <p className="text-xs text-muted-foreground mt-1">Last sync: {lastCalendarSync || "1 day ago"}</p>
             )}
           </div>
           <div className="p-2 rounded-full bg-blue-50">

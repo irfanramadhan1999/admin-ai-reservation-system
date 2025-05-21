@@ -11,13 +11,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { 
   Popover, 
@@ -25,7 +18,6 @@ import {
   PopoverTrigger 
 } from '@/components/ui/popover';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -49,7 +41,6 @@ export const BlockTimeSlotDialog = ({
   open,
   onOpenChange,
   onSubmit,
-  tablesByType,
   editingSlot
 }: BlockTimeSlotDialogProps) => {
   const [eventName, setEventName] = useState('');
@@ -57,21 +48,6 @@ export const BlockTimeSlotDialog = ({
   const [blockEntireDay, setBlockEntireDay] = useState(false);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('18:00');
-  const [selectedTables, setSelectedTables] = useState<string[]>([]);
-  const [allTables, setAllTables] = useState<string[]>([]);
-
-  // Initialize all tables
-  useEffect(() => {
-    const allTablesList: string[] = [];
-    Object.values(tablesByType).forEach(tables => {
-      tables.forEach(table => {
-        if (!allTablesList.includes(table) && table !== 'All Tables') {
-          allTablesList.push(table);
-        }
-      });
-    });
-    setAllTables(allTablesList);
-  }, [tablesByType]);
 
   // Populate form when editing
   useEffect(() => {
@@ -81,7 +57,6 @@ export const BlockTimeSlotDialog = ({
       setBlockEntireDay(editingSlot.blockEntireDay);
       setStartTime(editingSlot.startTime);
       setEndTime(editingSlot.endTime);
-      setSelectedTables(editingSlot.tables);
     } else {
       resetForm();
     }
@@ -93,7 +68,6 @@ export const BlockTimeSlotDialog = ({
     setBlockEntireDay(false);
     setStartTime('09:00');
     setEndTime('18:00');
-    setSelectedTables([]);
   };
 
   const handleSubmit = () => {
@@ -104,29 +78,11 @@ export const BlockTimeSlotDialog = ({
       blockEntireDay,
       startTime,
       endTime,
-      tables: selectedTables.length > 0 ? selectedTables : ['All Tables']
+      tables: ['All Tables'] // Default to All Tables since we removed selection
     };
 
     onSubmit(newBlockedSlot);
     resetForm();
-  };
-
-  const handleAllTablesChange = (checked: boolean) => {
-    if (checked) {
-      setSelectedTables(allTables);
-    } else {
-      setSelectedTables([]);
-    }
-  };
-
-  const handleTableChange = (table: string) => {
-    setSelectedTables(prev => {
-      if (prev.includes(table)) {
-        return prev.filter(t => t !== table);
-      } else {
-        return [...prev, table];
-      }
-    });
   };
 
   return (
@@ -204,32 +160,6 @@ export const BlockTimeSlotDialog = ({
               </div>
             </div>
           )}
-
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between">
-              <Label>Select Tables</Label>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={selectedTables.length === allTables.length}
-                  onCheckedChange={handleAllTablesChange}
-                />
-                <span className="text-sm">All Tables</span>
-              </div>
-            </div>
-            <div className="max-h-[200px] overflow-y-auto border rounded-md p-2">
-              <div className="space-y-2">
-                {allTables.map((table) => (
-                  <div key={table} className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={selectedTables.includes(table)}
-                      onCheckedChange={() => handleTableChange(table)}
-                    />
-                    <Label>{table}</Label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
 
         <DialogFooter>

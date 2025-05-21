@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { TableTypeCard, TableType } from '@/components/shops/table-type-card';
 import { TableTypeDialog } from '@/components/shops/table-type-dialog';
-import { TableLayoutSection } from '@/components/shops/table-layout-section';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus } from 'lucide-react';
@@ -85,7 +84,7 @@ export default function ShopOwnerSeating() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Seating Management</h1>
           <p className="text-muted-foreground">
-            Configure your restaurant seating layout
+            Configure your restaurant table types
           </p>
         </div>
         
@@ -112,9 +111,6 @@ export default function ShopOwnerSeating() {
             </div>
           </CardContent>
         </Card>
-        
-        {/* New Table Layout Section */}
-        <TableLayoutSection tableTypes={tableTypes} />
       </div>
       
       <TableTypeDialog
