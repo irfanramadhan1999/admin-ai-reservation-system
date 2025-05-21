@@ -2,17 +2,17 @@
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
+import { ReservationTrend } from '@/components/dashboard/reservation-trend';
 import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
-import { ShopOwnerKpiCards } from '@/components/shop-owner/shop-owner-kpi-cards';
-import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
 import { StatusCards } from '@/components/shop-owner/status-cards';
+import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
 
 const ShopOwnerDashboard = () => {
   const [isAiActive, setIsAiActive] = useState(true);
   const [isCalendarSynced, setIsCalendarSynced] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   
-  // Mock data for KPI cards
+  // Mock data for kPI cards
   const kpiData = [
     {
       title: "Today's Bookings",
@@ -168,6 +168,11 @@ const ShopOwnerDashboard = () => {
         isCalendarSynced={isCalendarSynced}
         onAiToggle={setIsAiActive}
       />
+
+      {/* Peak Times & Traffic Analytics */}
+      <div className="mb-8">
+        <ReservationTrend />
+      </div>
 
       {/* Today's Bookings Section */}
       <div className="mb-8">
