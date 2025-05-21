@@ -57,7 +57,6 @@ export function RecentBookingsTable({ bookings }: RecentBookingsTableProps) {
               <TableHead>Customer</TableHead>
               <TableHead>Time</TableHead>
               <TableHead>Table(s)</TableHead>
-              <TableHead>Guests</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -70,7 +69,6 @@ export function RecentBookingsTable({ bookings }: RecentBookingsTableProps) {
                 </TableCell>
                 <TableCell>{formatTimeRange(booking.startTime, booking.endTime)}</TableCell>
                 <TableCell>{booking.tables.join(', ')}</TableCell>
-                <TableCell>{booking.guests}</TableCell>
                 <TableCell>{getStatusBadge(booking.status)}</TableCell>
               </TableRow>
             ))}

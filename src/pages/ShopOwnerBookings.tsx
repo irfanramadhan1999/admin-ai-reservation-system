@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { format } from 'date-fns';
@@ -430,9 +429,7 @@ const ShopOwnerBookings = () => {
                 <TableHead>Customer</TableHead>
                 <TableHead>Time</TableHead>
                 <TableHead>Tables</TableHead>
-                <TableHead>Guests</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -445,35 +442,12 @@ const ShopOwnerBookings = () => {
                   </TableCell>
                   <TableCell>{formatTimeRange(booking.startTime, booking.endTime)}</TableCell>
                   <TableCell>{booking.tables.join(', ')}</TableCell>
-                  <TableCell>{booking.guests}</TableCell>
                   <TableCell>{getStatusBadge(booking.status)}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleEditBooking(booking)}
-                      >
-                        Edit
-                      </Button>
-                      {booking.status.toLowerCase() !== 'cancelled' && 
-                       booking.status.toLowerCase() !== 'completed' && (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleCancelBooking(booking)}
-                          className="text-destructive border-destructive hover:bg-destructive/10"
-                        >
-                          Cancel
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
                 </TableRow>
               ))}
               {paginatedBookings.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-6">
+                  <TableCell colSpan={5} className="text-center py-6">
                     No bookings found that match your criteria
                   </TableCell>
                 </TableRow>
