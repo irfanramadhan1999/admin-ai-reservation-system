@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
