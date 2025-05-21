@@ -24,9 +24,9 @@ export function KpiCards({ kpiData }: KpiCardsProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
       {kpiData.map((kpi, index) => (
-        <Card key={index} className="p-4 border border-gray-100 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between mb-2">
-            <div className={`p-2 rounded-md ${kpi.bgColor}`}>
+        <Card key={index} className="p-4 border border-gray-100 shadow-sm relative overflow-hidden rounded-2xl bg-white">
+          <div className="flex items-center justify-between mb-3">
+            <div className={`p-2 rounded-full ${kpi.bgColor} shadow-sm`}>
               <kpi.icon className={`h-4 w-4 ${kpi.iconColor}`} />
             </div>
           </div>

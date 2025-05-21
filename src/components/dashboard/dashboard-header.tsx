@@ -16,7 +16,7 @@ export function DashboardHeader({ title, subtitle, date }: DashboardHeaderProps)
           {subtitle}
         </p>
       </div>
-      <div className="text-sm bg-white px-4 py-2 rounded-md shadow-sm border border-gray-100">
+      <div className="text-sm bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
         {date}
       </div>
     </div>

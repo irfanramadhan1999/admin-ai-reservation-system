@@ -33,7 +33,7 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from '@/components/ui/pagination';
-import { ArrowLeft, Search, CalendarIcon } from 'lucide-react';
+import { ArrowLeft, Search, CalendarIcon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Sample data for bookings, updated to change pending to completed
@@ -338,8 +338,13 @@ const Bookings = () => {
           </div>
           
           <div className="md:col-span-2">
-            <Button variant="ghost" onClick={clearDateFilters} className="w-full">
-              Clear Dates
+            <Button 
+              variant="ghost" 
+              onClick={clearDateFilters} 
+              className="w-full h-10 px-0" 
+              aria-label="Clear date filters"
+            >
+              <X className="h-5 w-5" />
             </Button>
           </div>
         </div>

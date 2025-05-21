@@ -53,21 +53,21 @@ export function RecentShops({ shops }: RecentShopsProps) {
   };
   
   return (
-    <Card className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl mb-8">
+    <Card className="p-6 bg-white border border-gray-100 shadow-sm rounded-2xl mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-800">Recent Shops</h2>
         <Link 
           to="/admin/shops" 
-          className="text-sm flex items-center text-blue-600 hover:underline font-medium"
+          className="text-sm flex items-center text-green-600 hover:underline font-medium"
         >
           View All
           <ArrowRight className="h-4 w-4 ml-1" />
         </Link>
       </div>
       
-      <div className="rounded-lg border border-gray-100">
+      <div className="rounded-xl border border-gray-100">
         <Table>
-          <TableHeader className="bg-gray-50">
+          <TableHeader className="bg-gray-50 rounded-t-xl">
             <TableRow>
               <TableHead>Shop Information</TableHead>
               <TableHead>Token Usage</TableHead>
@@ -102,7 +102,7 @@ export function RecentShops({ shops }: RecentShopsProps) {
                   <Button
                     variant="outline" 
                     size="sm"
-                    className="rounded-md text-blue-600 border-blue-200 hover:bg-blue-50"
+                    className="rounded-full text-green-600 border-green-200 hover:bg-green-50"
                     onClick={() => handleViewBookings(shop.id)}
                   >
                     View Booking

@@ -30,7 +30,7 @@ export function DashboardStats() {
       trend: 'up' as const,
       icon: Store,
       iconColor: 'text-white',
-      bgColor: 'bg-red-400',
+      bgColor: 'bg-green-500',
     },
     {
       title: 'Total Bookings',
@@ -39,7 +39,7 @@ export function DashboardStats() {
       trend: 'up' as const,
       icon: CalendarDays,
       iconColor: 'text-white',
-      bgColor: 'bg-orange-400',
+      bgColor: 'bg-orange-500',
     },
     {
       title: 'Total Conversations',
@@ -48,7 +48,7 @@ export function DashboardStats() {
       trend: 'up' as const,
       icon: MessageSquare,
       iconColor: 'text-white',
-      bgColor: 'bg-green-400',
+      bgColor: 'bg-green-500',
     },
     {
       title: 'Token Usage',
@@ -57,7 +57,7 @@ export function DashboardStats() {
       trend: 'down' as const,
       icon: Zap,
       iconColor: 'text-white',
-      bgColor: 'bg-purple-400',
+      bgColor: 'bg-blue-500',
     },
     {
       title: 'Spam Activities',
@@ -66,7 +66,7 @@ export function DashboardStats() {
       trend: 'up' as const,
       icon: Activity,
       iconColor: 'text-white',
-      bgColor: 'bg-blue-400',
+      bgColor: 'bg-red-500',
     },
   ];
 

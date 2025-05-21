@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -34,13 +34,13 @@ export const BookingsFilters: React.FC<BookingsFiltersProps> = ({
           placeholder="Search by customer name, phone or booking ID" 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
+          className="pl-10 rounded-full"
         />
       </div>
       
       {/* Status filter */}
       <Select value={statusFilter} onValueChange={setStatusFilter}>
-        <SelectTrigger>
+        <SelectTrigger className="rounded-full">
           <SelectValue placeholder="All Statuses" />
         </SelectTrigger>
         <SelectContent>
@@ -52,22 +52,32 @@ export const BookingsFilters: React.FC<BookingsFiltersProps> = ({
       </Select>
       
       {/* Date picker */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-start text-left">
-            {selectedDate ? format(selectedDate, 'PPP') : "Pick a date"}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={(date) => date && setSelectedDate(date)}
-            initialFocus
-            className="p-3 pointer-events-auto"
-          />
-        </PopoverContent>
-      </Popover>
+      <div className="flex gap-2">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full justify-start text-left rounded-full">
+              {selectedDate ? format(selectedDate, 'PPP') : "Pick a date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => date && setSelectedDate(date)}
+              initialFocus
+              className="p-3 pointer-events-auto"
+            />
+          </PopoverContent>
+        </Popover>
+        <Button 
+          variant="ghost" 
+          onClick={() => setSelectedDate(new Date())}
+          className="w-10 h-10 p-0 flex items-center justify-center"
+          aria-label="Clear date"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
     </div>
   );
 };

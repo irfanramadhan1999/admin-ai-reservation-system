@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { X } from 'lucide-react';
 
 interface ShopsFiltersProps {
   searchTerm: string;
@@ -83,8 +84,8 @@ export function ShopsFilters({
       </div>
       
       <div className="md:col-span-1">
-        <Button variant="ghost" onClick={onClearDateFilters} className="w-full">
-          Clear
+        <Button variant="ghost" onClick={onClearDateFilters} className="w-full h-10 px-0" aria-label="Clear date filters">
+          <X className="h-5 w-5" />
         </Button>
       </div>
     </div>
