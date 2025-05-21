@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,7 +11,7 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { BlockTimeSlotDialog } from '@/components/shop-owner/block-time-slot-dialog';
-import { BlockedTimeSlot } from '@/hooks/useShopInformation';
+import { BlockedTimeSlot } from '@/hooks/shop-information';
 
 interface DowntimeSectionProps {
   blockedTimeSlots: BlockedTimeSlot[];

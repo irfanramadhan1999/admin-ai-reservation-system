@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { Button } from '@/components/ui/button';
-import { useShopInformation } from '@/hooks/useShopInformation';
+import { useShopInformation } from '@/hooks/shop-information';
 
 // Import refactored components
 import { BasicInformationSection } from '@/components/shop-information/BasicInformationSection';

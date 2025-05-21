@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { FileText, Eye, Trash2 } from 'lucide-react';
-import { Document } from '@/hooks/useShopInformation';
+import { Document } from '@/hooks/shop-information';
 
 interface KnowledgeManagementSectionProps {
   shopKnowledge: string;

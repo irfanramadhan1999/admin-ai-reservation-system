@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { OperatingHour } from '@/hooks/useShopInformation';
+import { OperatingHour } from '@/hooks/shop-information';
 
 interface OperatingHoursSectionProps {
   is24Hours: boolean;
