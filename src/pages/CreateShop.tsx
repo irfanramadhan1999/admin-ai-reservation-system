@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -9,7 +8,7 @@ import { ShopOperatingHoursSection } from '@/components/create-shop/ShopOperatin
 import { ShopKnowledgeSection } from '@/components/create-shop/ShopKnowledgeSection';
 import { TableTypeSection } from '@/components/create-shop/TableTypeSection';
 import { TableTypeDialog } from '@/components/create-shop/TableTypeDialog';
-import { useCreateShop } from '@/hooks/useCreateShop';
+import { useCreateShop } from '@/hooks/create-shop';
 import { Button } from '@/components/ui/button';
 
 const CreateShop = () => {
