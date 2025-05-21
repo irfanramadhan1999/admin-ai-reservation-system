@@ -4,10 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { Conversation } from './types';
 import { mockConversationsInitial } from './mock-data';
 import { toast } from "@/components/ui/use-toast";
+import { isSameDay } from 'date-fns';
 
 export function useConversations() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [scoreFilter, setScoreFilter] = useState('all');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [conversations, setConversations] = useState<Conversation[]>(mockConversationsInitial);
   const [openBlockDialog, setOpenBlockDialog] = useState(false);
@@ -17,12 +20,30 @@ export function useConversations() {
   
   const itemsPerPage = 8;
 
-  // Filter conversations based on search query
-  const filteredConversations = conversations.filter(
-    conversation => 
+  // Filter conversations based on search query, score filter, and date filter
+  const filteredConversations = conversations.filter(conversation => {
+    // Search filter
+    const matchesSearch = 
       conversation.shop.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      conversation.ipAddress.includes(searchQuery)
-  );
+      conversation.ipAddress.includes(searchQuery);
+    
+    // Score filter
+    let matchesScore = true;
+    if (scoreFilter === 'success') {
+      matchesScore = conversation.score === 1;
+    } else if (scoreFilter === 'failed') {
+      matchesScore = conversation.score === 0;
+    }
+    
+    // Date filter
+    let matchesDate = true;
+    if (selectedDate) {
+      const conversationDate = new Date(conversation.timestamp);
+      matchesDate = isSameDay(conversationDate, selectedDate);
+    }
+    
+    return matchesSearch && matchesScore && matchesDate;
+  });
 
   // Get current page items
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -96,6 +117,10 @@ export function useConversations() {
   return {
     searchQuery,
     setSearchQuery,
+    scoreFilter,
+    setScoreFilter,
+    selectedDate,
+    setSelectedDate,
     currentPage,
     setCurrentPage,
     currentConversations,

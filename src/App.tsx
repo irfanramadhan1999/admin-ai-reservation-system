@@ -13,7 +13,6 @@ import Conversations from "./pages/Conversations";
 import ViewConversationDetail from "./pages/ViewConversationDetail";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
-import SystemAlerts from "./pages/SystemAlerts";
 import Login from "./pages/Login";
 import ShopOwnerDashboard from "./pages/ShopOwnerDashboard";
 import ShopInformation from "./pages/ShopInformation";
@@ -43,7 +42,6 @@ const App = () => (
           <Route path="/admin/conversations" element={<Conversations />} />
           <Route path="/admin/conversations/:id" element={<ViewConversationDetail />} />
           <Route path="/admin/account-settings" element={<AccountSettings />} />
-          <Route path="/admin/system-alerts" element={<SystemAlerts />} />
           
           {/* Shop Owner Routes */}
           <Route path="/shop-admin" element={<ShopOwnerDashboard />} />

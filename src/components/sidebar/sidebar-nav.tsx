@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User, ShieldAlert, Info, Calendar, Layout, MessageSquare } from 'lucide-react';
+import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface SidebarNavProps {
@@ -34,12 +34,6 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
       href: "/admin/conversations",
       isActive: location.pathname === "/admin/conversations" ||
                location.pathname.startsWith("/admin/conversations/")
-    },
-    {
-      title: "System Alerts",
-      icon: ShieldAlert,
-      href: "/admin/system-alerts",
-      isActive: location.pathname === "/admin/system-alerts"
     },
     {
       title: "Account Settings",

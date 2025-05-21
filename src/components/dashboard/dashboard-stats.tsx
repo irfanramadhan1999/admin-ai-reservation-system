@@ -4,7 +4,8 @@ import {
   Store, 
   CalendarDays, 
   Zap, 
-  Activity
+  Activity,
+  MessageSquare
 } from 'lucide-react';
 import { KpiCards } from '@/components/dashboard/kpi-cards';
 
@@ -38,6 +39,14 @@ export function DashboardStats() {
       iconColor: 'bg-purple-400',
     },
     {
+      title: 'Total Conversations',
+      value: '156',
+      change: '+15%',
+      trend: 'up' as const,
+      icon: MessageSquare,
+      iconColor: 'bg-blue-400',
+    },
+    {
       title: 'Token Usage',
       value: '15.2K',
       change: '-3%',
@@ -46,7 +55,7 @@ export function DashboardStats() {
       iconColor: 'bg-emerald-400',
     },
     {
-      title: 'Suspicious Activities',
+      title: 'Spam Activities',
       value: '7',
       change: '+40%',
       trend: 'up' as const,

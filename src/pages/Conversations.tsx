@@ -13,6 +13,10 @@ const Conversations = () => {
   const {
     searchQuery,
     setSearchQuery,
+    scoreFilter,
+    setScoreFilter,
+    selectedDate,
+    setSelectedDate,
     currentPage,
     setCurrentPage,
     currentConversations,
@@ -32,10 +36,14 @@ const Conversations = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header with search */}
+        {/* Header with search and filters */}
         <ConversationsHeader 
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          scoreFilter={scoreFilter}
+          setScoreFilter={setScoreFilter}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
         />
 
         <Card>
