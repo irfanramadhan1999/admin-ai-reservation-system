@@ -28,6 +28,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface TableData {
   id: string;
@@ -64,6 +73,18 @@ export function TableLayoutSection({ tableTypes }: TableLayoutSectionProps) {
     
     return initialTables;
   });
+  
+  // Pagination state for each table type
+  const [paginationState, setPaginationState] = useState<Record<string, number>>(() => {
+    const initialState: Record<string, number> = {};
+    tableTypes.forEach(type => {
+      initialState[type.id] = 1;
+    });
+    return initialState;
+  });
+  
+  // Tables per page for pagination
+  const TABLES_PER_PAGE = 6;
   
   const [selectedTable, setSelectedTable] = useState<TableData | null>(null);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -200,6 +221,14 @@ export function TableLayoutSection({ tableTypes }: TableLayoutSectionProps) {
     return acc;
   }, {} as Record<string, TableData[]>);
 
+  // Function to handle pagination change
+  const handlePageChange = (typeId: string, page: number) => {
+    setPaginationState(prev => ({
+      ...prev,
+      [typeId]: page
+    }));
+  };
+
   return (
     <Card className="mt-8">
       <CardHeader>
@@ -246,6 +275,16 @@ export function TableLayoutSection({ tableTypes }: TableLayoutSectionProps) {
       <CardContent>
         {Object.keys(tablesByType).map((typeId) => {
           const typeName = tableTypes.find(t => t.id === typeId)?.name || 'Unknown';
+          const tablesOfType = tablesByType[typeId];
+          const totalPages = Math.ceil(tablesOfType.length / TABLES_PER_PAGE);
+          const currentPage = paginationState[typeId] || 1;
+          
+          // Get paginated tables
+          const paginatedTables = tablesOfType.slice(
+            (currentPage - 1) * TABLES_PER_PAGE, 
+            currentPage * TABLES_PER_PAGE
+          );
+          
           return (
             <div key={typeId} className="mb-8">
               <div className="flex items-center justify-between mb-3">
@@ -261,7 +300,7 @@ export function TableLayoutSection({ tableTypes }: TableLayoutSectionProps) {
               </div>
               
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {tablesByType[typeId].map((table) => (
+                {paginatedTables.map((table) => (
                   <button
                     key={table.id}
                     onClick={() => handleSelectTable(table)}
@@ -281,6 +320,63 @@ export function TableLayoutSection({ tableTypes }: TableLayoutSectionProps) {
                   </button>
                 ))}
               </div>
+              
+              {/* Pagination for each table type */}
+              {totalPages > 1 && (
+                <div className="mt-4">
+                  <Pagination>
+                    <PaginationContent>
+                      {/* Previous button */}
+                      <PaginationItem>
+                        <PaginationPrevious 
+                          onClick={() => handlePageChange(typeId, Math.max(1, currentPage - 1))}
+                          className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                      
+                      {/* Numbered pages */}
+                      {Array.from({ length: totalPages }).map((_, index) => {
+                        const pageNumber = index + 1;
+                        // Show first page, current page, last page and one page on each side of current page
+                        if (
+                          pageNumber === 1 ||
+                          pageNumber === totalPages ||
+                          Math.abs(pageNumber - currentPage) <= 1
+                        ) {
+                          return (
+                            <PaginationItem key={pageNumber}>
+                              <PaginationLink
+                                isActive={pageNumber === currentPage}
+                                onClick={() => handlePageChange(typeId, pageNumber)}
+                              >
+                                {pageNumber}
+                              </PaginationLink>
+                            </PaginationItem>
+                          );
+                        } else if (
+                          pageNumber === 2 && currentPage > 3 ||
+                          pageNumber === totalPages - 1 && currentPage < totalPages - 2
+                        ) {
+                          return (
+                            <PaginationItem key={pageNumber}>
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          );
+                        }
+                        return null;
+                      })}
+                      
+                      {/* Next button */}
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => handlePageChange(typeId, Math.min(totalPages, currentPage + 1))}
+                          className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
             </div>
           );
         })}

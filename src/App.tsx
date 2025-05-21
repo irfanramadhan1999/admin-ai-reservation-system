@@ -9,6 +9,8 @@ import Shops from "./pages/Shops";
 import CreateShop from "./pages/CreateShop";
 import Bookings from "./pages/Bookings";
 import ViewConversation from "./pages/ViewConversation";
+import Conversations from "./pages/Conversations";
+import ViewConversationDetail from "./pages/ViewConversationDetail";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 import SystemAlerts from "./pages/SystemAlerts";
@@ -38,6 +40,8 @@ const App = () => (
           <Route path="/admin/shops/edit/:id" element={<CreateShop />} />
           <Route path="/admin/bookings" element={<Bookings />} />
           <Route path="/admin/bookings/conversation/:id" element={<ViewConversation />} />
+          <Route path="/admin/conversations" element={<Conversations />} />
+          <Route path="/admin/conversations/:id" element={<ViewConversationDetail />} />
           <Route path="/admin/account-settings" element={<AccountSettings />} />
           <Route path="/admin/system-alerts" element={<SystemAlerts />} />
           
