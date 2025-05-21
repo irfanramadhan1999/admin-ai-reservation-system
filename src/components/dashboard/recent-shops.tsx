@@ -53,21 +53,21 @@ export function RecentShops({ shops }: RecentShopsProps) {
   };
   
   return (
-    <Card className="p-6 bg-white mb-8">
+    <Card className="p-6 bg-white border border-gray-100 shadow-sm rounded-xl mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Recent Shops</h2>
+        <h2 className="text-lg font-semibold text-gray-800">Recent Shops</h2>
         <Link 
           to="/admin/shops" 
-          className="text-sm flex items-center text-blue-500 hover:underline"
+          className="text-sm flex items-center text-blue-600 hover:underline font-medium"
         >
           View All
           <ArrowRight className="h-4 w-4 ml-1" />
         </Link>
       </div>
       
-      <div className="rounded-lg border bg-card">
+      <div className="rounded-lg border border-gray-100">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-gray-50">
             <TableRow>
               <TableHead>Shop Information</TableHead>
               <TableHead>Token Usage</TableHead>
@@ -81,27 +81,28 @@ export function RecentShops({ shops }: RecentShopsProps) {
               <TableRow key={shop.id}>
                 <TableCell>
                   <div className="flex flex-col">
-                    <span className="font-medium">{shop.name}</span>
+                    <span className="font-medium text-gray-800">{shop.name}</span>
                     <span className="text-sm text-muted-foreground">{shop.contact}</span>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col">
                     <span className="font-medium">{shop.tokenUsage.used.toLocaleString()} / {shop.tokenUsage.limit.toLocaleString()}</span>
-                    <div className="w-full bg-gray-200 h-2 rounded-full mt-1">
+                    <div className="w-full bg-gray-100 h-2 rounded-full mt-1">
                       <div 
-                        className={`h-2 rounded-full ${shop.tokenUsage.used / shop.tokenUsage.limit > 0.8 ? 'bg-red-500' : 'bg-green-500'}`}
+                        className={`h-2 rounded-full ${shop.tokenUsage.used / shop.tokenUsage.limit > 0.8 ? 'bg-red-400' : 'bg-green-400'}`}
                         style={{ width: `${(shop.tokenUsage.used / shop.tokenUsage.limit) * 100}%` }}
                       ></div>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{shop.totalBookings}</TableCell>
+                <TableCell className="font-medium">{shop.totalBookings}</TableCell>
                 <TableCell>{formatDateTimeJST(shop.createdAt)}</TableCell>
                 <TableCell>
                   <Button
-                    variant="ghost" 
+                    variant="outline" 
                     size="sm"
+                    className="rounded-md text-blue-600 border-blue-200 hover:bg-blue-50"
                     onClick={() => handleViewBookings(shop.id)}
                   >
                     View Booking

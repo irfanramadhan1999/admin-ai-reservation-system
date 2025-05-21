@@ -17,6 +17,7 @@ export interface KpiItem {
   trend: 'up' | 'down';
   icon: React.ElementType;
   iconColor: string;
+  bgColor: string;
 }
 
 export function DashboardStats() {
@@ -28,7 +29,8 @@ export function DashboardStats() {
       change: '+12%',
       trend: 'up' as const,
       icon: Store,
-      iconColor: 'bg-blue-500',
+      iconColor: 'text-white',
+      bgColor: 'bg-red-400',
     },
     {
       title: 'Total Bookings',
@@ -36,7 +38,8 @@ export function DashboardStats() {
       change: '+8%',
       trend: 'up' as const,
       icon: CalendarDays,
-      iconColor: 'bg-purple-400',
+      iconColor: 'text-white',
+      bgColor: 'bg-orange-400',
     },
     {
       title: 'Total Conversations',
@@ -44,7 +47,8 @@ export function DashboardStats() {
       change: '+15%',
       trend: 'up' as const,
       icon: MessageSquare,
-      iconColor: 'bg-blue-400',
+      iconColor: 'text-white',
+      bgColor: 'bg-green-400',
     },
     {
       title: 'Token Usage',
@@ -52,7 +56,8 @@ export function DashboardStats() {
       change: '-3%',
       trend: 'down' as const,
       icon: Zap,
-      iconColor: 'bg-emerald-400',
+      iconColor: 'text-white',
+      bgColor: 'bg-purple-400',
     },
     {
       title: 'Spam Activities',
@@ -60,7 +65,8 @@ export function DashboardStats() {
       change: '+40%',
       trend: 'up' as const,
       icon: Activity,
-      iconColor: 'bg-red-400',
+      iconColor: 'text-white',
+      bgColor: 'bg-blue-400',
     },
   ];
 

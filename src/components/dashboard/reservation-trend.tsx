@@ -35,19 +35,19 @@ const chartConfig = {
   bookings: {
     label: "Bookings",
     theme: {
-      light: "#0066FF",
-      dark: "#2563eb",
+      light: "#3b82f6",
+      dark: "#3b82f6",
     },
   },
 };
 
 export function ReservationTrend() {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between pb-3">
-        <CardTitle className="text-lg font-medium">Today's Peak Times & Traffic</CardTitle>
+    <Card className="border border-gray-100 shadow-sm rounded-xl">
+      <CardHeader className="flex flex-row items-center justify-between pb-3 border-b">
+        <CardTitle className="text-lg font-medium text-gray-800">Today's Peak Times & Traffic</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <div className="h-[300px]">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
@@ -55,47 +55,49 @@ export function ReservationTrend() {
                 data={peakTimeData}
                 margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                 <XAxis
                   dataKey="time"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(time) => time}
+                  stroke="#a0aec0"
                 />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
                   tickFormatter={(value) => `${value}`}
+                  stroke="#a0aec0"
                 />
                 <Tooltip content={<ChartTooltipContent />} />
                 <defs>
                   <linearGradient id="colorBookings" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0066FF" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#0066FF" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <Area
                   type="monotone"
                   dataKey="bookings"
-                  stroke="var(--color-bookings)"
+                  stroke="#3b82f6"
                   strokeWidth={2}
                   fill="url(#colorBookings)"
-                  activeDot={{ r: 6 }}
+                  activeDot={{ r: 6, fill: "#3b82f6", stroke: "#fff", strokeWidth: 2 }}
                   name="bookings"
                 />
               </AreaChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
-        <div className="mt-4 flex justify-center gap-8">
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-semibold">12:00, 19:00</span>
+        <div className="mt-6 flex justify-center gap-8">
+          <div className="flex flex-col items-center p-4 bg-blue-50 rounded-lg">
+            <span className="text-2xl font-semibold text-gray-800">12:00, 19:00</span>
             <span className="text-sm text-muted-foreground">Peak Hours</span>
           </div>
-          <div className="flex flex-col items-center">
-            <span className="text-2xl font-semibold">147</span>
+          <div className="flex flex-col items-center p-4 bg-blue-50 rounded-lg">
+            <span className="text-2xl font-semibold text-gray-800">147</span>
             <span className="text-sm text-muted-foreground">Total Traffic Today</span>
           </div>
         </div>
