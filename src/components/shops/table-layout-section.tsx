@@ -1,51 +1,12 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Input } from '@/components/ui/input';
-import { format } from 'date-fns';
-import { TableType } from '@/components/shops/table-type-card';
-import { CalendarIcon, Clock, Plus, Check, Trash2, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle 
-} from '@/components/ui/alert-dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
-interface TableData {
-  id: string;
-  type: string;
-  typeId: string;
-  capacity: number;
-  isOccupied: boolean;
-  bookingTime?: string;
-}
+import { TableType, TableData } from './table-types';
+import { TableFilter } from './table-filter';
+import { TableSection } from './table-section';
+import { TableDialogs } from './table-dialogs';
+import { TableLegend } from './table-legend';
 
 interface TableLayoutSectionProps {
   tableTypes: TableType[];
@@ -236,40 +197,12 @@ export function TableLayoutSection({ tableTypes }: TableLayoutSectionProps) {
         <CardDescription>Visualize and manage your restaurant's table layout</CardDescription>
         
         {/* Date and Time Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-4">
-          {/* Date Picker */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="justify-start text-left font-normal w-full sm:w-[240px]"
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {selectedDate ? format(selectedDate, "PPP") : "Select date"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                initialFocus
-                className={cn("p-3 pointer-events-auto")}
-              />
-            </PopoverContent>
-          </Popover>
-          
-          {/* Time Picker */}
-          <div className="relative w-full sm:w-[140px]">
-            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="time"
-              value={selectedTime}
-              onChange={(e) => setSelectedTime(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
+        <TableFilter 
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+        />
       </CardHeader>
       
       <CardContent>
@@ -286,219 +219,41 @@ export function TableLayoutSection({ tableTypes }: TableLayoutSectionProps) {
           );
           
           return (
-            <div key={typeId} className="mb-8">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium">{typeName} Section</h3>
-                <Button 
-                  size="sm" 
-                  onClick={() => handleAddTable(typeId)}
-                  className="h-8"
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Table
-                </Button>
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {paginatedTables.map((table) => (
-                  <button
-                    key={table.id}
-                    onClick={() => handleSelectTable(table)}
-                    className={`w-full aspect-square rounded-lg p-3 border border-border flex flex-col items-center justify-center transition-colors ${
-                      table.isOccupied
-                        ? "bg-red-100 hover:bg-red-200 text-red-800"
-                        : "bg-green-100 hover:bg-green-200 text-green-800"
-                    }`}
-                  >
-                    <div className="text-sm font-medium">{table.type}</div>
-                    <div className="text-xs mt-1">{table.capacity} people</div>
-                    {table.isOccupied && table.bookingTime && (
-                      <div className="text-xs mt-2 px-1.5 py-0.5 rounded bg-white/50">
-                        Until {table.bookingTime.split('-')[1]}
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-              
-              {/* Pagination for each table type */}
-              {totalPages > 1 && (
-                <div className="mt-4">
-                  <Pagination>
-                    <PaginationContent>
-                      {/* Previous button */}
-                      <PaginationItem>
-                        <PaginationPrevious 
-                          onClick={() => handlePageChange(typeId, Math.max(1, currentPage - 1))}
-                          className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
-                        />
-                      </PaginationItem>
-                      
-                      {/* Numbered pages */}
-                      {Array.from({ length: totalPages }).map((_, index) => {
-                        const pageNumber = index + 1;
-                        // Show first page, current page, last page and one page on each side of current page
-                        if (
-                          pageNumber === 1 ||
-                          pageNumber === totalPages ||
-                          Math.abs(pageNumber - currentPage) <= 1
-                        ) {
-                          return (
-                            <PaginationItem key={pageNumber}>
-                              <PaginationLink
-                                isActive={pageNumber === currentPage}
-                                onClick={() => handlePageChange(typeId, pageNumber)}
-                              >
-                                {pageNumber}
-                              </PaginationLink>
-                            </PaginationItem>
-                          );
-                        } else if (
-                          pageNumber === 2 && currentPage > 3 ||
-                          pageNumber === totalPages - 1 && currentPage < totalPages - 2
-                        ) {
-                          return (
-                            <PaginationItem key={pageNumber}>
-                              <PaginationEllipsis />
-                            </PaginationItem>
-                          );
-                        }
-                        return null;
-                      })}
-                      
-                      {/* Next button */}
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() => handlePageChange(typeId, Math.min(totalPages, currentPage + 1))}
-                          className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
-            </div>
+            <TableSection 
+              key={typeId}
+              typeId={typeId}
+              typeName={typeName}
+              tables={paginatedTables}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onSelectTable={handleSelectTable}
+              onAddTable={handleAddTable}
+              onPageChange={handlePageChange}
+            />
           );
         })}
 
-        <div className="mt-6 flex gap-4 items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-sm bg-green-100 border border-green-300"></div>
-            <span className="text-sm">Available</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-sm bg-red-100 border border-red-300"></div>
-            <span className="text-sm">Occupied</span>
-          </div>
-        </div>
+        <TableLegend />
       </CardContent>
       
-      {/* Table Options Modal */}
-      <AlertDialog open={showOptionsModal} onOpenChange={setShowOptionsModal}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Table Options</AlertDialogTitle>
-            <AlertDialogDescription>
-              {selectedTable && (
-                <div className="space-y-2 mt-2">
-                  <div className="text-sm font-medium">Table: {selectedTable.type}</div>
-                  <div className="text-sm">Capacity: {selectedTable.capacity} people</div>
-                  {selectedTable.isOccupied && selectedTable.bookingTime && (
-                    <div className="text-sm">
-                      Status: Occupied until {selectedTable.bookingTime.split('-')[1]}
-                    </div>
-                  )}
-                </div>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
-            <Button
-              onClick={handleStatusChange}
-              variant={selectedTable?.isOccupied ? "outline" : "default"}
-              className={selectedTable?.isOccupied ? "w-full" : "w-full bg-green-600 hover:bg-green-700"}
-            >
-              {selectedTable?.isOccupied ? "Release Table" : "Mark as Occupied"}
-            </Button>
-            <Button
-              onClick={handleRemoveRequest}
-              variant="destructive"
-              className="w-full"
-              disabled={selectedTable?.isOccupied}
-            >
-              Remove Table
-            </Button>
-            <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      
-      {/* Time Selection Modal */}
-      <AlertDialog open={showTimeModal} onOpenChange={setShowTimeModal}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Set Occupied Until</AlertDialogTitle>
-            <AlertDialogDescription>
-              {selectedTable && (
-                <div className="space-y-4 mt-2">
-                  <div>Select the time until which this table will be occupied:</div>
-                  <div className="relative">
-                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      type="time"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmOccupyTable}>
-              Confirm
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      
-      {/* Remove Confirmation Dialog */}
-      <AlertDialog open={showRemoveConfirmation} onOpenChange={setShowRemoveConfirmation}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove Table</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to remove this table? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmRemoveTable} className="bg-destructive text-destructive-foreground">
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      
-      {/* Release Table Confirmation Dialog */}
-      <AlertDialog open={showReleaseConfirmation} onOpenChange={setShowReleaseConfirmation}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Release Table</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to release this table? It will become available for reservation.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmReleaseTable}>
-              Release Table
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <TableDialogs
+        selectedTable={selectedTable}
+        showOptionsModal={showOptionsModal}
+        showTimeModal={showTimeModal}
+        showRemoveConfirmation={showRemoveConfirmation}
+        showReleaseConfirmation={showReleaseConfirmation}
+        endTime={endTime}
+        setShowOptionsModal={setShowOptionsModal}
+        setShowTimeModal={setShowTimeModal}
+        setShowRemoveConfirmation={setShowRemoveConfirmation}
+        setShowReleaseConfirmation={setShowReleaseConfirmation}
+        setEndTime={setEndTime}
+        handleStatusChange={handleStatusChange}
+        handleRemoveRequest={handleRemoveRequest}
+        confirmOccupyTable={confirmOccupyTable}
+        confirmRemoveTable={confirmRemoveTable}
+        confirmReleaseTable={confirmReleaseTable}
+      />
     </Card>
   );
 }
