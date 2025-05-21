@@ -112,14 +112,21 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-light p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">AI Reservation System</h1>
+          <div className="flex justify-center items-center gap-2 mb-4">
+            <div className="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">
+              A
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Reservation<span className="text-green-500">AI</span>
+            </h1>
+          </div>
           <p className="text-gray-500">Admin Dashboard Login</p>
         </div>
         
-        <Card className="w-full">
+        <Card className="w-full rounded-2xl card-hover shadow-sm border border-gray-100">
           <CardHeader>
             <CardTitle>Login</CardTitle>
             <CardDescription>
@@ -128,12 +135,12 @@ const Login = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="code" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-2 mb-2">
                 <TabsTrigger value="code">Login with Code</TabsTrigger>
                 <TabsTrigger value="password">Login with Password</TabsTrigger>
               </TabsList>
               
-              <div className="mt-4 h-[230px]"> {/* Fixed height container */}
+              <div className="mt-4 h-[230px]">
                 <TabsContent value="code" className="mt-0 h-full">
                   {!codeSent ? (
                     <form onSubmit={handleSendCode} className="space-y-4 h-full flex flex-col">
@@ -150,7 +157,7 @@ const Login = () => {
                       </div>
                       <Button 
                         type="submit" 
-                        className="w-full bg-blue-500 hover:bg-blue-600 mt-auto"
+                        className="w-full mt-auto"
                         disabled={isLoading}
                       >
                         {isLoading ? "Sending Code..." : "Send Code"}
@@ -162,12 +169,12 @@ const Login = () => {
                         <Label htmlFor="verification-code">Verification Code</Label>
                         <InputOTP maxLength={6} value={code} onChange={setCode}>
                           <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
+                            <InputOTPSlot index={0} className="border-green-100 focus:border-green-300" />
+                            <InputOTPSlot index={1} className="border-green-100 focus:border-green-300" />
+                            <InputOTPSlot index={2} className="border-green-100 focus:border-green-300" />
+                            <InputOTPSlot index={3} className="border-green-100 focus:border-green-300" />
+                            <InputOTPSlot index={4} className="border-green-100 focus:border-green-300" />
+                            <InputOTPSlot index={5} className="border-green-100 focus:border-green-300" />
                           </InputOTPGroup>
                         </InputOTP>
                         <p className="text-sm text-muted-foreground mt-2">
@@ -176,8 +183,8 @@ const Login = () => {
                       </div>
                       <div className="flex flex-col space-y-2 mt-auto">
                         <Button 
-                          type="submit" 
-                          className="w-full bg-blue-500 hover:bg-blue-600"
+                          type="submit"
+                          className="w-full"
                           disabled={isLoading}
                         >
                           {isLoading ? "Verifying..." : "Sign In"}
@@ -185,7 +192,7 @@ const Login = () => {
                         <Button
                           type="button"
                           variant="link"
-                          className="w-full"
+                          className="w-full text-green-600"
                           onClick={() => setCodeSent(false)}
                         >
                           Use a different email
@@ -214,7 +221,7 @@ const Login = () => {
                         <Button
                           type="button"
                           variant="link"
-                          className="px-0 text-sm text-blue-500"
+                          className="px-0 text-sm text-green-600"
                           onClick={handleForgotPassword}
                         >
                           Forgot password?
@@ -231,7 +238,7 @@ const Login = () => {
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full bg-blue-500 hover:bg-blue-600 mt-auto"
+                      className="w-full mt-auto"
                       disabled={isLoading}
                     >
                       {isLoading ? "Signing In..." : "Sign In"}
