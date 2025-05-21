@@ -93,7 +93,7 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
             asChild
             isActive={item.isActive}
             tooltip={item.title}
-            className={item.isActive ? "bg-blue-50 text-blue-600" : "hover:bg-gray-50"}
+            className={item.isActive ? "bg-blue-100 text-blue-600 font-medium" : "hover:bg-blue-50"}
           >
             <Link to={item.href} className="py-2.5">
               <item.icon className="h-5 w-5" />

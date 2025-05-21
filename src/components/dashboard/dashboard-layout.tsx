@@ -34,8 +34,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <SidebarProvider>
       <div className="min-h-screen flex bg-[#f9fafc] w-full">
         {/* Sidebar */}
-        <Sidebar className="border-r-0 bg-white shadow-sm">
-          <SidebarHeader className="p-4 border-b">
+        <Sidebar className="border-r-0 shadow-sm">
+          <SidebarHeader className="p-4 border-b border-blue-100">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
                 {logoText.charAt(0)}
@@ -51,7 +51,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           </SidebarContent>
           
           <SidebarFooter>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t border-blue-100">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                   <span className="text-xs font-medium">JD</span>
