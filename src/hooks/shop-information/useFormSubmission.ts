@@ -1,6 +1,13 @@
+
 import { useToast } from '@/hooks/use-toast';
 
-export const useFormSubmission = () => {
+interface FormSubmissionProps {
+  shopName: string;
+  phoneNumber: string;
+  address: string;
+}
+
+export const useFormSubmission = ({ shopName, phoneNumber, address }: FormSubmissionProps) => {
   const { toast } = useToast();
   
   // Handle save changes

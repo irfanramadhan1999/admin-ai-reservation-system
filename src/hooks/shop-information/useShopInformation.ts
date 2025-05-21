@@ -49,7 +49,11 @@ export const useShopInformation = () => {
     handleDocumentDelete
   } = useShopKnowledge();
 
-  const { handleSaveChanges } = useFormSubmission();
+  const { handleSaveChanges } = useFormSubmission({
+    shopName,
+    phoneNumber,
+    address
+  });
 
   return {
     // Basic information
