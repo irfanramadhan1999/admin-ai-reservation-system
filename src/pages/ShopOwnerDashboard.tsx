@@ -1,8 +1,6 @@
-
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
-import { ReservationTrend } from '@/components/dashboard/reservation-trend';
 import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
 import { StatusCards } from '@/components/shop-owner/status-cards';
 import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
@@ -168,11 +166,6 @@ const ShopOwnerDashboard = () => {
         isCalendarSynced={isCalendarSynced}
         onAiToggle={setIsAiActive}
       />
-
-      {/* Peak Times & Traffic Analytics */}
-      <div className="mb-8">
-        <ReservationTrend />
-      </div>
 
       {/* Today's Bookings Section */}
       <div className="mb-8">
