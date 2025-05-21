@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { Button } from '@/components/ui/button';
-import { Mic, MicOff, Phone, Edit, Trash, Info } from 'lucide-react';
+import { Mic, MicOff, Phone, Edit, Trash, Info, Calendar } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
