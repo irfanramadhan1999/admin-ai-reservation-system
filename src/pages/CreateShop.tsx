@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { useToast } from '@/hooks/use-toast';
@@ -7,7 +7,10 @@ import { CreateShopHeader } from '@/components/create-shop/CreateShopHeader';
 import { ShopBasicInfoSection } from '@/components/create-shop/ShopBasicInfoSection';
 import { ShopOperatingHoursSection } from '@/components/create-shop/ShopOperatingHoursSection';
 import { ShopKnowledgeSection } from '@/components/create-shop/ShopKnowledgeSection';
+import { TableTypeSection } from '@/components/create-shop/TableTypeSection';
+import { TableTypeDialog } from '@/components/create-shop/TableTypeDialog';
 import { useCreateShop } from '@/hooks/useCreateShop';
+import { Button } from '@/components/ui/button';
 
 const CreateShop = () => {
   const { id } = useParams();
@@ -20,6 +23,9 @@ const CreateShop = () => {
     shopKnowledge,
     documents,
     shopImage,
+    tableTypes,
+    tableTypeDialogOpen,
+    editingTableType,
     handleInputChange,
     handleSelectChange,
     handleShopImageUpload,
@@ -33,6 +39,11 @@ const CreateShop = () => {
     handleDocumentUpload,
     handleDocumentDelete,
     handleOwnerCredentialChange,
+    handleAddTableType,
+    handleEditTableType,
+    handleDeleteTableType,
+    handleSaveTableType,
+    setTableTypeDialogOpen,
     handleSaveChanges
   } = useCreateShop(id);
 
@@ -84,6 +95,14 @@ const CreateShop = () => {
           handleTimeChange={handleTimeChange}
         />
         
+        {/* Table Type Section */}
+        <TableTypeSection 
+          tableTypes={tableTypes}
+          onAddTableType={handleAddTableType}
+          onEditTableType={handleEditTableType}
+          onDeleteTableType={handleDeleteTableType}
+        />
+        
         {/* Knowledge Management Section */}
         <ShopKnowledgeSection 
           shopKnowledge={shopKnowledge}
@@ -92,7 +111,25 @@ const CreateShop = () => {
           handleDocumentUpload={handleDocumentUpload}
           handleDocumentDelete={handleDocumentDelete}
         />
+        
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <Button 
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 rounded-md"
+          >
+            {id ? 'Update Shop' : 'Create Shop'}
+          </Button>
+        </div>
       </form>
+      
+      {/* Table Type Dialog */}
+      <TableTypeDialog
+        open={tableTypeDialogOpen}
+        onOpenChange={setTableTypeDialogOpen}
+        onSave={handleSaveTableType}
+        editingTableType={editingTableType}
+      />
     </DashboardLayout>
   );
 };

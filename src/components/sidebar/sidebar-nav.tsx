@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare } from 'lucide-react';
+import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   SidebarMenu,
@@ -102,6 +102,20 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
+      
+      {/* Logout Button */}
+      <SidebarMenuItem className="mt-auto">
+        <SidebarMenuButton
+          asChild
+          tooltip="Logout"
+          className="hover:bg-red-50 hover:text-red-600 mt-6"
+        >
+          <Link to="/login" className="py-2.5">
+            <LogOut className="h-5 w-5" />
+            <span className="font-medium">Logout</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     </SidebarMenu>
   );
 }

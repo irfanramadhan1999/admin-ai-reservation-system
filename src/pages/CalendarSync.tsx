@@ -13,29 +13,31 @@ const CalendarSync = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [lastSync, setLastSync] = useState("1 day ago");
 
-  const handleConnectCalendar = () => {
-    setIsConnecting(true);
-    
-    // Simulate connection process
-    setTimeout(() => {
-      setIsConnecting(false);
-      setIsConnected(true);
-      setLastSync("1 day ago");
+  const handleConnectToggle = () => {
+    if (isConnected) {
+      // Handle disconnect
+      setIsConnected(false);
       
       toast({
-        title: "Calendar Connected",
-        description: "Your Google Calendar has been successfully connected.",
+        title: "Calendar Disconnected",
+        description: "Your Google Calendar has been disconnected.",
       });
-    }, 2000);
-  };
-
-  const handleDisconnect = () => {
-    setIsConnected(false);
-    
-    toast({
-      title: "Calendar Disconnected",
-      description: "Your Google Calendar has been disconnected.",
-    });
+    } else {
+      // Handle connect
+      setIsConnecting(true);
+      
+      // Simulate connection process
+      setTimeout(() => {
+        setIsConnecting(false);
+        setIsConnected(true);
+        setLastSync("Just now");
+        
+        toast({
+          title: "Calendar Connected",
+          description: "Your Google Calendar has been successfully connected.",
+        });
+      }, 2000);
+    }
   };
 
   return (
@@ -66,32 +68,24 @@ const CalendarSync = () => {
                 </p>
                 
                 <div className="pt-4">
-                  {!isConnected ? (
-                    <Button 
-                      onClick={handleConnectCalendar}
-                      disabled={isConnecting}
-                      className="bg-blue-500 hover:bg-blue-600"
-                    >
-                      {isConnecting ? "Connecting..." : "Connect Google Calendar"}
-                    </Button>
-                  ) : (
-                    <div className="space-y-4">
+                  <Button 
+                    onClick={handleConnectToggle}
+                    disabled={isConnecting}
+                    className={isConnected ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"}
+                  >
+                    {isConnecting ? "Connecting..." : isConnected ? "Disconnect" : "Connect"}
+                  </Button>
+                  
+                  {isConnected && (
+                    <div className="mt-4">
                       <div className="flex items-center gap-2 text-green-600 bg-green-50 py-2 px-3 rounded-md">
                         <Check className="h-5 w-5" />
                         <span>Calendar connected successfully</span>
                       </div>
                       
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-muted-foreground mt-2">
                         Last sync: {lastSync}
                       </div>
-                      
-                      <Button 
-                        variant="outline"
-                        onClick={handleDisconnect} 
-                        className="text-red-500 border-red-300 hover:bg-red-50"
-                      >
-                        Disconnect Calendar
-                      </Button>
                     </div>
                   )}
                 </div>

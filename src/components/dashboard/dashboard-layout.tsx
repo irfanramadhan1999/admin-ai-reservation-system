@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Search } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -10,9 +9,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
   SidebarInset,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
 } from '@/components/ui/sidebar';
 import { SidebarNav } from '../sidebar/sidebar-nav';
 
@@ -69,16 +65,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <SidebarInset>
           <div className="flex items-center h-14 px-4 border-b bg-white shadow-sm">
             <SidebarTrigger className="text-gray-500" />
-            <div className="ml-6">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <input 
-                  type="text" 
-                  placeholder="Search anything here..." 
-                  className="py-1.5 px-9 bg-gray-50 rounded-full border border-gray-100 text-sm w-64"
-                />
-              </div>
-            </div>
           </div>
           <main className="p-6 md:p-8">
             {children}
