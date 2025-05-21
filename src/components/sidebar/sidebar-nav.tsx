@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare, LogOut } from 'lucide-react';
+import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare, LogOut, Phone } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   SidebarMenu,
@@ -48,7 +47,7 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
     }
   ];
   
-  // Shop owner navigation items - Updated to include Account page
+  // Shop owner navigation items - Updated to include AI Call Service
   const shopOwnerNavItems = [
     {
       title: "Dashboard",
@@ -73,6 +72,12 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
       icon: Layout,
       href: "/shop-admin/seating",
       isActive: location.pathname === "/shop-admin/seating"
+    },
+    {
+      title: "AI Call Service",
+      icon: Phone,
+      href: "/ai-call",
+      isActive: location.pathname === "/ai-call" || location.pathname === "/shop-admin/ai-call"
     },
     {
       title: "Account Settings",

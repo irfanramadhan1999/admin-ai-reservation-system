@@ -77,18 +77,6 @@ export const useAiCallService = () => {
     });
   };
 
-  const handleEditReservation = () => {
-    // Navigate to booking edit page with reservation ID
-    if (reservationDetails) {
-      toast({
-        title: "Edit Reservation",
-        description: `Editing reservation ${reservationDetails.id}`
-      });
-      // In a real app, navigate to edit page
-      // navigate(`/shop-admin/bookings/edit/${reservationDetails.id}`);
-    }
-  };
-
   const handleCancelReservation = () => {
     if (reservationDetails) {
       toast({
@@ -118,7 +106,6 @@ export const useAiCallService = () => {
     animatePulse,
     startCall,
     endCall,
-    handleEditReservation,
     handleCancelReservation
   };
 };

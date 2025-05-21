@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Calendar, Edit, Trash, Users, Clock, Utensils } from 'lucide-react';
+import { Calendar, Trash, Users, Clock, Utensils } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
@@ -15,13 +15,11 @@ interface ReservationDetailsProps {
     tableType: string;
     guests: number;
   } | null;
-  onEdit: () => void;
   onCancel: () => void;
 }
 
 export const ReservationDetails: React.FC<ReservationDetailsProps> = ({ 
   reservationDetails, 
-  onEdit, 
   onCancel 
 }) => {
   if (!reservationDetails) return null;
@@ -88,21 +86,14 @@ export const ReservationDetails: React.FC<ReservationDetailsProps> = ({
           </div>
         </div>
         
-        {/* Action buttons */}
-        <div className="grid grid-cols-2 gap-4 mt-6">
-          <Button 
-            variant="outline" 
-            className="border-blue-200 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors shadow-sm hover:shadow-md"
-            onClick={onEdit}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Edit
-          </Button>
+        {/* Cancel button only */}
+        <div className="flex justify-center mt-6">
           <Button 
             variant="destructive" 
-            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-colors shadow-sm hover:shadow-md"
+            className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 transition-colors shadow-sm hover:shadow-md"
             onClick={onCancel}
           >
-            <Trash className="mr-2 h-4 w-4" /> Cancel
+            <Trash className="mr-2 h-4 w-4" /> Cancel Reservation
           </Button>
         </div>
       </CardContent>

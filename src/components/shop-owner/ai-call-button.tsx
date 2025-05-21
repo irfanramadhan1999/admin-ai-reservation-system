@@ -18,7 +18,7 @@ export function AiCallButton({
   const navigate = useNavigate();
   
   const handleClick = () => {
-    navigate('/shop-admin/ai-call');
+    navigate('/ai-call');
   };
   
   return (

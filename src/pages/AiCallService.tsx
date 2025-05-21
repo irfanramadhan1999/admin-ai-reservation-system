@@ -17,7 +17,6 @@ const AiCallService = () => {
     animatePulse,
     startCall,
     endCall,
-    handleEditReservation,
     handleCancelReservation
   } = useAiCallService();
 
@@ -53,10 +52,9 @@ const AiCallService = () => {
           endCall={endCall}
         />
 
-        {/* Reservation Details */}
+        {/* Reservation Details - with cancel only */}
         <ReservationDetails
           reservationDetails={reservationDetails}
-          onEdit={handleEditReservation}
           onCancel={handleCancelReservation}
         />
       </div>
