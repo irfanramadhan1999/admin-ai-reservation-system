@@ -26,7 +26,7 @@ export function AiCallButton({
       variant={variant} 
       size={size}
       onClick={handleClick}
-      className={className}
+      className={`${className} transition-all duration-300 hover:scale-105 shadow-sm hover:shadow-md`}
     >
       <Phone className="mr-2 h-4 w-4" />
       AI Call Service
