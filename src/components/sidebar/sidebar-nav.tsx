@@ -3,6 +3,11 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { 
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton
+} from '@/components/ui/sidebar';
 
 interface SidebarNavProps {
   className?: string;
@@ -81,22 +86,21 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
   const navItems = userRole === 'admin' ? adminNavItems : shopOwnerNavItems;
 
   return (
-    <nav className={cn("flex flex-col space-y-1", className)}>
+    <SidebarMenu className={cn("space-y-1", className)}>
       {navItems.map((item) => (
-        <Link
-          key={item.title}
-          to={item.href}
-          className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all",
-            item.isActive
-              ? "bg-blue-500 text-white"
-              : "text-muted-foreground hover:bg-muted"
-          )}
-        >
-          <item.icon className="h-4 w-4" />
-          <span>{item.title}</span>
-        </Link>
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton
+            asChild
+            isActive={item.isActive}
+            tooltip={item.title}
+          >
+            <Link to={item.href}>
+              <item.icon className="h-4 w-4" />
+              <span>{item.title}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
       ))}
-    </nav>
+    </SidebarMenu>
   );
 }
