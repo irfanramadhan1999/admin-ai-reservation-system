@@ -20,6 +20,8 @@ import ShopOwnerBookings from "./pages/ShopOwnerBookings";
 import ShopOwnerSeating from "./pages/ShopOwnerSeating";
 import ShopOwnerAccount from "./pages/ShopOwnerAccount";
 import CalendarSync from "./pages/CalendarSync";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<Dashboard />} />

@@ -46,19 +46,7 @@ export function PasswordLoginTab() {
   };
 
   const handleForgotPassword = () => {
-    if (!email || !email.includes('@')) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Reset Email Sent",
-      description: `Instructions to reset your password have been sent to ${email}.`
-    });
+    navigate('/forgot-password', { state: { email } });
   };
 
   return (
