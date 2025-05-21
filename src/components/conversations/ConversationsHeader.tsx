@@ -36,7 +36,11 @@ export function ConversationsHeader({
             Review all AI conversations with customers
           </p>
         </div>
-        <div className="relative w-full sm:w-64">
+      </div>
+      
+      <div className="flex flex-wrap sm:flex-nowrap gap-4 items-center">
+        {/* Search Input */}
+        <div className="relative w-full sm:flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search by shop or IP..."
@@ -47,22 +51,18 @@ export function ConversationsHeader({
             }}
           />
         </div>
-      </div>
-      
-      <div className="flex flex-wrap gap-4">
+        
         {/* Score Filter */}
-        <div className="w-full sm:w-auto">
-          <Select value={scoreFilter} onValueChange={setScoreFilter}>
-            <SelectTrigger className="w-full sm:w-[180px]">
-              <SelectValue placeholder="Filter by score" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All scores</SelectItem>
-              <SelectItem value="success">Success (Score: 1)</SelectItem>
-              <SelectItem value="failed">Failed (Score: 0)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Select value={scoreFilter} onValueChange={setScoreFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Filter by score" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All scores</SelectItem>
+            <SelectItem value="success">Success (Score: 1)</SelectItem>
+            <SelectItem value="failed">Failed (Score: 0)</SelectItem>
+          </SelectContent>
+        </Select>
         
         {/* Date Picker */}
         <Popover>
@@ -70,7 +70,7 @@ export function ConversationsHeader({
             <Button
               variant="outline"
               className={cn(
-                "w-full sm:w-[240px] justify-start text-left font-normal",
+                "w-full sm:w-[180px] justify-start text-left font-normal",
                 !selectedDate && "text-muted-foreground"
               )}
             >
