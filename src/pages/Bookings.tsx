@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +32,7 @@ import {
   PaginationNext, 
   PaginationPrevious 
 } from '@/components/ui/pagination';
-import { ArrowLeft, Search, CalendarIcon, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Search, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Sample data for bookings
@@ -355,7 +354,6 @@ const Bookings = () => {
                 <TableHead>Tables</TableHead>
                 <TableHead>Guests</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -391,22 +389,11 @@ const Bookings = () => {
                     <TableCell>
                       {getStatusBadge(booking.status)}
                     </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-1"
-                        onClick={() => handleViewConversation(booking.id)}
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                        <span>View</span>
-                      </Button>
-                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={6} className="text-center py-8">
                     No bookings found matching your search criteria
                   </TableCell>
                 </TableRow>

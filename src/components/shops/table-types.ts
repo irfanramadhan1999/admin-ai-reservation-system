@@ -13,4 +13,5 @@ export interface TableData {
   capacity: number;
   isOccupied: boolean;
   bookingTime?: string;
+  blocked?: boolean;
 }

@@ -22,11 +22,14 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Eye, Search } from 'lucide-react';
+import { Eye, Search, Ban } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { toast } from "@/components/ui/use-toast";
+import { BlockDialog } from '@/components/system-alerts/BlockDialog';
+import { UnblockDialog } from '@/components/system-alerts/UnblockDialog';
 
 // Mock conversation data
-const mockConversations = [
+const mockConversationsInitial = [
   {
     id: "C001",
     timestamp: "2025-05-20T14:30:00",
@@ -35,6 +38,7 @@ const mockConversations = [
     duration: "13 minutes",
     tokenUsage: 2425,
     score: 1,
+    blocked: false,
   },
   {
     id: "C002",
@@ -44,6 +48,7 @@ const mockConversations = [
     duration: "8 minutes",
     tokenUsage: 1853,
     score: 1,
+    blocked: false,
   },
   {
     id: "C003",
@@ -53,6 +58,7 @@ const mockConversations = [
     duration: "5 minutes",
     tokenUsage: 1245,
     score: 0,
+    blocked: false,
   },
   {
     id: "C004",
@@ -62,6 +68,7 @@ const mockConversations = [
     duration: "10 minutes",
     tokenUsage: 2056,
     score: 1,
+    blocked: false,
   },
   {
     id: "C005",
@@ -71,6 +78,7 @@ const mockConversations = [
     duration: "7 minutes",
     tokenUsage: 1632,
     score: 1,
+    blocked: false,
   },
   {
     id: "C006",
@@ -80,6 +88,7 @@ const mockConversations = [
     duration: "9 minutes",
     tokenUsage: 1875,
     score: 0,
+    blocked: false,
   },
   {
     id: "C007",
@@ -89,6 +98,7 @@ const mockConversations = [
     duration: "12 minutes",
     tokenUsage: 2254,
     score: 1,
+    blocked: false,
   },
   {
     id: "C008",
@@ -98,6 +108,7 @@ const mockConversations = [
     duration: "6 minutes",
     tokenUsage: 1423,
     score: 1,
+    blocked: false,
   },
   {
     id: "C009",
@@ -107,6 +118,7 @@ const mockConversations = [
     duration: "8 minutes",
     tokenUsage: 1732,
     score: 0,
+    blocked: false,
   },
   {
     id: "C010",
@@ -116,17 +128,35 @@ const mockConversations = [
     duration: "11 minutes",
     tokenUsage: 2154,
     score: 1,
+    blocked: false,
   }
 ];
+
+interface Conversation {
+  id: string;
+  timestamp: string;
+  ipAddress: string;
+  shop: string;
+  duration: string;
+  tokenUsage: number;
+  score: number;
+  blocked: boolean;
+}
 
 const Conversations = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [conversations, setConversations] = useState<Conversation[]>(mockConversationsInitial);
+  const [openBlockDialog, setOpenBlockDialog] = useState(false);
+  const [openUnblockDialog, setOpenUnblockDialog] = useState(false);
+  const [selectedIP, setSelectedIP] = useState("");
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  
   const itemsPerPage = 8;
 
   // Filter conversations based on search query
-  const filteredConversations = mockConversations.filter(
+  const filteredConversations = conversations.filter(
     conversation => 
       conversation.shop.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conversation.ipAddress.includes(searchQuery)
@@ -153,6 +183,52 @@ const Conversations = () => {
 
   const handleViewConversation = (id: string) => {
     navigate(`/admin/conversations/${id}`);
+  };
+
+  const handleToggleBlock = (ipAddress: string, id: string, isBlocked: boolean) => {
+    if (isBlocked) {
+      // If already blocked, show unblock confirmation
+      setSelectedIP(ipAddress);
+      setSelectedConversationId(id);
+      setOpenUnblockDialog(true);
+    } else {
+      // If not blocked, show block confirmation
+      setSelectedIP(ipAddress);
+      setSelectedConversationId(id);
+      setOpenBlockDialog(true);
+    }
+  };
+
+  const handleConfirmBlock = () => {
+    if (selectedConversationId) {
+      setConversations(prevConversations => 
+        prevConversations.map(conversation => 
+          conversation.id === selectedConversationId ? { ...conversation, blocked: true } : conversation
+        )
+      );
+      
+      toast({
+        title: "IP Blocked",
+        description: `${selectedIP} has been blocked successfully.`,
+      });
+    }
+    setOpenBlockDialog(false);
+  };
+
+  const handleConfirmUnblock = () => {
+    if (selectedConversationId) {
+      setConversations(prevConversations => 
+        prevConversations.map(conversation => 
+          conversation.id === selectedConversationId ? { ...conversation, blocked: false } : conversation
+        )
+      );
+      
+      toast({
+        title: "IP Unblocked",
+        description: `${selectedIP} has been unblocked successfully.`,
+      });
+    }
+    setOpenUnblockDialog(false);
   };
 
   return (
@@ -202,7 +278,10 @@ const Conversations = () => {
                   </TableRow>
                 ) : (
                   currentConversations.map((conversation) => (
-                    <TableRow key={conversation.id}>
+                    <TableRow 
+                      key={conversation.id}
+                      className={conversation.blocked ? "bg-red-50" : undefined}
+                    >
                       <TableCell className="font-medium">
                         {formatDate(conversation.timestamp)}
                       </TableCell>
@@ -222,14 +301,25 @@ const Conversations = () => {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleViewConversation(conversation.id)}
-                        >
-                          <Eye className="h-4 w-4 mr-2" />
-                          View
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewConversation(conversation.id)}
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            View
+                          </Button>
+                          <Button
+                            variant={conversation.blocked ? "outline" : "ghost"}
+                            size="sm"
+                            className={conversation.blocked ? "text-green-600 hover:text-green-700" : "text-red-600 hover:text-red-700"}
+                            onClick={() => handleToggleBlock(conversation.ipAddress, conversation.id, conversation.blocked)}
+                          >
+                            <Ban className="h-4 w-4 mr-2" />
+                            {conversation.blocked ? "Unblock" : "Block"}
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -293,6 +383,22 @@ const Conversations = () => {
           )}
         </Card>
       </div>
+
+      {/* Block IP Confirmation Dialog */}
+      <BlockDialog 
+        open={openBlockDialog} 
+        onOpenChange={setOpenBlockDialog}
+        onConfirm={handleConfirmBlock}
+        ipAddress={selectedIP}
+      />
+
+      {/* Unblock IP Confirmation Dialog */}
+      <UnblockDialog 
+        open={openUnblockDialog} 
+        onOpenChange={setOpenUnblockDialog}
+        onConfirm={handleConfirmUnblock}
+        ipAddress={selectedIP}
+      />
     </DashboardLayout>
   );
 };

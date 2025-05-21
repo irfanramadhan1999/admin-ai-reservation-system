@@ -32,8 +32,8 @@ export function RecentBookingsTable({ bookings }: RecentBookingsTableProps) {
     switch (status.toLowerCase()) {
       case 'confirmed':
         return <Badge className="bg-green-500">Confirmed</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-500">Pending</Badge>;
+      case 'completed':
+        return <Badge className="bg-green-500">Completed</Badge>;
       case 'cancelled':
         return <Badge className="bg-red-500">Cancelled</Badge>;
       default:
