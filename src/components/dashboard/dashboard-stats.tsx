@@ -30,7 +30,7 @@ export function DashboardStats() {
       trend: 'up' as const,
       icon: Store,
       iconColor: 'text-white',
-      bgColor: 'bg-green-500',
+      bgColor: 'bg-blue-500',
     },
     {
       title: 'Total Bookings',
@@ -48,7 +48,7 @@ export function DashboardStats() {
       trend: 'up' as const,
       icon: MessageSquare,
       iconColor: 'text-white',
-      bgColor: 'bg-green-500',
+      bgColor: 'bg-blue-500',
     },
     {
       title: 'Token Usage',

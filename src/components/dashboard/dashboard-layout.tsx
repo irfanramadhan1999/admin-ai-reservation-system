@@ -37,11 +37,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <Sidebar className="border-r-0 bg-white shadow-sm">
           <SidebarHeader className="p-4 border-b">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">
+              <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
                 {logoText.charAt(0)}
               </div>
               <h1 className="text-xl font-semibold">
-                {logoText}<span className="text-green-500">AI</span>
+                {logoText}<span className="text-blue-500">AI</span>
               </h1>
             </div>
           </SidebarHeader>
@@ -53,7 +53,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <SidebarFooter>
             <div className="p-4 border-t">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
                   <span className="text-xs font-medium">JD</span>
                 </div>
                 <div className="flex flex-col">

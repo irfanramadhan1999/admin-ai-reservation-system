@@ -116,11 +116,11 @@ const Login = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex justify-center items-center gap-2 mb-4">
-            <div className="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">
+            <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
               A
             </div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Reservation<span className="text-green-500">AI</span>
+              Reservation<span className="text-blue-500">AI</span>
             </h1>
           </div>
           <p className="text-gray-500">Admin Dashboard Login</p>
@@ -169,12 +169,12 @@ const Login = () => {
                         <Label htmlFor="verification-code">Verification Code</Label>
                         <InputOTP maxLength={6} value={code} onChange={setCode}>
                           <InputOTPGroup>
-                            <InputOTPSlot index={0} className="border-green-100 focus:border-green-300" />
-                            <InputOTPSlot index={1} className="border-green-100 focus:border-green-300" />
-                            <InputOTPSlot index={2} className="border-green-100 focus:border-green-300" />
-                            <InputOTPSlot index={3} className="border-green-100 focus:border-green-300" />
-                            <InputOTPSlot index={4} className="border-green-100 focus:border-green-300" />
-                            <InputOTPSlot index={5} className="border-green-100 focus:border-green-300" />
+                            <InputOTPSlot index={0} className="border-blue-100 focus:border-blue-300" />
+                            <InputOTPSlot index={1} className="border-blue-100 focus:border-blue-300" />
+                            <InputOTPSlot index={2} className="border-blue-100 focus:border-blue-300" />
+                            <InputOTPSlot index={3} className="border-blue-100 focus:border-blue-300" />
+                            <InputOTPSlot index={4} className="border-blue-100 focus:border-blue-300" />
+                            <InputOTPSlot index={5} className="border-blue-100 focus:border-blue-300" />
                           </InputOTPGroup>
                         </InputOTP>
                         <p className="text-sm text-muted-foreground mt-2">
@@ -192,7 +192,7 @@ const Login = () => {
                         <Button
                           type="button"
                           variant="link"
-                          className="w-full text-green-600"
+                          className="w-full text-blue-600"
                           onClick={() => setCodeSent(false)}
                         >
                           Use a different email
@@ -221,7 +221,7 @@ const Login = () => {
                         <Button
                           type="button"
                           variant="link"
-                          className="px-0 text-sm text-green-600"
+                          className="px-0 text-sm text-blue-600"
                           onClick={handleForgotPassword}
                         >
                           Forgot password?
