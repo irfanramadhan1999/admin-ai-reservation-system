@@ -19,7 +19,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { EditBookingDialog } from '@/components/shop-owner/edit-booking-dialog';
-import { BlockTimeSlotDialog } from '@/components/shop-owner/block-time-slot-dialog';
 import {
   Pagination,
   PaginationContent,
@@ -61,7 +60,7 @@ const bookingData = [
     endTime: '2025-05-19T20:00:00',
     tables: ['Counter'],
     guests: 1,
-    status: 'pending',
+    status: 'completed',
     notes: ''
   },
   {
@@ -116,7 +115,7 @@ const bookingData = [
     endTime: '2025-05-19T21:00:00',
     tables: ['Counter'],
     guests: 1,
-    status: 'pending',
+    status: 'completed',
     notes: ''
   },
   {
@@ -171,7 +170,7 @@ const bookingData = [
     endTime: '2025-05-19T20:15:00',
     tables: ['Counter'],
     guests: 1,
-    status: 'pending',
+    status: 'completed',
     notes: 'First-time visitor'
   },
 ];
@@ -185,40 +184,6 @@ const tableTypes = [
   { id: "5", name: "Window Seat", capacity: 4, quantity: 6 },
   { id: "6", name: "Garden View", capacity: 4, quantity: 4 },
   { id: "7", name: "Private Room", capacity: 10, quantity: 1 },
-];
-
-// Mock blocked time slots data
-const blockedTimeSlotsData = [
-  {
-    id: '1',
-    eventName: 'Staff Meeting',
-    date: '2025-05-19T00:00:00',
-    blockEntireDay: false,
-    startTime: '14:00',
-    endTime: '16:00',
-    tableType: 'Private Room',
-    tables: ['Private Room 1']
-  },
-  {
-    id: '2',
-    eventName: 'Restaurant Closure',
-    date: '2025-05-20T00:00:00',
-    blockEntireDay: true,
-    startTime: '00:00',
-    endTime: '23:59',
-    tableType: 'All Types',
-    tables: ['All Tables']
-  },
-  {
-    id: '3',
-    eventName: 'Special Event',
-    date: '2025-05-21T00:00:00',
-    blockEntireDay: false,
-    startTime: '18:00',
-    endTime: '22:00',
-    tableType: 'Window Seat',
-    tables: ['Window Seat 3', 'Window Seat 4']
-  }
 ];
 
 // Mock tables by type
@@ -240,14 +205,11 @@ const ShopOwnerBookings = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [editBookingOpen, setEditBookingOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
-  const [blockTimeSlotOpen, setBlockTimeSlotOpen] = useState(false);
-  const [selectedBlockedSlot, setSelectedBlockedSlot] = useState<any>(null);
-  const [blockedTimeSlots, setBlockedTimeSlots] = useState(blockedTimeSlotsData);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<any>(null);
   
   const { toast } = useToast();
-  const itemsPerPage = 8; // Updated to show 8 rows per page
+  const itemsPerPage = 8;
   
   // Format time range for display
   const formatTimeRange = (start: string, end: string) => {
@@ -263,13 +225,11 @@ const ShopOwnerBookings = () => {
       case 'confirmed':
       case 'reserved':
         return <Badge className="bg-green-500">Reserved</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-500">Pending</Badge>;
+      case 'completed':
+        return <Badge className="bg-blue-500">Completed</Badge>;
       case 'cancelled':
       case 'canceled':
         return <Badge className="bg-red-500">Canceled</Badge>;
-      case 'completed':
-        return <Badge className="bg-blue-500">Completed</Badge>;
       default:
         return <Badge>{status}</Badge>;
     }
@@ -325,45 +285,6 @@ const ShopOwnerBookings = () => {
     });
   };
 
-  const handleAddBlockedSlot = () => {
-    setSelectedBlockedSlot(null);
-    setBlockTimeSlotOpen(true);
-  };
-
-  const handleEditBlockedSlot = (slot: any) => {
-    setSelectedBlockedSlot(slot);
-    setBlockTimeSlotOpen(true);
-  };
-
-  const handleRemoveBlockedSlot = (id: string) => {
-    setBlockedTimeSlots(blockedTimeSlots.filter(slot => slot.id !== id));
-    toast({
-      title: "Time Slot Unblocked",
-      description: "The blocked time slot has been removed."
-    });
-  };
-
-  const handleBlockTimeSlotSubmit = (blockedSlot: any) => {
-    if (selectedBlockedSlot) {
-      // Update existing blocked slot
-      setBlockedTimeSlots(blockedTimeSlots.map(slot => 
-        slot.id === blockedSlot.id ? blockedSlot : slot
-      ));
-      toast({
-        title: "Time Slot Updated",
-        description: "The blocked time slot has been updated."
-      });
-    } else {
-      // Add new blocked slot
-      setBlockedTimeSlots([...blockedTimeSlots, blockedSlot]);
-      toast({
-        title: "Time Slot Blocked",
-        description: "The time slot has been successfully blocked."
-      });
-    }
-    setBlockTimeSlotOpen(false);
-  };
-
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -389,7 +310,7 @@ const ShopOwnerBookings = () => {
         {/* Status filter */}
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger>
-            <SelectValue placeholder="Filter by status" />
+            <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
@@ -406,7 +327,7 @@ const ShopOwnerBookings = () => {
               {selectedDate ? format(selectedDate, 'PPP') : "Pick a date"}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
+          <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -440,15 +361,31 @@ const ShopOwnerBookings = () => {
                     <div className="font-medium">{booking.customerName}</div>
                     <div className="text-xs text-muted-foreground">{booking.customerPhone}</div>
                   </TableCell>
-                  <TableCell>{formatTimeRange(booking.startTime, booking.endTime)}</TableCell>
-                  <TableCell>{booking.tables.join(', ')}</TableCell>
-                  <TableCell>{getStatusBadge(booking.status)}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span>{booking.date}</span>
+                      <span className="text-sm">
+                        {booking.timeStart} - {booking.timeEnd} JST
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {booking.tables.map((table, i) => (
+                      <span key={i}>
+                        {table.type} {table.number}
+                        {i < booking.tables.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    {getStatusBadge(booking.status)}
+                  </TableCell>
                 </TableRow>
               ))}
               {paginatedBookings.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6">
-                    No bookings found that match your criteria
+                  <TableCell colSpan={6} className="text-center py-8">
+                    No bookings found matching your search criteria
                   </TableCell>
                 </TableRow>
               )}
@@ -456,127 +393,69 @@ const ShopOwnerBookings = () => {
           </Table>
         </div>
         
-        {/* Pagination Controls */}
+        {/* Pagination and Items Per Page Controls */}
         {filteredBookings.length > 0 && (
-          <div className="mt-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious 
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-                
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  // Logic to show current page and surrounding pages
-                  let pageToShow;
-                  if (totalPages <= 5) {
-                    pageToShow = i + 1;
-                  } else if (currentPage <= 3) {
-                    pageToShow = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageToShow = totalPages - 4 + i;
-                  } else {
-                    pageToShow = currentPage - 2 + i;
-                  }
+          <div className="flex flex-col md:flex-row justify-between items-center p-4 border-t">
+            <div className="flex items-center gap-2 mb-4 md:mb-0">
+              <span className="text-sm text-muted-foreground">Rows per page:</span>
+              <Select value={itemsPerPage.toString()} onValueChange={(value) => setCurrentPage(1)}>
+                <SelectTrigger className="w-[80px]">
+                  <SelectValue placeholder={itemsPerPage.toString()} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5</SelectItem>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {totalPages > 1 && (
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
                   
-                  return (
-                    <PaginationItem key={i}>
-                      <PaginationLink
-                        isActive={pageToShow === currentPage}
-                        onClick={() => setCurrentPage(pageToShow)}
-                      >
-                        {pageToShow}
-                      </PaginationLink>
-                    </PaginationItem>
-                  );
-                })}
-                
-                <PaginationItem>
-                  <PaginationNext 
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+                  {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+                    // Logic to show current page and surrounding pages
+                    let pageToShow;
+                    if (totalPages <= 5) {
+                      pageToShow = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageToShow = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageToShow = totalPages - 4 + i;
+                    } else {
+                      pageToShow = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <PaginationItem key={i}>
+                        <PaginationLink
+                          isActive={pageToShow === currentPage}
+                          onClick={() => setCurrentPage(pageToShow)}
+                        >
+                          {pageToShow}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  })}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
           </div>
         )}
-      </Card>
-      
-      {/* Blocked Time Slots Section - Reorganized with button at top */}
-      <Card className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h2 className="text-lg font-semibold">Blocked Time Slots</h2>
-            <p className="text-sm text-muted-foreground">
-              Reserve tables for special events or closures to prevent bookings on specific dates/times
-            </p>
-          </div>
-          <Button onClick={handleAddBlockedSlot}>
-            Block New Time Slot
-          </Button>
-        </div>
-        
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Event Name</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Time Range</TableHead>
-                <TableHead>Tables</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {blockedTimeSlots.map((slot) => (
-                <TableRow key={slot.id}>
-                  <TableCell>{slot.eventName}</TableCell>
-                  <TableCell>{format(new Date(slot.date), 'PPP')}</TableCell>
-                  <TableCell>
-                    {slot.blockEntireDay 
-                      ? "All Day" 
-                      : `${slot.startTime} - ${slot.endTime}`}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{slot.tableType}</span>
-                      <span className="text-xs text-muted-foreground">{slot.tables.join(', ')}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleEditBlockedSlot(slot)}
-                      >
-                        Edit
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="text-destructive border-destructive hover:bg-destructive/10"
-                        onClick={() => handleRemoveBlockedSlot(slot.id)}
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {blockedTimeSlots.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6">
-                    No blocked time slots found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
       </Card>
       
       {/* Edit Booking Modal */}
@@ -588,16 +467,6 @@ const ShopOwnerBookings = () => {
         onSubmit={handleUpdateBooking}
       />
       
-      {/* Block Time Slot Modal */}
-      <BlockTimeSlotDialog
-        open={blockTimeSlotOpen}
-        onOpenChange={setBlockTimeSlotOpen}
-        tableTypes={tableTypes}
-        tablesByType={tablesByType}
-        onSubmit={handleBlockTimeSlotSubmit}
-        editingSlot={selectedBlockedSlot}
-      />
-
       {/* Cancel Booking Confirmation Dialog */}
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
         <AlertDialogContent>

@@ -48,7 +48,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T20:00:00',
       tables: ['Counter'],
       guests: 1,
-      status: 'pending',
+      status: 'completed',
     },
     {
       id: 3,
@@ -164,6 +164,8 @@ const ShopOwnerDashboard = () => {
         customersCount={kpiData[1].value}
         isAiActive={isAiActive}
         isCalendarSynced={isCalendarSynced}
+        lastAiCall="5 minutes ago"
+        lastCalendarSync="1 day ago"
         onAiToggle={setIsAiActive}
       />
 

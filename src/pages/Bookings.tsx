@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +36,7 @@ import {
 import { ArrowLeft, Search, CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Sample data for bookings
+// Sample data for bookings, updated to change pending to completed
 const bookingData = [
   {
     id: "B001",
