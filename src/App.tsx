@@ -22,7 +22,6 @@ import ShopOwnerAccount from "./pages/ShopOwnerAccount";
 import CalendarSync from "./pages/CalendarSync";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-import AiCallService from "./pages/AiCallService";
 
 const queryClient = new QueryClient();
 
@@ -55,10 +54,6 @@ const App = () => (
           <Route path="/shop-admin/seating" element={<ShopOwnerSeating />} />
           <Route path="/shop-admin/profile" element={<ShopOwnerAccount />} />
           <Route path="/shop-admin/calendar-sync" element={<CalendarSync />} />
-          
-          {/* Standalone AI Call Routes */}
-          <Route path="/ai-call" element={<AiCallService />} />
-          <Route path="/shop-admin/ai-call" element={<AiCallService />} />
           
           {/* Root redirects to admin dashboard */}
           <Route path="/" element={<Navigate to="/admin" replace />} />
