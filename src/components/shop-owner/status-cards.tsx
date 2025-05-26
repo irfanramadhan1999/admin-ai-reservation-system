@@ -3,15 +3,19 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Calendar, Users, Bot } from 'lucide-react';
+import { Calendar, Users, Bot, Globe } from 'lucide-react';
 
 interface StatusCardsProps {
   bookingsCount: string;
   customersCount: string;
   isAiActive: boolean;
   isCalendarSynced: boolean;
+  isGuranaviSynced: boolean;
+  isHotpepperSynced: boolean;
   lastAiCall?: string;
   lastCalendarSync?: string;
+  lastGuranaviSync?: string;
+  lastHotpepperSync?: string;
   onAiToggle: (value: boolean) => void;
 }
 
@@ -20,14 +24,18 @@ export function StatusCards({
   customersCount,
   isAiActive,
   isCalendarSynced,
+  isGuranaviSynced,
+  isHotpepperSynced,
   lastAiCall,
   lastCalendarSync,
+  lastGuranaviSync,
+  lastHotpepperSync,
   onAiToggle,
 }: StatusCardsProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
       {/* Today's Bookings */}
       <Card className="p-6 rounded-2xl shadow-sm relative">
         <div className="flex justify-between items-start">
@@ -69,8 +77,8 @@ export function StatusCards({
                 onCheckedChange={onAiToggle} 
                 className="data-[state=checked]:bg-green-500"
               />
-              <span className="text-sm">
-                {isAiActive ? "AI Assistant is active" : "AI Assistant is off"}
+              <span className="text-xs">
+                {isAiActive ? "Active" : "Off"}
               </span>
             </div>
             {lastAiCall && (
@@ -83,20 +91,20 @@ export function StatusCards({
         </div>
       </Card>
 
-      {/* Google Calendar Notice */}
+      {/* Google Calendar */}
       <Card className="p-6 rounded-2xl shadow-sm relative">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
             <h3 className="text-sm font-medium text-muted-foreground">Google Calendar</h3>
             <div className="flex items-center gap-3 mt-2">
               <button
-                className={`px-3 py-1 rounded-md text-sm ${
+                className={`px-3 py-1 rounded-md text-xs ${
                   isCalendarSynced
                     ? 'bg-green-50 text-green-600 border border-green-200'
                     : 'bg-blue-500 text-white hover:bg-blue-600'
                 }`}
               >
-                {isCalendarSynced ? 'Calendar Connected' : 'Sync with Google Calendar'}
+                {isCalendarSynced ? 'Connected' : 'Sync'}
               </button>
             </div>
             {isCalendarSynced && (
@@ -105,6 +113,58 @@ export function StatusCards({
           </div>
           <div className="p-2 rounded-full bg-blue-50">
             <Calendar className="h-5 w-5 text-blue-500" />
+          </div>
+        </div>
+      </Card>
+
+      {/* Gurunavi */}
+      <Card className="p-6 rounded-2xl shadow-sm relative">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium text-muted-foreground">Gurunavi</h3>
+            <div className="flex items-center gap-3 mt-2">
+              <button
+                className={`px-3 py-1 rounded-md text-xs ${
+                  isGuranaviSynced
+                    ? 'bg-green-50 text-green-600 border border-green-200'
+                    : 'bg-orange-500 text-white hover:bg-orange-600'
+                }`}
+              >
+                {isGuranaviSynced ? 'Connected' : 'Sync'}
+              </button>
+            </div>
+            {isGuranaviSynced && (
+              <p className="text-xs text-muted-foreground mt-1">Last sync: {lastGuranaviSync || "2 hours ago"}</p>
+            )}
+          </div>
+          <div className="p-2 rounded-full bg-orange-50">
+            <Globe className="h-5 w-5 text-orange-500" />
+          </div>
+        </div>
+      </Card>
+
+      {/* Hotpepper */}
+      <Card className="p-6 rounded-2xl shadow-sm relative">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium text-muted-foreground">Hotpepper</h3>
+            <div className="flex items-center gap-3 mt-2">
+              <button
+                className={`px-3 py-1 rounded-md text-xs ${
+                  isHotpepperSynced
+                    ? 'bg-green-50 text-green-600 border border-green-200'
+                    : 'bg-red-500 text-white hover:bg-red-600'
+                }`}
+              >
+                {isHotpepperSynced ? 'Connected' : 'Sync'}
+              </button>
+            </div>
+            {isHotpepperSynced && (
+              <p className="text-xs text-muted-foreground mt-1">Last sync: {lastHotpepperSync || "30 minutes ago"}</p>
+            )}
+          </div>
+          <div className="p-2 rounded-full bg-red-50">
+            <Globe className="h-5 w-5 text-red-500" />
           </div>
         </div>
       </Card>

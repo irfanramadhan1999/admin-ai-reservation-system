@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
@@ -8,6 +9,8 @@ import { BookingsPagination } from '@/components/shop-owner/bookings-pagination'
 const ShopOwnerDashboard = () => {
   const [isAiActive, setIsAiActive] = useState(true);
   const [isCalendarSynced, setIsCalendarSynced] = useState(false);
+  const [isGuranaviSynced, setIsGuranaviSynced] = useState(true);
+  const [isHotpepperSynced, setIsHotpepperSynced] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   
   // Mock data for kPI cards
@@ -164,8 +167,12 @@ const ShopOwnerDashboard = () => {
         customersCount={kpiData[1].value}
         isAiActive={isAiActive}
         isCalendarSynced={isCalendarSynced}
+        isGuranaviSynced={isGuranaviSynced}
+        isHotpepperSynced={isHotpepperSynced}
         lastAiCall="5 minutes ago"
         lastCalendarSync="1 day ago"
+        lastGuranaviSync="2 hours ago"
+        lastHotpepperSync="30 minutes ago"
         onAiToggle={setIsAiActive}
       />
 
