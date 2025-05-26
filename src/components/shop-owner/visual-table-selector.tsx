@@ -60,7 +60,7 @@ export const VisualTableSelector: React.FC<VisualTableSelectorProps> = ({
   
   const mostAppropriateType = suitableTableTypes.length > 0 ? suitableTableTypes[0] : null;
 
-  // Group tables by the most appropriate type only
+  // Get tables for the most appropriate type only
   const appropriateTables = mostAppropriateType 
     ? allTables.filter(table => table.type === mostAppropriateType.name)
     : [];

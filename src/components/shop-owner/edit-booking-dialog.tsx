@@ -160,15 +160,12 @@ export function EditBookingDialog({
           </div>
           
           {/* Visual Table Selection */}
-          <div className="space-y-4">
-            <Label>Choose Tables</Label>
-            <VisualTableSelector
-              tableTypes={tableTypes}
-              selectedTables={formValues.tables}
-              onTableToggle={handleTableToggle}
-              guestCount={Number(formValues.guests)}
-            />
-          </div>
+          <VisualTableSelector
+            tableTypes={tableTypes}
+            selectedTables={formValues.tables}
+            onTableToggle={handleTableToggle}
+            guestCount={Number(formValues.guests)}
+          />
           
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
