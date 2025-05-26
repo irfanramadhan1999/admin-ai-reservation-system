@@ -53,86 +53,75 @@ export const VisualTableSelector: React.FC<VisualTableSelectorProps> = ({
 
   const allTables = generateTables(tableTypes);
 
-  // Filter table types that can accommodate the guest count (capacity >= guestCount)
-  const suitableTableTypes = tableTypes.filter(type => type.capacity >= guestCount);
+  // Find the most appropriate table type (smallest capacity that can accommodate guests)
+  const suitableTableTypes = tableTypes
+    .filter(type => type.capacity >= guestCount)
+    .sort((a, b) => a.capacity - b.capacity);
+  
+  const mostAppropriateType = suitableTableTypes.length > 0 ? suitableTableTypes[0] : null;
 
-  // Group tables by type
-  const tablesByType = suitableTableTypes.reduce((acc, type) => {
-    acc[type.name] = allTables.filter(table => table.type === type.name);
-    return acc;
-  }, {} as Record<string, Table[]>);
+  // Group tables by the most appropriate type only
+  const appropriateTables = mostAppropriateType 
+    ? allTables.filter(table => table.type === mostAppropriateType.name)
+    : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="text-sm text-muted-foreground">
-        Available table types for {guestCount} guests:
+        Choose Tables for {guestCount} guests:
       </div>
       
-      {suitableTableTypes.length === 0 ? (
+      {!mostAppropriateType ? (
         <div className="text-center py-4 text-muted-foreground">
           No suitable table types found for {guestCount} guests
         </div>
       ) : (
-        suitableTableTypes.map(type => (
-          <div key={type.id} className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-blue-50">
-                {type.name}
-              </Badge>
-              <span className="text-sm text-muted-foreground">
-                (Capacity: {type.capacity} people)
-              </span>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {tablesByType[type.name]?.map(table => (
-                <div
-                  key={table.id}
-                  className={`
-                    p-3 border rounded-lg transition-colors
-                    ${!table.isAvailable 
-                      ? 'bg-red-50 border-red-200 opacity-60' 
-                      : selectedTables.includes(table.name)
-                        ? 'bg-blue-50 border-blue-300'
-                        : 'bg-white border-gray-200 hover:border-gray-300'
-                    }
-                  `}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id={table.id}
-                      checked={selectedTables.includes(table.name)}
-                      onCheckedChange={() => table.isAvailable && onTableToggle(table.name)}
-                      disabled={!table.isAvailable}
-                    />
-                    <Label
-                      htmlFor={table.id}
-                      className={`
-                        text-sm font-medium cursor-pointer
-                        ${!table.isAvailable ? 'text-red-500 line-through' : ''}
-                      `}
-                    >
-                      {table.name}
-                    </Label>
-                  </div>
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    {table.isAvailable ? 'Available' : 'Booked'}
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="bg-blue-50">
+              {mostAppropriateType.name}
+            </Badge>
+            <span className="text-sm text-muted-foreground">
+              (Capacity: {mostAppropriateType.capacity} people)
+            </span>
           </div>
-        ))
-      )}
-      
-      {selectedTables.length > 0 && (
-        <div className="pt-4 border-t">
-          <Label className="text-sm font-medium">Selected Tables:</Label>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {selectedTables.map((table, index) => (
-              <Badge key={index} className="bg-blue-500">
-                {table}
-              </Badge>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {appropriateTables.map(table => (
+              <div
+                key={table.id}
+                className={`
+                  p-3 border rounded-lg transition-colors cursor-pointer
+                  ${!table.isAvailable 
+                    ? 'bg-red-50 border-red-200 opacity-60 cursor-not-allowed' 
+                    : selectedTables.includes(table.name)
+                      ? 'bg-blue-50 border-blue-300'
+                      : 'bg-white border-gray-200 hover:border-gray-300'
+                  }
+                `}
+                onClick={() => table.isAvailable && onTableToggle(table.name)}
+              >
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id={table.id}
+                    checked={selectedTables.includes(table.name)}
+                    onCheckedChange={() => table.isAvailable && onTableToggle(table.name)}
+                    disabled={!table.isAvailable}
+                  />
+                  <Label
+                    htmlFor={table.id}
+                    className={`
+                      text-sm font-medium cursor-pointer
+                      ${!table.isAvailable ? 'text-red-500 line-through' : ''}
+                    `}
+                  >
+                    {table.name}
+                  </Label>
+                </div>
+                <div className="mt-1 text-xs text-muted-foreground">
+                  {table.isAvailable ? 'Available' : 'Booked'}
+                </div>
+              </div>
             ))}
           </div>
         </div>

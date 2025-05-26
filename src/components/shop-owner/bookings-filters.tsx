@@ -26,12 +26,12 @@ export const BookingsFilters: React.FC<BookingsFiltersProps> = ({
   setSelectedDate
 }) => {
   return (
-    <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
       {/* Search input */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input 
-          placeholder="Search by customer name, phone or booking ID" 
+          placeholder="Search customers, phone, ID" 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10 rounded-full"
@@ -51,12 +51,12 @@ export const BookingsFilters: React.FC<BookingsFiltersProps> = ({
         </SelectContent>
       </Select>
       
-      {/* Date picker */}
+      {/* Date picker with clear button */}
       <div className="flex gap-2">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="w-full justify-start text-left rounded-full">
-              {selectedDate ? format(selectedDate, 'PPP') : "Pick a date"}
+            <Button variant="outline" className="flex-1 justify-start text-left rounded-full">
+              {selectedDate ? format(selectedDate, 'MMM d, yyyy') : "Pick a date"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -72,10 +72,10 @@ export const BookingsFilters: React.FC<BookingsFiltersProps> = ({
         <Button 
           variant="ghost" 
           onClick={() => setSelectedDate(new Date())}
-          className="w-10 h-10 p-0 flex items-center justify-center"
+          className="w-10 h-10 p-0 flex items-center justify-center rounded-full"
           aria-label="Clear date"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </Button>
       </div>
     </div>

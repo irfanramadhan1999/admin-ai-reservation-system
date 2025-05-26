@@ -86,7 +86,7 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
             return (
               <TableRow 
                 key={booking.id}
-                className={isCancelled ? 'bg-red-50' : ''}
+                className={isCancelled ? 'bg-red-50 pointer-events-none' : ''}
               >
                 <TableCell className={isCancelled ? 'text-red-600' : ''}>{booking.id}</TableCell>
                 <TableCell>
@@ -111,13 +111,15 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
                   {getStatusBadge(booking.status)}
                 </TableCell>
                 <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
+                  <div className={`flex justify-end gap-2 ${isCancelled ? 'pointer-events-auto' : ''}`}>
                     {onViewConversation && (
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => onViewConversation(booking)}
                         title="View Conversation"
+                        disabled={isCancelled}
+                        className={isCancelled ? 'opacity-50 cursor-not-allowed' : ''}
                       >
                         <MessageSquare className="h-4 w-4" />
                       </Button>
@@ -128,6 +130,8 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
                         size="sm"
                         onClick={() => onEditBooking(booking)}
                         title="Edit Booking"
+                        disabled={isCancelled}
+                        className={isCancelled ? 'opacity-50 cursor-not-allowed' : ''}
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
@@ -138,7 +142,8 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
                         size="sm"
                         onClick={() => onCancelBooking(booking)}
                         title="Cancel Booking"
-                        className="text-red-600 hover:text-red-700"
+                        disabled={isCancelled}
+                        className={`text-red-600 hover:text-red-700 ${isCancelled ? 'opacity-50 cursor-not-allowed' : ''}`}
                       >
                         <X className="h-4 w-4" />
                       </Button>

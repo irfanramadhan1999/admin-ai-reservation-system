@@ -66,12 +66,8 @@ const ShopOwnerBookings = () => {
   };
 
   const handleViewConversation = (booking: any) => {
-    // In a real app, this would navigate to the conversation page
-    console.log("View conversation for booking:", booking.id);
-    toast({
-      title: "View Conversation",
-      description: `Opening conversation for booking ${booking.id}`
-    });
+    // Navigate to conversation detail page
+    window.location.href = `/shop-admin/conversations/${booking.id}`;
   };
 
   return (
@@ -83,21 +79,25 @@ const ShopOwnerBookings = () => {
         date={format(new Date(), 'PPPP')}
       />
       
-      {/* Filters and Create Button */}
+      {/* Filters and Create Button - Updated Layout */}
       <div className="mb-6 space-y-4">
-        <BookingsFilters
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-        <div className="flex justify-end">
-          <Button onClick={() => setCreateBookingOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Booking
-          </Button>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="md:col-span-3">
+            <BookingsFilters
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={() => setCreateBookingOpen(true)} className="w-full md:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              Create Booking
+            </Button>
+          </div>
         </div>
       </div>
       
