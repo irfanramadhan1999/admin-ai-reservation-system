@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare, LogOut } from 'lucide-react';
@@ -47,7 +48,7 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
     }
   ];
   
-  // Shop owner navigation items - Removed AI Call Service
+  // Shop owner navigation items - Added Conversations
   const shopOwnerNavItems = [
     {
       title: "Dashboard",
@@ -66,6 +67,13 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
       icon: Calendar,
       href: "/shop-admin/bookings",
       isActive: location.pathname === "/shop-admin/bookings"
+    },
+    {
+      title: "Conversations",
+      icon: MessageSquare,
+      href: "/shop-admin/conversations",
+      isActive: location.pathname === "/shop-admin/conversations" ||
+               location.pathname.startsWith("/shop-admin/conversations/")
     },
     {
       title: "Seating",

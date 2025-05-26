@@ -1,9 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
+import { Plus } from 'lucide-react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { CreateBookingDialog } from '@/components/shop-owner/create-booking-dialog';
 import { EditBookingDialog } from '@/components/shop-owner/edit-booking-dialog';
 import { 
   AlertDialog, 
@@ -20,6 +23,7 @@ import { BookingsTable } from '@/components/shop-owner/bookings-table';
 import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
 import { ItemsPerPage } from '@/components/shop-owner/items-per-page';
 import { useBookings } from '@/hooks/useBookings';
+import { useToast } from '@/hooks/use-toast';
 
 const ShopOwnerBookings = () => {
   const {
@@ -49,6 +53,27 @@ const ShopOwnerBookings = () => {
     tableTypes
   } = useBookings();
 
+  const [createBookingOpen, setCreateBookingOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleCreateBooking = (newBooking: any) => {
+    // In a real app, this would save to the database
+    console.log("Created booking:", newBooking);
+    toast({
+      title: "Booking Created",
+      description: "The new booking has been successfully created."
+    });
+  };
+
+  const handleViewConversation = (booking: any) => {
+    // In a real app, this would navigate to the conversation page
+    console.log("View conversation for booking:", booking.id);
+    toast({
+      title: "View Conversation",
+      description: `Opening conversation for booking ${booking.id}`
+    });
+  };
+
   return (
     <DashboardLayout>
       {/* Page Header */}
@@ -58,9 +83,12 @@ const ShopOwnerBookings = () => {
         date={format(new Date(), 'PPPP')}
       />
       
-      {/* Action Buttons - AI Call Button Removed */}
+      {/* Action Buttons */}
       <div className="mb-6">
-        {/* AiCallButton removed as part of removing AI Call Service feature */}
+        <Button onClick={() => setCreateBookingOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Create Booking
+        </Button>
       </div>
       
       {/* Filters */}
@@ -80,6 +108,7 @@ const ShopOwnerBookings = () => {
           bookings={paginatedBookings} 
           onEditBooking={handleEditBooking}
           onCancelBooking={handleCancelBooking}
+          onViewConversation={handleViewConversation}
         />
         
         {/* Pagination and Items Per Page Controls */}
@@ -100,6 +129,14 @@ const ShopOwnerBookings = () => {
           </div>
         )}
       </Card>
+      
+      {/* Create Booking Dialog */}
+      <CreateBookingDialog
+        open={createBookingOpen}
+        onOpenChange={setCreateBookingOpen}
+        tableTypes={tableTypes}
+        onSubmit={handleCreateBooking}
+      />
       
       {/* Edit Booking Modal */}
       <EditBookingDialog

@@ -19,6 +19,7 @@ import ShopInformation from "./pages/ShopInformation";
 import ShopOwnerBookings from "./pages/ShopOwnerBookings";
 import ShopOwnerSeating from "./pages/ShopOwnerSeating";
 import ShopOwnerAccount from "./pages/ShopOwnerAccount";
+import ShopOwnerConversations from "./pages/ShopOwnerConversations";
 import CalendarSync from "./pages/CalendarSync";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/shop-admin" element={<ShopOwnerDashboard />} />
           <Route path="/shop-admin/information" element={<ShopInformation />} />
           <Route path="/shop-admin/bookings" element={<ShopOwnerBookings />} />
+          <Route path="/shop-admin/conversations" element={<ShopOwnerConversations />} />
           <Route path="/shop-admin/seating" element={<ShopOwnerSeating />} />
           <Route path="/shop-admin/profile" element={<ShopOwnerAccount />} />
           <Route path="/shop-admin/calendar-sync" element={<CalendarSync />} />
