@@ -167,7 +167,7 @@ const ShopOwnerDashboard = () => {
       {/* Page Header */}
       <DashboardHeader 
         title="Dashboard" 
-        subtitle="Daily overview of bookings, customers, and AI assistant status."
+        subtitle="Daily overview of bookings, customers, AI assistant status, and sync services."
         date={new Date().toLocaleDateString('en-US', {
           weekday: 'long',
           year: 'numeric',
