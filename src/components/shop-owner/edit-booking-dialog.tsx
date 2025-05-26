@@ -1,14 +1,11 @@
 
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { X, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { VisualTableSelector } from './visual-table-selector';
 
 interface TableType {
   id: string;
@@ -35,23 +32,17 @@ export function EditBookingDialog({
   // Return null if no booking is selected
   if (!booking) return null;
   
-  // State for form values
+  // State for form values - simplified to only include editable fields
   const [formValues, setFormValues] = useState({
     customerName: booking.customerName,
     startTime: format(new Date(booking.startTime), 'HH:mm'),
     endTime: format(new Date(booking.endTime), 'HH:mm'),
     guests: booking.guests,
     tables: [...booking.tables],
-    status: booking.status,
-    notes: booking.notes || '',
   });
   
-  // State for table selection
-  const [selectedTableType, setSelectedTableType] = useState('');
-  const [tableQuantity, setTableQuantity] = useState(1);
-  
   // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
@@ -59,44 +50,22 @@ export function EditBookingDialog({
     });
   };
   
-  // Handle status change
-  const handleStatusChange = (status: string) => {
-    setFormValues({
-      ...formValues,
-      status,
-    });
-  };
-  
-  // Handle adding a table
-  const handleAddTable = () => {
-    if (selectedTableType) {
-      const tableType = tableTypes.find(t => t.id === selectedTableType);
-      if (tableType) {
-        // In a real app, we would need to check table availability
-        const newTables = [...formValues.tables];
-        for (let i = 0; i < tableQuantity; i++) {
-          newTables.push(tableType.name);
-        }
-        
-        setFormValues({
-          ...formValues,
-          tables: newTables,
-        });
-        
-        // Reset table selection
-        setSelectedTableType('');
-        setTableQuantity(1);
-      }
+  // Handle table selection
+  const handleTableToggle = (tableName: string) => {
+    const currentTables = [...formValues.tables];
+    const tableIndex = currentTables.indexOf(tableName);
+    
+    if (tableIndex > -1) {
+      // Remove table if already selected
+      currentTables.splice(tableIndex, 1);
+    } else {
+      // Add table if not selected
+      currentTables.push(tableName);
     }
-  };
-  
-  // Handle removing a table
-  const handleRemoveTable = (index: number) => {
-    const newTables = [...formValues.tables];
-    newTables.splice(index, 1);
+    
     setFormValues({
       ...formValues,
-      tables: newTables,
+      tables: currentTables,
     });
   };
   
@@ -122,8 +91,6 @@ export function EditBookingDialog({
       endTime: endTime.toISOString(),
       guests: Number(formValues.guests),
       tables: formValues.tables,
-      status: formValues.status,
-      notes: formValues.notes,
     };
     
     onSubmit(updatedBooking);
@@ -131,41 +98,39 @@ export function EditBookingDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Booking</DialogTitle>
           <DialogDescription>
-            Make changes to the reservation details below
+            Update the reservation details below
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            {/* Customer Name */}
-            <div className="space-y-2">
-              <Label htmlFor="customerName">Customer Name</Label>
-              <Input
-                id="customerName"
-                name="customerName"
-                value={formValues.customerName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            
-            {/* Number of Guests */}
-            <div className="space-y-2">
-              <Label htmlFor="guests">Number of Guests</Label>
-              <Input
-                id="guests"
-                name="guests"
-                type="number"
-                min="1"
-                value={formValues.guests}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+          {/* Customer Name */}
+          <div className="space-y-2">
+            <Label htmlFor="customerName">Customer Name</Label>
+            <Input
+              id="customerName"
+              name="customerName"
+              value={formValues.customerName}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          
+          {/* Number of Guests */}
+          <div className="space-y-2">
+            <Label htmlFor="guests">Number of Guests</Label>
+            <Input
+              id="guests"
+              name="guests"
+              type="number"
+              min="1"
+              value={formValues.guests}
+              onChange={handleInputChange}
+              required
+            />
           </div>
           
           {/* Time */}
@@ -194,88 +159,14 @@ export function EditBookingDialog({
             </div>
           </div>
           
-          {/* Tables */}
+          {/* Visual Table Selection */}
           <div className="space-y-4">
-            <Label>Tables</Label>
-            
-            {/* Selected Tables */}
-            <div className="flex flex-wrap gap-2">
-              {formValues.tables.map((table, index) => (
-                <Badge key={index} className="flex gap-1 items-center">
-                  {table}
-                  <X 
-                    className="h-3 w-3 cursor-pointer" 
-                    onClick={() => handleRemoveTable(index)}
-                  />
-                </Badge>
-              ))}
-            </div>
-            
-            {/* Add Tables */}
-            <div className="grid grid-cols-3 gap-2">
-              <div>
-                <Select value={selectedTableType} onValueChange={setSelectedTableType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Table Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {tableTypes.map((type) => (
-                      <SelectItem key={type.id} value={type.id}>
-                        {type.name} ({type.capacity} people)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={tableQuantity}
-                  onChange={(e) => setTableQuantity(Number(e.target.value))}
-                  placeholder="Qty"
-                />
-              </div>
-              <div>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={handleAddTable}
-                  disabled={!selectedTableType}
-                  className="w-full"
-                >
-                  <Plus className="h-4 w-4 mr-1" /> Add
-                </Button>
-              </div>
-            </div>
-          </div>
-          
-          {/* Status */}
-          <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <Select value={formValues.status} onValueChange={handleStatusChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="confirmed">Confirmed</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="cancelled">Cancelled</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* Notes */}
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              name="notes"
-              value={formValues.notes}
-              onChange={handleInputChange}
-              placeholder="Add any special requests or notes here"
-              rows={3}
+            <Label>Choose Tables</Label>
+            <VisualTableSelector
+              tableTypes={tableTypes}
+              selectedTables={formValues.tables}
+              onTableToggle={handleTableToggle}
+              guestCount={Number(formValues.guests)}
             />
           </div>
           

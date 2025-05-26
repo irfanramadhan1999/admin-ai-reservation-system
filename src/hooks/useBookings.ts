@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -15,7 +14,7 @@ interface Booking {
 }
 
 // Mock booking data
-const bookingData = [
+const initialBookingData = [
   {
     id: "B001",
     customerName: 'Tanaka Yuki',
@@ -174,6 +173,7 @@ const tablesByType = {
 };
 
 export const useBookings = () => {
+  const [bookingData, setBookingData] = useState(initialBookingData);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -218,17 +218,33 @@ export const useBookings = () => {
   };
 
   const confirmCancelBooking = () => {
-    // In a real app, this would update the data in the database
-    toast({
-      title: "Booking Canceled",
-      description: "The booking has been successfully canceled."
-    });
+    if (bookingToCancel) {
+      // Update the booking status to cancelled
+      setBookingData(prevData => 
+        prevData.map(booking => 
+          booking.id === bookingToCancel.id 
+            ? { ...booking, status: 'cancelled' }
+            : booking
+        )
+      );
+      
+      toast({
+        title: "Booking Canceled",
+        description: "The booking has been successfully canceled."
+      });
+    }
     setCancelDialogOpen(false);
+    setBookingToCancel(null);
   };
   
   const handleUpdateBooking = (updatedBooking: Booking) => {
-    // In a real app, this would update the data in the database
-    console.log("Updated booking:", updatedBooking);
+    // Update the booking in the data
+    setBookingData(prevData =>
+      prevData.map(booking =>
+        booking.id === updatedBooking.id ? updatedBooking : booking
+      )
+    );
+    
     setEditBookingOpen(false);
     toast({
       title: "Booking Updated",

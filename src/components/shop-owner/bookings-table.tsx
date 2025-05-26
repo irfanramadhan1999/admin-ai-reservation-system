@@ -80,67 +80,75 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {bookings.map((booking) => (
-            <TableRow key={booking.id}>
-              <TableCell>{booking.id}</TableCell>
-              <TableCell>
-                <div className="font-medium">{booking.customerName}</div>
-                <div className="text-xs text-muted-foreground">{booking.customerPhone}</div>
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-col">
-                  <span>{format(new Date(booking.startTime), 'MMM d, yyyy')}</span>
-                  <span className="text-sm">
-                    {formatTimeRange(booking.startTime, booking.endTime)}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                {booking.tables.join(', ')}
-              </TableCell>
-              <TableCell>
-                {booking.guests}
-              </TableCell>
-              <TableCell>
-                {getStatusBadge(booking.status)}
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  {onViewConversation && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onViewConversation(booking)}
-                      title="View Conversation"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                    </Button>
-                  )}
-                  {onEditBooking && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEditBooking(booking)}
-                      title="Edit Booking"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  )}
-                  {onCancelBooking && booking.status !== 'cancelled' && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onCancelBooking(booking)}
-                      title="Cancel Booking"
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+          {bookings.map((booking) => {
+            const isCancelled = booking.status.toLowerCase() === 'cancelled' || booking.status.toLowerCase() === 'canceled';
+            
+            return (
+              <TableRow 
+                key={booking.id}
+                className={isCancelled ? 'bg-red-50 opacity-75' : ''}
+              >
+                <TableCell className={isCancelled ? 'text-red-600' : ''}>{booking.id}</TableCell>
+                <TableCell>
+                  <div className={`font-medium ${isCancelled ? 'text-red-600' : ''}`}>{booking.customerName}</div>
+                  <div className={`text-xs ${isCancelled ? 'text-red-500' : 'text-muted-foreground'}`}>{booking.customerPhone}</div>
+                </TableCell>
+                <TableCell className={isCancelled ? 'text-red-600' : ''}>
+                  <div className="flex flex-col">
+                    <span>{format(new Date(booking.startTime), 'MMM d, yyyy')}</span>
+                    <span className="text-sm">
+                      {formatTimeRange(booking.startTime, booking.endTime)}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className={isCancelled ? 'text-red-600' : ''}>
+                  {booking.tables.join(', ')}
+                </TableCell>
+                <TableCell className={isCancelled ? 'text-red-600' : ''}>
+                  {booking.guests}
+                </TableCell>
+                <TableCell>
+                  {getStatusBadge(booking.status)}
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    {onViewConversation && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onViewConversation(booking)}
+                        title="View Conversation"
+                        disabled={isCancelled}
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {onEditBooking && !isCancelled && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEditBooking(booking)}
+                        title="Edit Booking"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {onCancelBooking && !isCancelled && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onCancelBooking(booking)}
+                        title="Cancel Booking"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
           {bookings.length === 0 && (
             <TableRow>
               <TableCell colSpan={7} className="text-center py-8">

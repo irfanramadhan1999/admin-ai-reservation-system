@@ -83,23 +83,23 @@ const ShopOwnerBookings = () => {
         date={format(new Date(), 'PPPP')}
       />
       
-      {/* Action Buttons */}
-      <div className="mb-6">
-        <Button onClick={() => setCreateBookingOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Booking
-        </Button>
+      {/* Filters and Create Button */}
+      <div className="mb-6 space-y-4">
+        <BookingsFilters
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+        <div className="flex justify-end">
+          <Button onClick={() => setCreateBookingOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Booking
+          </Button>
+        </div>
       </div>
-      
-      {/* Filters */}
-      <BookingsFilters
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-      />
       
       {/* Bookings Table */}
       <Card className="p-6 mb-8">
