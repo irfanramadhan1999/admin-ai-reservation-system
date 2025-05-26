@@ -86,7 +86,7 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
             return (
               <TableRow 
                 key={booking.id}
-                className={isCancelled ? 'bg-red-50 opacity-75' : ''}
+                className={isCancelled ? 'bg-red-50' : ''}
               >
                 <TableCell className={isCancelled ? 'text-red-600' : ''}>{booking.id}</TableCell>
                 <TableCell>
@@ -118,12 +118,11 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
                         size="sm"
                         onClick={() => onViewConversation(booking)}
                         title="View Conversation"
-                        disabled={isCancelled}
                       >
                         <MessageSquare className="h-4 w-4" />
                       </Button>
                     )}
-                    {onEditBooking && !isCancelled && (
+                    {onEditBooking && (
                       <Button
                         variant="ghost"
                         size="sm"
@@ -133,7 +132,7 @@ export const BookingsTable: React.FC<BookingsTableProps> = ({
                         <Edit className="h-4 w-4" />
                       </Button>
                     )}
-                    {onCancelBooking && !isCancelled && (
+                    {onCancelBooking && (
                       <Button
                         variant="ghost"
                         size="sm"

@@ -53,7 +53,7 @@ export const VisualTableSelector: React.FC<VisualTableSelectorProps> = ({
 
   const allTables = generateTables(tableTypes);
 
-  // Filter suitable table types based on guest count
+  // Filter table types that can accommodate the guest count (capacity >= guestCount)
   const suitableTableTypes = tableTypes.filter(type => type.capacity >= guestCount);
 
   // Group tables by type
@@ -65,7 +65,7 @@ export const VisualTableSelector: React.FC<VisualTableSelectorProps> = ({
   return (
     <div className="space-y-6">
       <div className="text-sm text-muted-foreground">
-        Recommended table types for {guestCount} guests:
+        Available table types for {guestCount} guests:
       </div>
       
       {suitableTableTypes.length === 0 ? (
