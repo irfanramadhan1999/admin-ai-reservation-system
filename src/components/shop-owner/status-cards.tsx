@@ -42,10 +42,11 @@ export function StatusCards({
 
   return (
     <div className="space-y-8 mb-8">
-      {/* KPI Section */}
+      {/* Dashboard Overview Section */}
       <div>
         <h2 className="text-lg font-semibold mb-4">Today's Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Row 1 */}
           {/* Today's Bookings */}
           <Card className="p-6 rounded-2xl shadow-sm relative">
             <div className="flex justify-between items-start">
@@ -100,13 +101,8 @@ export function StatusCards({
               </div>
             </div>
           </Card>
-        </div>
-      </div>
 
-      {/* Sync Services Section */}
-      <div>
-        <h2 className="text-lg font-semibold mb-4">Sync Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Row 2 */}
           {/* Google Calendar */}
           <Card className="p-6 rounded-2xl shadow-sm relative">
             <div className="flex justify-between items-start">
@@ -115,7 +111,7 @@ export function StatusCards({
                 <div className="flex items-center gap-3 mt-2">
                   <button
                     onClick={onCalendarSync}
-                    className={`px-3 py-1 rounded-md text-xs ${
+                    className={`px-3 py-1 rounded-md text-xs font-medium ${
                       isCalendarSynced
                         ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'
                         : 'bg-blue-500 text-white hover:bg-blue-600'
@@ -142,7 +138,7 @@ export function StatusCards({
                 <div className="flex items-center gap-3 mt-2">
                   <button
                     onClick={onGuranaviSync}
-                    className={`px-3 py-1 rounded-md text-xs ${
+                    className={`px-3 py-1 rounded-md text-xs font-medium ${
                       isGuranaviSynced
                         ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'
                         : 'bg-orange-500 text-white hover:bg-orange-600'
@@ -169,7 +165,7 @@ export function StatusCards({
                 <div className="flex items-center gap-3 mt-2">
                   <button
                     onClick={onHotpepperSync}
-                    className={`px-3 py-1 rounded-md text-xs ${
+                    className={`px-3 py-1 rounded-md text-xs font-medium ${
                       isHotpepperSynced
                         ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'
                         : 'bg-red-500 text-white hover:bg-red-600'
