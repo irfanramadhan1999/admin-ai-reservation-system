@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
@@ -30,6 +29,22 @@ const ShopOwnerDashboard = () => {
       description: 'Expected guests for today',
     },
   ];
+
+  // Sync handlers
+  const handleCalendarSync = () => {
+    console.log('Calendar sync toggled');
+    setIsCalendarSynced(!isCalendarSynced);
+  };
+
+  const handleGuranaviSync = () => {
+    console.log('Gurunavi sync toggled');
+    setIsGuranaviSynced(!isGuranaviSynced);
+  };
+
+  const handleHotpepperSync = () => {
+    console.log('Hotpepper sync toggled');
+    setIsHotpepperSynced(!isHotpepperSynced);
+  };
 
   // Mock data for today's bookings with the new structure
   const allBookings = [
@@ -174,6 +189,9 @@ const ShopOwnerDashboard = () => {
         lastGuranaviSync="2 hours ago"
         lastHotpepperSync="30 minutes ago"
         onAiToggle={setIsAiActive}
+        onCalendarSync={handleCalendarSync}
+        onGuranaviSync={handleGuranaviSync}
+        onHotpepperSync={handleHotpepperSync}
       />
 
       {/* Today's Bookings Section */}
