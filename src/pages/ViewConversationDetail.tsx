@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Clock, Zap } from 'lucide-react';
+import { ArrowLeft, Clock, Zap, MessageCircleX } from 'lucide-react';
 
 const ViewConversationDetail = () => {
   const { id } = useParams();
@@ -23,73 +23,7 @@ const ViewConversationDetail = () => {
     duration: "13 minutes",
     tokensUsed: 2425,
     score: 1,
-    messages: [
-      {
-        role: "system",
-        content: "Hello, welcome to Sakura Sushi. How can I help you with your reservation today?",
-        time: "14:32"
-      },
-      {
-        role: "user",
-        content: "Hi, I'd like to make a reservation for 4 people tonight.",
-        time: "14:33"
-      },
-      {
-        role: "system",
-        content: "Great! I'd be happy to help you with that. What time would you like to come in?",
-        time: "14:33"
-      },
-      {
-        role: "user",
-        content: "Around 7:30 PM if possible.",
-        time: "14:34"
-      },
-      {
-        role: "system",
-        content: "Let me check our availability for 7:30 PM tonight for 4 people... Yes, we do have availability! Would you prefer a window seat or a regular table?",
-        time: "14:35"
-      },
-      {
-        role: "user",
-        content: "A window seat would be perfect.",
-        time: "14:36"
-      },
-      {
-        role: "system",
-        content: "Excellent! I've reserved Window Table #3 for 4 people at 7:30 PM tonight. May I have your name for the reservation?",
-        time: "14:37"
-      },
-      {
-        role: "user",
-        content: "It's John Smith.",
-        time: "14:38"
-      },
-      {
-        role: "system",
-        content: "Thank you, Mr. Smith. Your reservation is confirmed for tonight at 7:30 PM, Window Table #3 for 4 people. Is there anything else you'd like to add to your reservation, such as any dietary restrictions or special occasions?",
-        time: "14:39"
-      },
-      {
-        role: "user",
-        content: "One person in our group is vegetarian. Does the restaurant have vegetarian options?",
-        time: "14:40"
-      },
-      {
-        role: "system",
-        content: "Yes, we have several vegetarian options including vegetable tempura, avocado rolls, cucumber rolls, and vegetable udon. I'll add a note about the vegetarian requirement to your reservation. Anything else I can help with?",
-        time: "14:41"
-      },
-      {
-        role: "user",
-        content: "That sounds perfect. Thank you!",
-        time: "14:42"
-      },
-      {
-        role: "system",
-        content: "You're welcome! Your reservation is all set. We look forward to seeing you tonight at 7:30 PM. If you need to make any changes to your reservation, please let us know. Have a great day!",
-        time: "14:43"
-      }
-    ]
+    messages: [] // Empty array to simulate no messages
   };
 
   const handleBack = () => {
@@ -139,10 +73,18 @@ const ViewConversationDetail = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{conversation.duration}</p>
-              <p className="text-sm text-muted-foreground">
-                {conversation.startTime} - {conversation.endTime} JST
-              </p>
+              {conversation.messages.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-muted-foreground">No duration data available</p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-2xl font-semibold">{conversation.duration}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {conversation.startTime} - {conversation.endTime} JST
+                  </p>
+                </>
+              )}
             </CardContent>
           </Card>
           
@@ -154,10 +96,18 @@ const ViewConversationDetail = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{conversation.tokensUsed.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">
-                Total tokens used in this conversation
-              </p>
+              {conversation.messages.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-muted-foreground">No token usage data available</p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-2xl font-semibold">{conversation.tokensUsed.toLocaleString()}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Total tokens used in this conversation
+                  </p>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -168,30 +118,44 @@ const ViewConversationDetail = () => {
             <CardTitle>Conversation History</CardTitle>
           </CardHeader>
           <CardContent className="max-h-[600px] overflow-y-auto">
-            <div className="space-y-4">
-              {conversation.messages.map((message, index) => (
-                <div 
-                  key={index} 
-                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div 
-                    className={`max-w-[80%] rounded-lg p-4 ${
-                      message.role === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-muted'
-                    }`}
-                  >
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="font-medium text-sm">
-                        {message.role === 'user' ? 'Customer' : 'AI Assistant'}
-                      </span>
-                      <span className="text-xs opacity-80">{message.time}</span>
-                    </div>
-                    <p>{message.content}</p>
+            {conversation.messages.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="flex flex-col items-center gap-4">
+                  <MessageCircleX className="h-12 w-12 text-muted-foreground" />
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-lg">No conversation history</h3>
+                    <p className="text-muted-foreground">
+                      No messages have been exchanged in this conversation yet.
+                    </p>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {conversation.messages.map((message, index) => (
+                  <div 
+                    key={index} 
+                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div 
+                      className={`max-w-[80%] rounded-lg p-4 ${
+                        message.role === 'user'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-medium text-sm">
+                          {message.role === 'user' ? 'Customer' : 'AI Assistant'}
+                        </span>
+                        <span className="text-xs opacity-80">{message.time}</span>
+                      </div>
+                      <p>{message.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

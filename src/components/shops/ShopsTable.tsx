@@ -9,7 +9,7 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Edit, CalendarDays, ExternalLink } from 'lucide-react';
+import { Edit, CalendarDays, ExternalLink, Store } from 'lucide-react';
 
 export interface Shop {
   id: string;
@@ -53,59 +53,75 @@ export function ShopsTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {shops.map((shop) => (
-            <TableRow key={shop.id}>
-              <TableCell>
-                <div className="flex flex-col">
-                  <span className="font-medium">{shop.name}</span>
-                  <span className="text-sm text-muted-foreground">{shop.contact}</span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-col">
-                  <span className="font-medium">{shop.tokenUsage.used.toLocaleString()} / {shop.tokenUsage.limit.toLocaleString()}</span>
-                  <div className="w-full bg-gray-200 h-2 rounded-full mt-1">
-                    <div 
-                      className={`h-2 rounded-full ${shop.tokenUsage.used / shop.tokenUsage.limit > 0.8 ? 'bg-red-500' : 'bg-green-500'}`}
-                      style={{ width: `${(shop.tokenUsage.used / shop.tokenUsage.limit) * 100}%` }}
-                    ></div>
+          {shops.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center py-12">
+                <div className="flex flex-col items-center gap-4">
+                  <Store className="h-12 w-12 text-muted-foreground" />
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-lg">No shops found</h3>
+                    <p className="text-muted-foreground">
+                      There are no shops registered in the system yet.
+                    </p>
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{shop.totalBookings}</TableCell>
-              <TableCell>
-                {formatDateTime(shop.createdAt)}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onEditShop(shop.id)}
-                    title="Edit"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onViewBookings(shop.id)}
-                    title="Bookings"
-                  >
-                    <CalendarDays className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onDirectToShop(shop.frontendUrl)}
-                    title="Direct to Shop"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            shops.map((shop) => (
+              <TableRow key={shop.id}>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{shop.name}</span>
+                    <span className="text-sm text-muted-foreground">{shop.contact}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{shop.tokenUsage.used.toLocaleString()} / {shop.tokenUsage.limit.toLocaleString()}</span>
+                    <div className="w-full bg-gray-200 h-2 rounded-full mt-1">
+                      <div 
+                        className={`h-2 rounded-full ${shop.tokenUsage.used / shop.tokenUsage.limit > 0.8 ? 'bg-red-500' : 'bg-green-500'}`}
+                        style={{ width: `${(shop.tokenUsage.used / shop.tokenUsage.limit) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>{shop.totalBookings}</TableCell>
+                <TableCell>
+                  {formatDateTime(shop.createdAt)}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEditShop(shop.id)}
+                      title="Edit"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onViewBookings(shop.id)}
+                      title="Bookings"
+                    >
+                      <CalendarDays className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onDirectToShop(shop.frontendUrl)}
+                      title="Direct to Shop"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

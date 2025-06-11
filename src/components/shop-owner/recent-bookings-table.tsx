@@ -3,6 +3,7 @@ import React from 'react';
 import { formatDate } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { CalendarX } from 'lucide-react';
 import { 
   Table,
   TableBody,
@@ -61,17 +62,33 @@ export function RecentBookingsTable({ bookings }: RecentBookingsTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {bookings.map((booking) => (
-              <TableRow key={booking.id}>
-                <TableCell>
-                  <div className="font-medium">{booking.customerName}</div>
-                  <div className="text-xs text-muted-foreground">{booking.customerPhone}</div>
+            {bookings.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-12">
+                  <div className="flex flex-col items-center gap-4">
+                    <CalendarX className="h-12 w-12 text-muted-foreground" />
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-lg">No bookings today</h3>
+                      <p className="text-muted-foreground">
+                        There are no bookings scheduled for today.
+                      </p>
+                    </div>
+                  </div>
                 </TableCell>
-                <TableCell>{formatTimeRange(booking.startTime, booking.endTime)}</TableCell>
-                <TableCell>{booking.tables.join(', ')}</TableCell>
-                <TableCell>{getStatusBadge(booking.status)}</TableCell>
               </TableRow>
-            ))}
+            ) : (
+              bookings.map((booking) => (
+                <TableRow key={booking.id}>
+                  <TableCell>
+                    <div className="font-medium">{booking.customerName}</div>
+                    <div className="text-xs text-muted-foreground">{booking.customerPhone}</div>
+                  </TableCell>
+                  <TableCell>{formatTimeRange(booking.startTime, booking.endTime)}</TableCell>
+                  <TableCell>{booking.tables.join(', ')}</TableCell>
+                  <TableCell>{getStatusBadge(booking.status)}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
