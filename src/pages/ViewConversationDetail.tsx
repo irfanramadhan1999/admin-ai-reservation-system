@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Clock, Zap, MessageCircleX } from 'lucide-react';
+import { ArrowLeft, Clock, Zap, MessageCircleX, CheckCircle, XCircle } from 'lucide-react';
 
 const ViewConversationDetail = () => {
   const { id } = useParams();
@@ -44,22 +44,32 @@ const ViewConversationDetail = () => {
             <ArrowLeft className="h-4 w-4" />
             Back to Conversations
           </Button>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Conversation {id}</h1>
-              <p className="text-sm text-muted-foreground mt-1">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold">Conversation {id}</h1>
+                <div className="flex items-center gap-2">
+                  {conversation.score === 1 ? (
+                    <CheckCircle className="h-5 w-5 text-emerald-600" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-red-600" />
+                  )}
+                  <Badge
+                    variant="outline"
+                    className={`${
+                      conversation.score === 1
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50"
+                        : "border-red-200 bg-red-50 text-red-700 hover:bg-red-50"
+                    } font-medium`}
+                  >
+                    {conversation.score === 1 ? "Success" : "Failed"}
+                  </Badge>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
                 {conversation.date} • {conversation.shop} • IP: {conversation.ipAddress}
               </p>
             </div>
-            <Badge
-              className={
-                conversation.score === 1
-                  ? "bg-emerald-500"
-                  : "bg-amber-500"
-              }
-            >
-              {conversation.score === 1 ? "Success" : "Failed"}
-            </Badge>
           </div>
         </div>
         
