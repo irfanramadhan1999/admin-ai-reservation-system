@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -66,7 +67,7 @@ const ViewConversationDetail = () => {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
-                {conversation.date} • {conversation.shop} • ID: {conversation.id}
+                {conversation.date} • {conversation.shop}
               </p>
             </div>
           </div>
