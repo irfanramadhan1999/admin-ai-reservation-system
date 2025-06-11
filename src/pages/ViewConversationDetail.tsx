@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
@@ -47,7 +46,7 @@ const ViewConversationDetail = () => {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold">Conversation {id}</h1>
+                <h1 className="text-2xl font-bold">{conversation.ipAddress}</h1>
                 <div className="flex items-center gap-2">
                   {conversation.score === 1 ? (
                     <CheckCircle className="h-5 w-5 text-emerald-600" />
@@ -67,7 +66,7 @@ const ViewConversationDetail = () => {
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
-                {conversation.date} • {conversation.shop} • IP: {conversation.ipAddress}
+                {conversation.date} • {conversation.shop} • ID: {conversation.id}
               </p>
             </div>
           </div>
