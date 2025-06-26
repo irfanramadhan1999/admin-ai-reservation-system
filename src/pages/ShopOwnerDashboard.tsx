@@ -4,6 +4,7 @@ import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
 import { StatusCards } from '@/components/shop-owner/status-cards';
 import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
+import { Calendar } from 'lucide-react';
 
 const ShopOwnerDashboard = () => {
   const [isAiActive, setIsAiActive] = useState(true);
@@ -175,6 +176,19 @@ const ShopOwnerDashboard = () => {
           day: 'numeric',
         })}
       />
+
+      {/* Google Calendar Sync Status Button */}
+      <div className="mb-6">
+        <div className="flex justify-end">
+          <div className="flex items-center gap-2 bg-white border rounded-lg px-4 py-2 shadow-sm">
+            <Calendar className="h-4 w-4 text-blue-500" />
+            <span className="text-sm font-medium">
+              Google Calendar: {isCalendarSynced ? 'Synchronized' : 'Not Synchronized'}
+            </span>
+            <div className={`w-2 h-2 rounded-full ${isCalendarSynced ? 'bg-green-500' : 'bg-gray-400'}`} />
+          </div>
+        </div>
+      </div>
 
       {/* Status Cards Section */}
       <StatusCards 
