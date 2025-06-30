@@ -76,11 +76,11 @@ export function StatusCards({
             </div>
           </Card>
 
-          {/* AI Activation */}
+          {/* Call Service (formerly AI Activation) */}
           <Card className="p-6 rounded-2xl shadow-sm relative">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                <h3 className="text-sm font-medium text-muted-foreground">AI Activation</h3>
+                <h3 className="text-sm font-medium text-muted-foreground">Call Service</h3>
                 <div className="flex items-center gap-3 mt-2">
                   <Switch 
                     checked={isAiActive} 
@@ -88,12 +88,12 @@ export function StatusCards({
                     className="data-[state=checked]:bg-green-500"
                   />
                   <span className="text-xs">
-                    {isAiActive ? "Active" : "Off"}
+                    {isAiActive ? "Available" : "Unavailable"}
                   </span>
                 </div>
-                {lastAiCall && (
-                  <p className="text-xs text-muted-foreground mt-1">Last call: {lastAiCall}</p>
-                )}
+                <p className="text-xs text-muted-foreground mt-1">
+                  {isAiActive ? "Ready to receive calls" : `Last call: ${lastAiCall || "5 minutes ago"}`}
+                </p>
               </div>
               <div className="p-2 rounded-full bg-emerald-50">
                 <Bot className="h-5 w-5 text-emerald-500" />
@@ -112,16 +112,14 @@ export function StatusCards({
                     onClick={onCalendarSync}
                     className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 ${
                       isCalendarSynced
-                        ? 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
+                        ? 'bg-red-500 text-primary-foreground hover:bg-red-600'
                         : 'bg-blue-500 text-primary-foreground hover:bg-blue-600'
                     }`}
                   >
-                    {isCalendarSynced ? 'Disconnect' : 'Sync'}
+                    {isCalendarSynced ? 'Disconnect' : 'Connect'}
                   </button>
                 </div>
-                {isCalendarSynced && (
-                  <p className="text-xs text-muted-foreground mt-1">Last sync: {lastCalendarSync || "1 day ago"}</p>
-                )}
+                <p className="text-xs text-muted-foreground mt-1">Last connect: {lastCalendarSync || "5 hours ago"}</p>
               </div>
               <div className="p-2 rounded-full bg-blue-50">
                 <Calendar className="h-5 w-5 text-blue-500" />
