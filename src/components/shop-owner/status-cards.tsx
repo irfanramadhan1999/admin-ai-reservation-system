@@ -119,7 +119,9 @@ export function StatusCards({
                     {isCalendarSynced ? 'Disconnect' : 'Connect'}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Last connect: {lastCalendarSync || "5 hours ago"}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {isCalendarSynced ? "Reservations are synchronized" : `Last connect: ${lastCalendarSync || "5 hours ago"}`}
+                </p>
               </div>
               <div className="p-2 rounded-full bg-blue-50">
                 <Calendar className="h-5 w-5 text-blue-500" />
