@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
@@ -50,7 +51,7 @@ const ShopOwnerDashboard = () => {
     setIsHotpepperSynced(!isHotpepperSynced);
   };
 
-  // Mock data for today's bookings with the new structure
+  // Mock data for today's bookings with the correct status types
   const allBookings = [
     {
       id: 1,
@@ -60,7 +61,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T19:30:00',
       tables: ['Window Seat'],
       guests: 2,
-      status: 'confirmed',
+      status: 'confirmed' as const,
     },
     {
       id: 2,
@@ -70,7 +71,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T20:00:00',
       tables: ['Counter'],
       guests: 1,
-      status: 'completed',
+      status: 'completed' as const,
     },
     {
       id: 3,
@@ -80,7 +81,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T21:30:00',
       tables: ['Private Room'],
       guests: 4,
-      status: 'confirmed',
+      status: 'confirmed' as const,
     },
     {
       id: 4,
@@ -90,7 +91,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-20T13:30:00',
       tables: ['Garden View', 'Regular 3'],
       guests: 6,
-      status: 'cancelled',
+      status: 'cancelled' as const,
     },
     {
       id: 5,
@@ -100,7 +101,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T14:30:00',
       tables: ['Window Seat'],
       guests: 2,
-      status: 'confirmed',
+      status: 'confirmed' as const,
     },
     {
       id: 6,
@@ -110,7 +111,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T19:45:00',
       tables: ['Regular 5', 'Regular 6'],
       guests: 5,
-      status: 'confirmed',
+      status: 'confirmed' as const,
     },
     {
       id: 7,
@@ -120,7 +121,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T21:00:00',
       tables: ['Counter'],
       guests: 1,
-      status: 'pending',
+      status: 'pending' as const,
     },
     {
       id: 8,
@@ -130,7 +131,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T22:00:00',
       tables: ['Private Room'],
       guests: 8,
-      status: 'confirmed',
+      status: 'confirmed' as const,
     },
     {
       id: 9,
@@ -140,7 +141,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T18:30:00',
       tables: ['Garden View'],
       guests: 3,
-      status: 'cancelled',
+      status: 'cancelled' as const,
     },
     {
       id: 10,
@@ -150,7 +151,7 @@ const ShopOwnerDashboard = () => {
       endTime: '2025-05-19T13:15:00',
       tables: ['Regular 2'],
       guests: 2,
-      status: 'confirmed',
+      status: 'confirmed' as const,
     },
   ];
   
