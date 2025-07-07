@@ -4,7 +4,9 @@ import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { RecentBookingsTable } from '@/components/shop-owner/recent-bookings-table';
 import { StatusCards } from '@/components/shop-owner/status-cards';
 import { BookingsPagination } from '@/components/shop-owner/bookings-pagination';
-import { Calendar } from 'lucide-react';
+import { CalendarViewDialog } from '@/components/shop-owner/calendar-view-dialog';
+import { Calendar, CalendarDays } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const ShopOwnerDashboard = () => {
   const [isAiActive, setIsAiActive] = useState(true);
@@ -12,6 +14,7 @@ const ShopOwnerDashboard = () => {
   const [isGuranaviSynced, setIsGuranaviSynced] = useState(true);
   const [isHotpepperSynced, setIsHotpepperSynced] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [calendarViewOpen, setCalendarViewOpen] = useState(false);
   
   // Mock data for kPI cards
   const kpiData = [
@@ -179,7 +182,7 @@ const ShopOwnerDashboard = () => {
 
       {/* Google Calendar Sync Status Button */}
       <div className="mb-6">
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
           <div className="flex items-center gap-2 bg-white border rounded-lg px-4 py-2 shadow-sm">
             <Calendar className="h-4 w-4 text-blue-500" />
             <span className="text-sm font-medium">
@@ -187,6 +190,16 @@ const ShopOwnerDashboard = () => {
             </span>
             <div className={`w-2 h-2 rounded-full ${isCalendarSynced ? 'bg-green-500' : 'bg-gray-400'}`} />
           </div>
+          
+          {/* Calendar View Button */}
+          <Button 
+            onClick={() => setCalendarViewOpen(true)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <CalendarDays className="h-4 w-4" />
+            Calendar View
+          </Button>
         </div>
       </div>
 
@@ -225,6 +238,13 @@ const ShopOwnerDashboard = () => {
           />
         )}
       </div>
+
+      {/* Calendar View Dialog */}
+      <CalendarViewDialog
+        open={calendarViewOpen}
+        onOpenChange={setCalendarViewOpen}
+        bookings={allBookings}
+      />
     </DashboardLayout>
   );
 };
