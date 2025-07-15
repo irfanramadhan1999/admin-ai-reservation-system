@@ -133,17 +133,17 @@ export const TokenUsageChart = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <ChartContainer config={chartConfig} className="h-[400px]">
+          <ChartContainer config={chartConfig} className="h-[500px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <XAxis 
-                  dataKey="date" 
+                  dataKey="date"
                   tick={{ fontSize: 12 }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis 
-                  domain={[0, 35000]}
+                  domain={[0, 'dataMax + 5000']}
                   ticks={[0, 5000, 10000, 15000, 20000, 25000, 30000, 35000]}
                   tick={{ fontSize: 12 }}
                   axisLine={false}
