@@ -4,6 +4,7 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { DashboardStats } from '@/components/dashboard/dashboard-stats';
 import { RecentShops } from '@/components/dashboard/recent-shops';
+import { TokenUsageChart } from '@/components/dashboard/token-usage-chart';
 import { mockRecentShops } from '@/mocks/dashboard-data';
 
 const Dashboard = () => {
@@ -26,6 +27,9 @@ const Dashboard = () => {
 
       {/* KPI Cards Section */}
       <DashboardStats />
+
+      {/* Token Usage Analytics Section */}
+      <TokenUsageChart />
 
       {/* Recent Shops Section */}
       <RecentShops shops={mockRecentShops} />
