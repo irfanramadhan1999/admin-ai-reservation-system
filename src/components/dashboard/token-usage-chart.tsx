@@ -76,7 +76,7 @@ const previousMonthData = [
 const chartConfig = {
   tokens: {
     label: 'Tokens',
-    color: 'hsl(var(--chart-1))',
+    color: 'hsl(220, 70%, 70%)', // Soft blue color
   },
 };
 
@@ -96,87 +96,41 @@ export const TokenUsageChart = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with month selector */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">Token Usage Analytics</h3>
-          <p className="text-sm text-muted-foreground">
-            Daily token consumption and cost analysis
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant={selectedMonth === 'current' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSelectedMonth('current')}
-          >
-            Current Month
-          </Button>
-          <Button
-            variant={selectedMonth === 'previous' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSelectedMonth('previous')}
-          >
-            Previous Month
-          </Button>
-        </div>
+      {/* Header */}
+      <div>
+        <h3 className="text-lg font-semibold">Token Usage Analytics</h3>
+        <p className="text-sm text-muted-foreground">
+          Daily token consumption and cost analysis
+        </p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Tokens</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {totalTokens.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {monthLabel}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Daily Average</CardTitle>
-            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {averageDaily.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              tokens per day
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Cost</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ${totalCost.toFixed(2)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              at $0.002/1K tokens
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Chart */}
+      {/* Chart with embedded stats */}
       <Card>
         <CardHeader>
-          <CardTitle>Daily Token Usage - {monthLabel}</CardTitle>
-          <CardDescription>
-            Token consumption by day showing usage patterns and trends
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Daily Token Usage - {monthLabel}</CardTitle>
+              <CardDescription>
+                Token consumption by day showing usage patterns and trends
+              </CardDescription>
+            </div>
+            <div className="flex gap-6 text-sm">
+              <div className="text-center">
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <CalendarDays className="h-4 w-4" />
+                  <span>Daily Average</span>
+                </div>
+                <div className="text-lg font-semibold">{averageDaily.toLocaleString()}</div>
+              </div>
+              <div className="text-center">
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <DollarSign className="h-4 w-4" />
+                  <span>Total Cost</span>
+                </div>
+                <div className="text-lg font-semibold">${totalCost.toFixed(2)}</div>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <ChartContainer config={chartConfig} className="h-[400px]">
@@ -189,10 +143,15 @@ export const TokenUsageChart = () => {
                   tickLine={false}
                 />
                 <YAxis 
+                  domain={[0, 35000]}
+                  ticks={[0, 5000, 10000, 15000, 20000, 25000, 30000, 35000]}
                   tick={{ fontSize: 12 }}
                   axisLine={false}
                   tickLine={false}
-                  tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
+                  tickFormatter={(value) => {
+                    if (value === 0) return '0';
+                    return `${(value / 1000)}k`;
+                  }}
                 />
                 <ChartTooltip
                   content={
@@ -218,6 +177,29 @@ export const TokenUsageChart = () => {
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
+          
+          {/* Month Navigation */}
+          <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedMonth('previous')}
+              disabled={selectedMonth === 'previous'}
+            >
+              ← Previous Month
+            </Button>
+            <span className="text-sm text-muted-foreground min-w-[100px] text-center">
+              {monthLabel}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedMonth('current')}
+              disabled={selectedMonth === 'current'}
+            >
+              Next Month →
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
