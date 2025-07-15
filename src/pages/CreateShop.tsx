@@ -6,6 +6,7 @@ import { CreateShopHeader } from '@/components/create-shop/CreateShopHeader';
 import { ShopBasicInfoSection } from '@/components/create-shop/ShopBasicInfoSection';
 import { ShopOperatingHoursSection } from '@/components/create-shop/ShopOperatingHoursSection';
 import { ShopKnowledgeSection } from '@/components/create-shop/ShopKnowledgeSection';
+import { ShopTokenManagementSection } from '@/components/create-shop/ShopTokenManagementSection';
 import { TableTypeSection } from '@/components/create-shop/TableTypeSection';
 import { TableTypeDialog } from '@/components/create-shop/TableTypeDialog';
 import { useCreateShop } from '@/hooks/create-shop';
@@ -110,6 +111,22 @@ const CreateShop = () => {
           handleDocumentUpload={handleDocumentUpload}
           handleDocumentDelete={handleDocumentDelete}
         />
+        
+        {/* Token Management Section - Only show when editing */}
+        {id && (
+          <ShopTokenManagementSection 
+            currentTokenUsage={12500} // Mock data - replace with actual API call
+            tokenLimit={25000} // Mock data - replace with actual API call
+            onTokenLimitUpdate={async (limit) => {
+              // TODO: Implement API call to update token limit
+              console.log('Updating token limit to:', limit);
+            }}
+            onTokenReset={async () => {
+              // TODO: Implement API call to reset token usage
+              console.log('Resetting token usage');
+            }}
+          />
+        )}
         
         {/* Save Button */}
         <div className="flex justify-end">
