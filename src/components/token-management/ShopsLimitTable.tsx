@@ -18,6 +18,23 @@ const mockShopsData = [
   { id: '6', name: 'Italian Bistro', tokenLimit: 9000, tokensUsed: 9100, status: 'Over Limit' },
   { id: '7', name: 'Mexican Cantina', tokenLimit: 11000, tokensUsed: 10200, status: 'Near Limit' },
   { id: '8', name: 'French Café', tokenLimit: 7000, tokensUsed: 6800, status: 'Near Limit' },
+  { id: '9', name: 'Chinese Dragon', tokenLimit: 13000, tokensUsed: 12800, status: 'Near Limit' },
+  { id: '10', name: 'Indian Spice', tokenLimit: 16000, tokensUsed: 16200, status: 'Over Limit' },
+  { id: '11', name: 'Greek Taverna', tokenLimit: 8500, tokensUsed: 8400, status: 'Near Limit' },
+  { id: '12', name: 'Korean BBQ', tokenLimit: 14000, tokensUsed: 14100, status: 'Over Limit' },
+  { id: '13', name: 'Japanese Ramen', tokenLimit: 12500, tokensUsed: 12000, status: 'Near Limit' },
+  { id: '14', name: 'Spanish Tapas', tokenLimit: 9500, tokensUsed: 9400, status: 'Near Limit' },
+  { id: '15', name: 'Brazilian Grill', tokenLimit: 18000, tokensUsed: 17800, status: 'Near Limit' },
+  { id: '16', name: 'Moroccan Nights', tokenLimit: 10500, tokensUsed: 10600, status: 'Over Limit' },
+  { id: '17', name: 'Russian Dumplings', tokenLimit: 11500, tokensUsed: 11300, status: 'Near Limit' },
+  { id: '18', name: 'Turkish Kebab', tokenLimit: 13500, tokensUsed: 13600, status: 'Over Limit' },
+  { id: '19', name: 'Vietnamese Pho', tokenLimit: 9800, tokensUsed: 9700, status: 'Near Limit' },
+  { id: '20', name: 'Ethiopian Delights', tokenLimit: 8800, tokensUsed: 8900, status: 'Over Limit' },
+  { id: '21', name: 'Lebanese Kitchen', tokenLimit: 12800, tokensUsed: 12600, status: 'Near Limit' },
+  { id: '22', name: 'Peruvian Fusion', tokenLimit: 15500, tokensUsed: 15600, status: 'Over Limit' },
+  { id: '23', name: 'Argentinian Steakhouse', tokenLimit: 19000, tokensUsed: 18900, status: 'Near Limit' },
+  { id: '24', name: 'Scandinavian Nordic', tokenLimit: 14500, tokensUsed: 14600, status: 'Over Limit' },
+  { id: '25', name: 'Caribbean Jerk', tokenLimit: 11800, tokensUsed: 11700, status: 'Near Limit' },
 ];
 
 const ITEMS_PER_PAGE = 10;
