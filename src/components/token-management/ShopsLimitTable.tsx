@@ -1,0 +1,139 @@
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+
+// Mock data for shops with token usage
+const mockShopsData = [
+  { id: '1', name: 'Coffee Paradise', tokenLimit: 10000, tokensUsed: 9800, status: 'Over Limit' },
+  { id: '2', name: 'Pizza Corner', tokenLimit: 15000, tokensUsed: 14500, status: 'Near Limit' },
+  { id: '3', name: 'Sushi Zen', tokenLimit: 8000, tokensUsed: 7900, status: 'Near Limit' },
+  { id: '4', name: 'Burger Junction', tokenLimit: 12000, tokensUsed: 12200, status: 'Over Limit' },
+  { id: '5', name: 'Thai Garden', tokenLimit: 20000, tokensUsed: 18500, status: 'Near Limit' },
+  { id: '6', name: 'Italian Bistro', tokenLimit: 9000, tokensUsed: 9100, status: 'Over Limit' },
+  { id: '7', name: 'Mexican Cantina', tokenLimit: 11000, tokensUsed: 10200, status: 'Near Limit' },
+  { id: '8', name: 'French Café', tokenLimit: 7000, tokensUsed: 6800, status: 'Near Limit' },
+];
+
+const ITEMS_PER_PAGE = 5;
+
+export function ShopsLimitTable() {
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Sort shops by urgency (over limit first, then by percentage used)
+  const sortedShops = [...mockShopsData].sort((a, b) => {
+    const aPercentage = (a.tokensUsed / a.tokenLimit) * 100;
+    const bPercentage = (b.tokensUsed / b.tokenLimit) * 100;
+    return bPercentage - aPercentage;
+  });
+
+  const totalPages = Math.ceil(sortedShops.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedShops = sortedShops.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const getStatusBadge = (status: string) => {
+    if (status === 'Over Limit') {
+      return <Badge variant="destructive">Over Limit</Badge>;
+    }
+    return <Badge variant="secondary">Near Limit</Badge>;
+  };
+
+  const getUsagePercentage = (used: number, limit: number) => {
+    return Math.min((used / limit) * 100, 100);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Shops Near Token Limit</CardTitle>
+        <CardDescription>
+          Shops that are approaching or have exceeded their monthly token limits.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Shop Name</TableHead>
+              <TableHead>Token Usage</TableHead>
+              <TableHead>Progress</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {paginatedShops.map((shop) => {
+              const percentage = getUsagePercentage(shop.tokensUsed, shop.tokenLimit);
+              return (
+                <TableRow key={shop.id}>
+                  <TableCell className="font-medium">{shop.name}</TableCell>
+                  <TableCell>
+                    {shop.tokensUsed.toLocaleString()} / {shop.tokenLimit.toLocaleString()}
+                  </TableCell>
+                  <TableCell className="w-32">
+                    <Progress 
+                      value={percentage} 
+                      className={`h-2 ${percentage > 100 ? 'bg-red-100' : percentage > 90 ? 'bg-yellow-100' : 'bg-green-100'}`}
+                    />
+                    <span className="text-xs text-muted-foreground mt-1 block">
+                      {percentage.toFixed(1)}%
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    {getStatusBadge(shop.status)}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+
+        {totalPages > 1 && (
+          <div className="mt-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(page);
+                      }}
+                      isActive={currentPage === page}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    }}
+                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

@@ -12,6 +12,7 @@ import ViewConversation from "./pages/ViewConversation";
 import Conversations from "./pages/Conversations";
 import ViewConversationDetail from "./pages/ViewConversationDetail";
 import AccountSettings from "./pages/AccountSettings";
+import TokenManagement from "./pages/TokenManagement";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import ShopOwnerDashboard from "./pages/ShopOwnerDashboard";
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/admin/bookings/conversation/:id" element={<ViewConversation />} />
           <Route path="/admin/conversations" element={<Conversations />} />
           <Route path="/admin/conversations/:id" element={<ViewConversationDetail />} />
+          <Route path="/admin/token-management" element={<TokenManagement />} />
           <Route path="/admin/account-settings" element={<AccountSettings />} />
           
           {/* Shop Owner Routes */}

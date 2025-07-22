@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare, LogOut } from 'lucide-react';
+import { Store, LayoutDashboard, User, Info, Calendar, Layout, MessageSquare, LogOut, Settings } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   SidebarMenu,
@@ -39,6 +39,12 @@ export function SidebarNav({ className, userRole = 'admin' }: SidebarNavProps) {
       href: "/admin/conversations",
       isActive: location.pathname === "/admin/conversations" ||
                location.pathname.startsWith("/admin/conversations/")
+    },
+    {
+      title: "Token Management",
+      icon: Settings,
+      href: "/admin/token-management",
+      isActive: location.pathname === "/admin/token-management"
     },
     {
       title: "Account Settings",
