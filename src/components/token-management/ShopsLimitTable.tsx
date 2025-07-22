@@ -4,6 +4,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 // Mock data for shops with token usage
 const mockShopsData = [
@@ -17,13 +20,24 @@ const mockShopsData = [
   { id: '8', name: 'French Café', tokenLimit: 7000, tokensUsed: 6800, status: 'Near Limit' },
 ];
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 
-export function ShopsLimitTable() {
+interface ShopsLimitTableProps {
+  selectedShops: string[];
+  onSelectionChange: (selected: string[]) => void;
+}
+
+export function ShopsLimitTable({ selectedShops, onSelectionChange }: ShopsLimitTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   
+  // Filter shops by search query
+  const filteredShops = mockShopsData.filter(shop =>
+    shop.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Sort shops by urgency (over limit first, then by percentage used)
-  const sortedShops = [...mockShopsData].sort((a, b) => {
+  const sortedShops = [...filteredShops].sort((a, b) => {
     const aPercentage = (a.tokensUsed / a.tokenLimit) * 100;
     const bPercentage = (b.tokensUsed / b.tokenLimit) * 100;
     return bPercentage - aPercentage;
@@ -32,6 +46,24 @@ export function ShopsLimitTable() {
   const totalPages = Math.ceil(sortedShops.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedShops = sortedShops.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      onSelectionChange(paginatedShops.map(shop => shop.id));
+    } else {
+      onSelectionChange([]);
+    }
+  };
+
+  const handleSelectShop = (shopId: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange([...selectedShops, shopId]);
+    } else {
+      onSelectionChange(selectedShops.filter(id => id !== shopId));
+    }
+  };
+
+  const isAllSelected = paginatedShops.length > 0 && paginatedShops.every(shop => selectedShops.includes(shop.id));
 
   const getStatusBadge = (status: string) => {
     if (status === 'Over Limit') {
@@ -51,11 +83,27 @@ export function ShopsLimitTable() {
         <CardDescription>
           Shops that are approaching or have exceeded their monthly token limits.
         </CardDescription>
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search shops..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-8"
+          />
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">
+                <Checkbox
+                  checked={isAllSelected}
+                  onCheckedChange={handleSelectAll}
+                  aria-label="Select all shops"
+                />
+              </TableHead>
               <TableHead>Shop Name</TableHead>
               <TableHead>Token Usage</TableHead>
               <TableHead>Progress</TableHead>
@@ -65,8 +113,16 @@ export function ShopsLimitTable() {
           <TableBody>
             {paginatedShops.map((shop) => {
               const percentage = getUsagePercentage(shop.tokensUsed, shop.tokenLimit);
+              const isSelected = selectedShops.includes(shop.id);
               return (
                 <TableRow key={shop.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={(checked) => handleSelectShop(shop.id, checked as boolean)}
+                      aria-label={`Select ${shop.name}`}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium">{shop.name}</TableCell>
                   <TableCell>
                     {shop.tokensUsed.toLocaleString()} / {shop.tokenLimit.toLocaleString()}

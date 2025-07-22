@@ -3,17 +3,31 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 
-export function TokenLimitSection() {
+interface TokenLimitSectionProps {
+  selectedShops: string[];
+}
+
+export function TokenLimitSection({ selectedShops }: TokenLimitSectionProps) {
   const [tokenLimit, setTokenLimit] = useState('');
   const { toast } = useToast();
 
   const handleUpdateLimit = () => {
-    if (!tokenLimit || isNaN(Number(tokenLimit))) {
+    if (selectedShops.length === 0) {
+      toast({
+        title: "No shops selected",
+        description: "Please select at least one shop from the table above.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!tokenLimit || isNaN(Number(tokenLimit)) || Number(tokenLimit) <= 0) {
       toast({
         title: "Invalid Input",
-        description: "Please enter a valid token limit.",
+        description: "Please enter a valid token limit greater than 0.",
         variant: "destructive",
       });
       return;
@@ -21,7 +35,7 @@ export function TokenLimitSection() {
 
     toast({
       title: "Token Limit Updated",
-      description: `Token limit has been set to ${Number(tokenLimit).toLocaleString()} for selected shops.`,
+      description: `Token limit has been set to ${Number(tokenLimit).toLocaleString()} for ${selectedShops.length} selected shop(s).`,
     });
     
     setTokenLimit('');
@@ -48,13 +62,22 @@ export function TokenLimitSection() {
           />
         </div>
         
-        <div className="flex space-x-2">
-          <Button onClick={handleUpdateLimit} disabled={!tokenLimit}>
-            Update Token Limit
-          </Button>
-          <Button variant="outline" onClick={() => setTokenLimit('')}>
-            Clear
-          </Button>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-wrap gap-2">
+            {selectedShops.length > 0 && (
+              <Badge variant="secondary">
+                {selectedShops.length} shop(s) selected
+              </Badge>
+            )}
+          </div>
+          <div className="flex space-x-2">
+            <Button onClick={handleUpdateLimit} disabled={!tokenLimit}>
+              Update Token Limit
+            </Button>
+            <Button variant="outline" onClick={() => setTokenLimit('')}>
+              Clear
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
