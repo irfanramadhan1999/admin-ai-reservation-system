@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Clock, Zap, MessageCircleX, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Clock, Zap, MessageCircleX, CheckCircle, XCircle, FileText } from 'lucide-react';
 
 const ViewConversationDetail = () => {
   const { id } = useParams();
@@ -23,7 +23,12 @@ const ViewConversationDetail = () => {
     duration: "13 minutes",
     tokensUsed: 2425,
     score: 1,
-    messages: [] // Empty array to simulate no messages
+    messages: [], // Empty array to simulate no messages
+    specialRequests: [
+      "Vegetarian options for 2 guests",
+      "High chair needed for toddler",
+      "Quiet table requested - celebrating anniversary"
+    ]
   };
 
   const handleBack = () => {
@@ -121,6 +126,34 @@ const ViewConversationDetail = () => {
             </CardContent>
           </Card>
         </div>
+        
+        {/* Special Requests Summary */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <FileText className="mr-2 h-5 w-5" />
+              Special Requests Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {conversation.specialRequests.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No special requests were made during this conversation.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {conversation.specialRequests.map((request, index) => (
+                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                    <div className="mt-1">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                    </div>
+                    <p className="text-sm text-foreground">{request}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
         
         {/* Conversation messages */}
         <Card>
