@@ -84,20 +84,20 @@ const ViewConversationDetail = () => {
                     View Summary
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                       <FileText className="h-5 w-5" />
                       Special Requests Summary
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="mt-4">
+                  <div className="mt-4 overflow-y-auto flex-1">
                     {conversation.specialRequests.length === 0 ? (
                       <div className="text-center py-8">
                         <p className="text-muted-foreground">No special requests were made during this conversation.</p>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-3 pr-2">
                         {conversation.specialRequests.map((request, index) => (
                           <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
                             <div className="mt-1">
