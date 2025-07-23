@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/dashboard/dashboard-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Clock, Zap, MessageCircleX, CheckCircle, XCircle, FileText } from 'lucide-react';
 
@@ -75,6 +76,42 @@ const ViewConversationDetail = () => {
                 {conversation.date} • {conversation.shop}
               </p>
             </div>
+            <div className="flex gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <FileText className="h-4 w-4" />
+                    View Summary
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      Special Requests Summary
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-4">
+                    {conversation.specialRequests.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">No special requests were made during this conversation.</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {conversation.specialRequests.map((request, index) => (
+                          <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                            <div className="mt-1">
+                              <div className="w-2 h-2 rounded-full bg-primary"></div>
+                            </div>
+                            <p className="text-sm text-foreground">{request}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
         
@@ -126,34 +163,6 @@ const ViewConversationDetail = () => {
             </CardContent>
           </Card>
         </div>
-        
-        {/* Special Requests Summary */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FileText className="mr-2 h-5 w-5" />
-              Special Requests Summary
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {conversation.specialRequests.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">No special requests were made during this conversation.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {conversation.specialRequests.map((request, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                    <div className="mt-1">
-                      <div className="w-2 h-2 rounded-full bg-primary"></div>
-                    </div>
-                    <p className="text-sm text-foreground">{request}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
         
         {/* Conversation messages */}
         <Card>
