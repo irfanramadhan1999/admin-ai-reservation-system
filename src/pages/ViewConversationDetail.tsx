@@ -26,9 +26,11 @@ const ViewConversationDetail = () => {
     score: 1,
     messages: [], // Empty array to simulate no messages
     specialRequests: [
-      "Vegetarian options for 2 guests",
-      "High chair needed for toddler",
-      "Quiet table requested - celebrating anniversary"
+      "ベジタリアン対応を2名分お願いします",
+      "幼児用のハイチェアが必要です",
+      "静かなテーブルを希望します - 記念日のお祝いのため",
+      "アレルギー対応（エビ・カニ）をお願いします",
+      "窓際の席を希望します"
     ]
   };
 
@@ -75,42 +77,6 @@ const ViewConversationDetail = () => {
               <p className="text-sm text-muted-foreground mt-2">
                 {conversation.date} • {conversation.shop}
               </p>
-            </div>
-            <div className="flex gap-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <FileText className="h-4 w-4" />
-                    View Summary
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <FileText className="h-5 w-5" />
-                      Special Requests Summary
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="mt-4 overflow-y-auto flex-1">
-                    {conversation.specialRequests.length === 0 ? (
-                      <div className="text-center py-8">
-                        <p className="text-muted-foreground">No special requests were made during this conversation.</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-3 pr-2">
-                        {conversation.specialRequests.map((request, index) => (
-                          <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                            <div className="mt-1">
-                              <div className="w-2 h-2 rounded-full bg-primary"></div>
-                            </div>
-                            <p className="text-sm text-foreground">{request}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </DialogContent>
-              </Dialog>
             </div>
           </div>
         </div>
@@ -163,6 +129,34 @@ const ViewConversationDetail = () => {
             </CardContent>
           </Card>
         </div>
+        
+        {/* Special Requests Summary */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center">
+              <FileText className="mr-2 h-4 w-4" />
+              特別要望の要約
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {conversation.specialRequests.length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">この会話で特別な要望はありませんでした。</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {conversation.specialRequests.map((request, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="mt-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                    </div>
+                    <p className="text-sm text-foreground">{request}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
         
         {/* Conversation messages */}
         <Card>
