@@ -11,6 +11,7 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { SidebarNav } from '../sidebar/sidebar-nav';
+import { Logo } from '@/components/ui/logo';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -31,15 +32,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="min-h-screen flex bg-[#f9fafc] w-full">
         {/* Sidebar */}
         <Sidebar className="border-r-0 shadow-sm">
-          <SidebarHeader className="p-4 border-b border-blue-100">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
-                {logoText.charAt(0)}
-              </div>
-              <h1 className="text-xl font-semibold">
-                {logoText}<span className="text-blue-500">AI</span>
-              </h1>
-            </div>
+          <SidebarHeader className="p-4 border-b border-border">
+            <Logo size="md" />
           </SidebarHeader>
           
           <SidebarContent className="p-2">
