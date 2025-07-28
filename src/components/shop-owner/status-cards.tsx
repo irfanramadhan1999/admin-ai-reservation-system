@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Calendar, Users, Bot, Globe } from 'lucide-react';
+import { Calendar, Users, Bot, Globe, AlertTriangle, CreditCard } from 'lucide-react';
 
 interface StatusCardsProps {
   bookingsCount: string;
@@ -20,6 +20,7 @@ interface StatusCardsProps {
   onCalendarSync: () => void;
   onGuranaviSync: () => void;
   onHotpepperSync: () => void;
+  creditLimitExceeded?: boolean;
 }
 
 export function StatusCards({
@@ -37,6 +38,7 @@ export function StatusCards({
   onCalendarSync,
   onGuranaviSync,
   onHotpepperSync,
+  creditLimitExceeded = false,
 }: StatusCardsProps) {
   const navigate = useNavigate();
 
@@ -77,26 +79,52 @@ export function StatusCards({
           </Card>
 
           {/* Call Service (formerly AI Activation) */}
-          <Card className="p-6 rounded-2xl shadow-sm relative">
+          <Card className={`p-6 rounded-2xl shadow-sm relative ${creditLimitExceeded ? 'border-red-200 bg-red-50/50' : ''}`}>
             <div className="flex justify-between items-start">
               <div className="space-y-1">
                 <h3 className="text-sm font-medium text-muted-foreground">Call Service</h3>
-                <div className="flex items-center gap-3 mt-2">
-                  <Switch 
-                    checked={isAiActive} 
-                    onCheckedChange={onAiToggle} 
-                    className="data-[state=checked]:bg-green-500"
-                  />
-                  <span className="text-xs">
-                    {isAiActive ? "Available" : "Unavailable"}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {isAiActive ? "Ready to receive calls" : `Last call: ${lastAiCall || "5 minutes ago"}`}
-                </p>
+                {creditLimitExceeded ? (
+                  <>
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center gap-2 bg-red-100 px-3 py-1 rounded-full">
+                        <AlertTriangle className="h-3 w-3 text-red-600" />
+                        <span className="text-xs font-medium text-red-700">Blocked</span>
+                      </div>
+                    </div>
+                    <div className="bg-red-100 border border-red-200 rounded-lg p-3 mt-2">
+                      <div className="flex items-start gap-2">
+                        <CreditCard className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium text-red-700">Credit limit exceeded</p>
+                          <p className="text-xs text-red-600">Please contact admin to reactivate service</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-3 mt-2">
+                      <Switch 
+                        checked={isAiActive} 
+                        onCheckedChange={onAiToggle} 
+                        className="data-[state=checked]:bg-green-500"
+                      />
+                      <span className="text-xs">
+                        {isAiActive ? "Available" : "Unavailable"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {isAiActive ? "Ready to receive calls" : `Last call: ${lastAiCall || "5 minutes ago"}`}
+                    </p>
+                  </>
+                )}
               </div>
-              <div className="p-2 rounded-full bg-emerald-50">
-                <Bot className="h-5 w-5 text-emerald-500" />
+              <div className={`p-2 rounded-full ${creditLimitExceeded ? 'bg-red-100' : 'bg-emerald-50'}`}>
+                {creditLimitExceeded ? (
+                  <AlertTriangle className="h-5 w-5 text-red-600" />
+                ) : (
+                  <Bot className="h-5 w-5 text-emerald-500" />
+                )}
               </div>
             </div>
           </Card>

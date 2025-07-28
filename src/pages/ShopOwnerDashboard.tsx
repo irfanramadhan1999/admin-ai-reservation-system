@@ -220,6 +220,7 @@ const ShopOwnerDashboard = () => {
         onCalendarSync={handleCalendarSync}
         onGuranaviSync={handleGuranaviSync}
         onHotpepperSync={handleHotpepperSync}
+        creditLimitExceeded={true}
       />
 
       {/* Today's Bookings Section */}
